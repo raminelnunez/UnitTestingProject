@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {}
+    "C:\\Users\\Raminel\\source\\repos\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {
+    "C:\\Users\\Raminel\\source\\repos\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
+        "projectUniqueName": "C:\\Users\\Raminel\\source\\repos\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
         "projectName": "AdvancedCSharpFinalProject",
-        "projectPath": "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
-        "packagesPath": "C:\\Users\\Muhammad Musab\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\obj\\",
+        "projectPath": "C:\\Users\\Raminel\\source\\repos\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
+        "packagesPath": "C:\\Users\\Raminel\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Raminel\\source\\repos\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Muhammad Musab\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Raminel\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
