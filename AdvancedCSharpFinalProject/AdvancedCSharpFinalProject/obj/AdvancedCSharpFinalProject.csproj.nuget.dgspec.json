@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {}
+    "C:\\Users\\Muhammad Musab\\Desktop\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {
+    "C:\\Users\\Muhammad Musab\\Desktop\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
+        "projectUniqueName": "C:\\Users\\Muhammad Musab\\Desktop\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
         "projectName": "AdvancedCSharpFinalProject",
-        "projectPath": "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
+        "projectPath": "C:\\Users\\Muhammad Musab\\Desktop\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
         "packagesPath": "C:\\Users\\Muhammad Musab\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Muhammad Musab\\Desktop\\FinalProject-SD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\obj\\",
+        "outputPath": "C:\\Users\\Muhammad Musab\\Desktop\\FinalProjectSD340\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Muhammad Musab\\AppData\\Roaming\\NuGet\\NuGet.Config",

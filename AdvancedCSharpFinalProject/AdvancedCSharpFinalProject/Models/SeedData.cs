@@ -62,6 +62,7 @@ namespace AdvancedCSharpFinalProject.Models
 
                 await userManager.CreateAsync(secondUser);
                 await userManager.AddToRoleAsync(secondUser, "Project Manager");
+                await userManager.AddToRoleAsync(secondUser, "Developer");
             }
         }
     }
