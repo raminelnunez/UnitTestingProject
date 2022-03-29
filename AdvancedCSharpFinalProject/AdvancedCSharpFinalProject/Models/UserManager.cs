@@ -18,38 +18,54 @@ namespace AdvancedCSharpFinalProject.Models
         }
         public async Task<string> AssignRoleToUser(string userId, string roleForUser) //does not return anything
         {
-            try
-            {
-                string message;
-                ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database to assign the role to it 
-                User = user;
+            string message;
+            ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database to assign the role to it 
+            User = user;
 
-                if (await _roleManager.RoleExistsAsync(roleForUser)) // check if role is in the database
+            if (await _roleManager.RoleExistsAsync(roleForUser)) // check if role is in the database
+            {
+                if (!await _userManager.IsInRoleAsync(user, roleForUser)) // check if the user is already in that role
                 {
-                    if (!await _userManager.IsInRoleAsync(user, roleForUser)) // check if the user is already in that role
-                    {
-                        await _userManager.AddToRoleAsync(user, roleForUser);//if user doesn't have the role add it to the user
-                        //await _userManager.RemoveFromRoleAsync(user, roleForUser);//if I were to remove a role from a user I would use this
-                        message = $"{User.UserName} is added to role {roleForUser}";
-                        return message;
-                    }
-                    else
-                    {
-                        message = $"{User.UserName} is already in role {roleForUser}";
-                        return message;
-                    }
-                }else
+                    await _userManager.AddToRoleAsync(user, roleForUser);//if user doesn't have the role add it to the user
+                                                                         //await _userManager.RemoveFromRoleAsync(user, roleForUser);//if I were to remove a role from a user I would use this
+                    message = $"{User.UserName} is added to role {roleForUser}";
+                    return message;
+                }
+                else
                 {
-                    message = $"No role found";
+                    message = $"{User.UserName} is already in role {roleForUser}";
                     return message;
                 }
             }
-            catch (Exception ex)
+            else
             {
-                string message = ex.Message;
+                message = $"No role found";
                 return message;
             }
 
+        }
+        public async Task<string> CheckIfAUserIsInARole(string userId, string roleToCheck)
+        {
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            User = user;
+            string message;
+            if (await _roleManager.RoleExistsAsync(roleToCheck))
+            {
+                if (await _userManager.IsInRoleAsync(user, roleToCheck))
+                {
+                    message = $"{user.UserName} is in the {roleToCheck} role.";
+                    return message;
+                } else
+                {
+                    message = $"{user.UserName} is NOT in the {roleToCheck} role.";
+                    return message;
+                }
+            }
+            else
+            {
+                message = $"{roleToCheck} role Not Found";
+                return message;
+            }
         }
         public UserManager()
         {

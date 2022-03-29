@@ -43,12 +43,55 @@ namespace AdvancedCSharpFinalProject.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AssignRoleToUser(string userId, string roleForUser)
+        public async Task<IActionResult> AssignRoleToUser(string? userId, string? roleForUser)
         {
-            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
-            string message = await userManager.AssignRoleToUser(userId, roleForUser); // AssignRoleToUser method on UserManager Class
-            ViewBag.message = message;
-            return View("MessageView");
+            if (userId != null && roleForUser != null)
+            {
+                try
+                {
+                    UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+                    string message = await userManager.AssignRoleToUser(userId, roleForUser); // AssignRoleToUser method on UserManager Class
+                    ViewBag.message = message;
+                    return View("MessageView");
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Bad Request");
+            }
+        }
+        public IActionResult CheckIfAUserIsInARole()
+        {
+            ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
+            ViewBag.rolesList = new SelectList(_db.Roles.ToList(), "Name", "Name");
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CheckIfAUserIsInARole(string? userId, string? roleToCheck)
+        {
+            if(userId != null && roleToCheck != null)
+            {
+                try
+                {
+                    UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+                    string message = await userManager.CheckIfAUserIsInARole(userId, roleToCheck);
+                    ViewBag.message = message;
+                    return View("MessageView");
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Bad Request");
+            }
+
         }
     }
 }

@@ -22,6 +22,7 @@ namespace AdvancedCSharpFinalProject.Models
                 {
                     "Project Manager",
                     "Developer",
+                    "Manager"
                 };
                 foreach (string role in newRoles)
                 {
