@@ -27,13 +27,33 @@ namespace AdvancedCSharpFinalProject.Controllers
         public IActionResult GetAllRolesForAUser(string? userId)
         {
             ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
-            UserManager usm = new UserManager(_db);
-            List<string> roleNamesOfUser = usm.GetAllRolesOfUser(userId);
-            if(usm.User != null)
+            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+            List<string> roleNamesOfUser = userManager.GetAllRolesOfUser(userId);// GetAllRolesOfUser method on UserManager Class
+            if (userManager.User != null)
             {
-                ViewBag.UserName = usm.User.UserName;
+                ViewBag.UserName = userManager.User.UserName;
             }
             return View(roleNamesOfUser);
         }
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult AssignRoleToUser()
+        {
+            ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
+            ViewBag.rolesList = new SelectList(_db.Roles.ToList(), "Name", "Name");
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AssignRoleToUser(string userId, string roleForUser)
+        {
+            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+            string message = await userManager.AssignRoleToUser(userId, roleForUser); // AssignRoleToUser method on UserManager Class
+            ViewBag.message = message;
+            return View("MessageView");
+        }
     }
 }
+
+/*
+Create a User Manager class that has functions to manage users and roles 
+(Get all roles for a user, assign roles to users, check if a user in a role)...etc
+ */
