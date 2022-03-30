@@ -10,5 +10,6 @@ namespace AdvancedCSharpFinalProject.Data
             : base(options)
         {
         }
+        public DbSet<ProjectManager> ProjectManager { get; set; }
     }
 }

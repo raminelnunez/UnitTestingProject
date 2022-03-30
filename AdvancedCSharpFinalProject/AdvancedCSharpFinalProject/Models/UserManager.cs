@@ -19,15 +19,19 @@ namespace AdvancedCSharpFinalProject.Models
         public async Task<string> AssignRoleToUser(string userId, string roleForUser) //does not return anything
         {
             string message;
-            ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database to assign the role to it 
-            User = user;
+            if(roleForUser == "Project Manager")
+            {
+                ProjectManager projectManager = (ProjectManager)await _userManager.FindByIdAsync(userId); // pull the user out of the database to assign the role to it 
+                projectManager.Budget = 3; //need to assign budget when making a ProjectManager
+                User = projectManager;
+            }
 
             if (await _roleManager.RoleExistsAsync(roleForUser)) // check if role is in the database
             {
-                if (!await _userManager.IsInRoleAsync(user, roleForUser)) // check if the user is already in that role
+                if (!await _userManager.IsInRoleAsync(User, roleForUser)) // check if the user is already in that role
                 {
-                    await _userManager.AddToRoleAsync(user, roleForUser);//if user doesn't have the role add it to the user
-                                                                         //await _userManager.RemoveFromRoleAsync(user, roleForUser);//if I were to remove a role from a user I would use this
+                    await _userManager.AddToRoleAsync(User, roleForUser);//if user doesn't have the role add it to the user
+
                     message = $"{User.UserName} is added to role {roleForUser}";
                     return message;
                 }

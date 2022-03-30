@@ -50,20 +50,20 @@ namespace AdvancedCSharpFinalProject.Models
 
 
                 //user2
-                ApplicationUser secondUser = new ApplicationUser()
+                ApplicationUser secondUser = new ProjectManager()
                 {
                     Email = "raminel03@gmail.com",
                     NormalizedEmail = "RAMINEL03@GMAIL.COM",
                     UserName = "raminel03@gmail.com",
                     NormalizedUserName = "RAMINEL03@GMAIL.COM",
                     EmailConfirmed = true,
+                    Budget = 30
                 };
                 var secondUserHashedPassword = passwordHasher.HashPassword(secondUser, "Pass@12");
                 secondUser.PasswordHash = secondUserHashedPassword;
 
                 await userManager.CreateAsync(secondUser);
                 await userManager.AddToRoleAsync(secondUser, "Project Manager");
-                await userManager.AddToRoleAsync(secondUser, "Developer");
             }
         }
     }
