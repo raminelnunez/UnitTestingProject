@@ -4,12 +4,18 @@
 
 namespace AdvancedCSharpFinalProject.Data.Migrations
 {
-    public partial class AddProjectManager : Migration
+    public partial class AddProjectManagerAndDeveloperclass : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<double>(
                 name: "Budget",
+                table: "AspNetUsers",
+                type: "float",
+                nullable: true);
+
+            migrationBuilder.AddColumn<double>(
+                name: "DailySalary",
                 table: "AspNetUsers",
                 type: "float",
                 nullable: true);
@@ -26,6 +32,10 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Budget",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "DailySalary",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(

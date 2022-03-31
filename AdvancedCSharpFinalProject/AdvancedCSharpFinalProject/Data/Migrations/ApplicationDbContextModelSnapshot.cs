@@ -230,9 +230,19 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectManager", b =>
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Developer", b =>
                 {
                     b.HasBaseType("AdvancedCSharpFinalProject.Models.ApplicationUser");
+
+                    b.Property<double>("DailySalary")
+                        .HasColumnType("float");
+
+                    b.HasDiscriminator().HasValue("Developer");
+                });
+
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectManager", b =>
+                {
+                    b.HasBaseType("AdvancedCSharpFinalProject.Models.Developer");
 
                     b.Property<double>("Budget")
                         .HasColumnType("float");
