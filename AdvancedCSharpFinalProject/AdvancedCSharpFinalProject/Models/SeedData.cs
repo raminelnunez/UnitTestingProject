@@ -69,6 +69,19 @@ namespace AdvancedCSharpFinalProject.Models
                 //since ProjectManager inherits from Developer
                 //a ProjectManger can have a DailySalary 
                 //which makes them a Developer as well if we chose to include it
+
+                //testUser as a just a user
+                ApplicationUser testUserDeveloper = new ApplicationUser()
+                {
+                    Email = "testuser03@gmail.com",
+                    NormalizedEmail = "TESTUSER03@GMAIL.COM",
+                    UserName = "testuser03@gmail.com",
+                    NormalizedUserName = "TESTUSER03@GMAIL.COM",
+                    EmailConfirmed = true,
+                };
+                var testUserDeveloperHashedPassword = passwordHasher.HashPassword(testUserDeveloper, "Pass@12");
+                testUserDeveloper.PasswordHash = testUserDeveloperHashedPassword;
+                await userManager.CreateAsync(testUserDeveloper);
             }
         }
     }
