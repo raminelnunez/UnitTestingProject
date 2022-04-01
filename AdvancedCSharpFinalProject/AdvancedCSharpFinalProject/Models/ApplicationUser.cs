@@ -4,6 +4,8 @@ namespace AdvancedCSharpFinalProject.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        public double DailySalary { get; set; }
+        public double Budget { get; set; }
 
     }
 }

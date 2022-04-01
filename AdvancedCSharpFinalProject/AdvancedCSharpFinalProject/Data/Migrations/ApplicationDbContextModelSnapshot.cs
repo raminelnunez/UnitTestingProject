@@ -30,9 +30,15 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<double>("Budget")
+                        .HasColumnType("float");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("DailySalary")
+                        .HasColumnType("float");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -234,18 +240,12 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                 {
                     b.HasBaseType("AdvancedCSharpFinalProject.Models.ApplicationUser");
 
-                    b.Property<double>("DailySalary")
-                        .HasColumnType("float");
-
                     b.HasDiscriminator().HasValue("Developer");
                 });
 
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectManager", b =>
                 {
-                    b.HasBaseType("AdvancedCSharpFinalProject.Models.Developer");
-
-                    b.Property<double>("Budget")
-                        .HasColumnType("float");
+                    b.HasBaseType("AdvancedCSharpFinalProject.Models.ApplicationUser");
 
                     b.HasDiscriminator().HasValue("ProjectManager");
                 });

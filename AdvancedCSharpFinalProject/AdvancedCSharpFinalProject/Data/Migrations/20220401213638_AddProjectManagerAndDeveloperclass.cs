@@ -12,13 +12,15 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                 name: "Budget",
                 table: "AspNetUsers",
                 type: "float",
-                nullable: true);
+                nullable: false,
+                defaultValue: 0.0);
 
             migrationBuilder.AddColumn<double>(
                 name: "DailySalary",
                 table: "AspNetUsers",
                 type: "float",
-                nullable: true);
+                nullable: false,
+                defaultValue: 0.0);
 
             migrationBuilder.AddColumn<string>(
                 name: "Discriminator",

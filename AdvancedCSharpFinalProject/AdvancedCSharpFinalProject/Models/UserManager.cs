@@ -16,23 +16,31 @@ namespace AdvancedCSharpFinalProject.Models
             List<string> roleNames = _db.Roles.Where(roles => allRoleIdsOfUser.Contains(roles.Id)).Select(roles => roles.Name).ToList();
             return roleNames;
         }
-        public async Task<string> AssignRoleToUser(string userId, string roleForUser) //does not return anything
+        public async Task<string> AssignRoleToUser(string userId, string roleForUser, double budgetOrSalary) //does not return anything
         {
-            string message;
-            if(roleForUser == "Project Manager")
-            {
-                ProjectManager projectManager = (ProjectManager)await _userManager.FindByIdAsync(userId); // pull the user out of the database to assign the role to it 
-                projectManager.Budget = 3; //need to assign budget when making a ProjectManager
-                User = projectManager;
-            }
-
+            string message= "";
+            ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database
+            User = user;
             if (await _roleManager.RoleExistsAsync(roleForUser)) // check if role is in the database
             {
                 if (!await _userManager.IsInRoleAsync(User, roleForUser)) // check if the user is already in that role
                 {
-                    await _userManager.AddToRoleAsync(User, roleForUser);//if user doesn't have the role add it to the user
-
-                    message = $"{User.UserName} is added to role {roleForUser}";
+                    if (roleForUser == "Project Manager")
+                    {
+                        ProjectManager projectManager = (ProjectManager)User; // pull the user out of the database and convert it to ProjectManager 
+                        projectManager.Budget = budgetOrSalary; //need to assign budget when making a ProjectManager
+                        await _userManager.AddToRoleAsync(projectManager, roleForUser);//if user doesn't have the role add it to the user
+                        message = $"{projectManager.UserName} is added to role {roleForUser}";
+                        return message;
+                    }
+                    if (roleForUser == "Developer")
+                    {
+                        Developer developer = (Developer)User; // pull the user out of the database and convert it to Developer 
+                        developer.DailySalary = budgetOrSalary;
+                        await _userManager.AddToRoleAsync(developer, roleForUser);//if user doesn't have the role add it to the user
+                        message = $"{developer.UserName} is added to role {roleForUser}";
+                        return message;
+                    }
                     return message;
                 }
                 else

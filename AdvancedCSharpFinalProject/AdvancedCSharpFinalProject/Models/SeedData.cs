@@ -50,7 +50,7 @@ namespace AdvancedCSharpFinalProject.Models
 
 
                 //user2 as a ProjectManager and a Developer
-                ProjectManager secondUserProjectManager = new ProjectManager() //Discriminator will say ProjectManager(because we instantiate it as a ProjectManager)
+                ApplicationUser secondUserProjectManager = new ProjectManager() //Discriminator will say ProjectManager(because we instantiate it as a ProjectManager)
                 {
                     Email = "raminel03@gmail.com",
                     NormalizedEmail = "RAMINEL03@GMAIL.COM",
@@ -66,11 +66,10 @@ namespace AdvancedCSharpFinalProject.Models
                 await userManager.CreateAsync(secondUserProjectManager);
                 await userManager.AddToRoleAsync(secondUserProjectManager, "Project Manager");
                 await userManager.AddToRoleAsync(secondUserProjectManager, "Developer");
-                //since ProjectManager inherits from Developer
-                //a ProjectManger can have a DailySalary 
-                //which makes them a Developer as well if we chose to include it
 
-                //testUser as a just a user
+                //A User can be a ProjectManager and a Developer
+
+                //testUser as a just a user(potential to become a Developer and ProjectManager)
                 ApplicationUser testUserDeveloper = new ApplicationUser()
                 {
                     Email = "testuser03@gmail.com",

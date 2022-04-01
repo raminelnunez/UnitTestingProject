@@ -42,15 +42,29 @@ namespace AdvancedCSharpFinalProject.Controllers
             ViewBag.rolesList = new SelectList(_db.Roles.ToList(), "Name", "Name");
             return View();
         }
+        public IActionResult SelectBudgetOrDailySalary(string? userId, string? roleForUser)
+        {
+            if(userId != null && roleForUser != null)
+            {
+                ViewBag.userId = userId;
+                ViewBag.roleForUser = roleForUser;
+                return View();
+            } 
+            else
+            {
+                return BadRequest("Bad Request");
+            }
+
+        }
         [HttpPost]
-        public async Task<IActionResult> AssignRoleToUser(string? userId, string? roleForUser)
+        public async Task<IActionResult> SelectBudgetOrDailySalary(string? userId, string? roleForUser, double budgetOrSalary)
         {
             if (userId != null && roleForUser != null)
             {
                 try
                 {
                     UserManager userManager = new UserManager(_db, _userManager, _roleManager);
-                    string message = await userManager.AssignRoleToUser(userId, roleForUser); // AssignRoleToUser method on UserManager Class
+                    string message = await userManager.AssignRoleToUser(userId, roleForUser, budgetOrSalary); // AssignRoleToUser method on UserManager Class
                     ViewBag.message = message;
                     return View("MessageView");
                 }
