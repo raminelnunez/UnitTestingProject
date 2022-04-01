@@ -4,6 +4,5 @@ namespace AdvancedCSharpFinalProject.Models
 {
     public class ApplicationUser : IdentityUser
     {
-
     }
 }
