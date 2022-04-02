@@ -9,8 +9,8 @@
     <form method="post" asp-action="SelectBudgetOrDailySalary">
         <h2>Select Budget For Project Manager</h2>
         <input type=number min=0 placeholder="Budget" name="budgetOrSalary"/>
-        <input type="hidden" value="@ViewBag.userId"/>
-        <input type="hidden" value="@ViewBag.roleForUser"/>
+        <input type="hidden" name="userId" value="@ViewBag.userId"/>
+        <input type="hidden" name="roleForUser" value="@ViewBag.roleForUser"/>
 
         <button type="submit">
             Submit

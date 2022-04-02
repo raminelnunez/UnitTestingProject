@@ -7,6 +7,8 @@ namespace AdvancedCSharpFinalProject.Models
     {
         public ApplicationDbContext _db { get; set; }
         public UserManager<ApplicationUser> _userManager { get; set; }
+        public UserManager<Developer> _developerManager { get; set; }
+        public UserManager<ProjectManager> _projectManager { get; set; }
         public RoleManager<IdentityRole> _roleManager { get; set; }
         public ApplicationUser User { get; set; }
         public List<string> GetAllRolesOfUser(string userId)
@@ -27,18 +29,22 @@ namespace AdvancedCSharpFinalProject.Models
                 {
                     if (roleForUser == "Project Manager")
                     {
-                        ProjectManager projectManager = (ProjectManager)User; // pull the user out of the database and convert it to ProjectManager 
-                        projectManager.Budget = budgetOrSalary; //need to assign budget when making a ProjectManager
+                        ProjectManager projectManager = new ProjectManager(user);
+                        _db.Users.Add(projectManager);
+                        await _userManager.DeleteAsync(user);
+                        projectManager.Budget = budgetOrSalary;
                         await _userManager.AddToRoleAsync(projectManager, roleForUser);//if user doesn't have the role add it to the user
-                        message = $"{projectManager.UserName} is added to role {roleForUser}";
+                        message = $"{projectManager.UserName} is added to the role {roleForUser}";
                         return message;
                     }
                     if (roleForUser == "Developer")
                     {
-                        Developer developer = (Developer)User; // pull the user out of the database and convert it to Developer 
+                        Developer developer = new Developer(user);
+                        _db.Users.Add(developer);
+                        await _userManager.DeleteAsync(user);
                         developer.DailySalary = budgetOrSalary;
                         await _userManager.AddToRoleAsync(developer, roleForUser);//if user doesn't have the role add it to the user
-                        message = $"{developer.UserName} is added to role {roleForUser}";
+                        message = $"{developer.UserName} is added to the role {roleForUser}";
                         return message;
                     }
                     return message;
@@ -91,3 +97,6 @@ namespace AdvancedCSharpFinalProject.Models
         }
     }
 }
+
+//In OOP, you can't cast an instance of a parent class into a child class.
+//You can only cast a child instance into a parent that it inherits from.
