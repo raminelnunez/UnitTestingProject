@@ -15,11 +15,8 @@ namespace AdvancedCSharpFinalProject.Data
             base.OnModelCreating(builder);
 
             //set primary key
-            builder.Entity<ProjectManager>().HasKey(projectManager => projectManager.Id);
             builder.Entity<Project>().HasKey(project => project.Id);
-            builder.Entity<Developer>().HasKey(developer => developer.Id);
             builder.Entity<ProjectTask>().HasKey(projectTask => projectTask.Id);
-            builder.Entity<Note>().HasKey(note => note.Id);
 
             //ProjectManager to Project (One To Many)
             builder.Entity<ProjectManager>()
@@ -40,10 +37,13 @@ namespace AdvancedCSharpFinalProject.Data
             builder.Entity<ProjectTask>()
                 .HasOne(projectTask => projectTask.Project)
                 .WithMany(project => project.ProjectTasks)
-                .HasForeignKey(projectTask => projectTask.ProjectId);
+                .HasForeignKey(projectTask => projectTask.ProjectId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            //ProjectTask to Developer (Many to Many)
+            //breakTable: Note
+
         }
-        public DbSet<ProjectManager> ProjectManager { get; set; }
-        public DbSet<Developer> Developer { get; set; }
         public DbSet<Project> Project { get; set; }
         public DbSet<ProjectTask> ProjectTask { get; set; }
     }
