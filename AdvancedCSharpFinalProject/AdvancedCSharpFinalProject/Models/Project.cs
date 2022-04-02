@@ -11,7 +11,6 @@
         public double ActualBudget { get; set; }
         public ProjectManager ProjectManager { get; set; }
         public string ProjectManagerId { get; set; }
-        public List<ProjectTask> Tasks { get; set; }
         public List<Developer> Developers { get; set; }
         public void CalculateActualBudget()
         {
