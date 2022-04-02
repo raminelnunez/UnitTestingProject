@@ -7,6 +7,8 @@ namespace AdvancedCSharpFinalProject.Models
     {
         public ApplicationDbContext _db { get; set; }
         public UserManager<ApplicationUser> _userManager { get; set; }
+        public UserManager<Developer> _developerManager { get; set; }
+        public UserManager<ProjectManager> _projectManager { get; set; }
         public RoleManager<IdentityRole> _roleManager { get; set; }
         public ApplicationUser User { get; set; }
         public List<string> GetAllRolesOfUser(string userId)
@@ -16,19 +18,35 @@ namespace AdvancedCSharpFinalProject.Models
             List<string> roleNames = _db.Roles.Where(roles => allRoleIdsOfUser.Contains(roles.Id)).Select(roles => roles.Name).ToList();
             return roleNames;
         }
-        public async Task<string> AssignRoleToUser(string userId, string roleForUser) //does not return anything
+        public async Task<string> AssignRoleToUser(string userId, string roleForUser, double budgetOrSalary) //does not return anything
         {
-            string message;
-            ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database to assign the role to it 
+            string message= "";
+            ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database
             User = user;
-
             if (await _roleManager.RoleExistsAsync(roleForUser)) // check if role is in the database
             {
-                if (!await _userManager.IsInRoleAsync(user, roleForUser)) // check if the user is already in that role
+                if (!await _userManager.IsInRoleAsync(User, roleForUser)) // check if the user is already in that role
                 {
-                    await _userManager.AddToRoleAsync(user, roleForUser);//if user doesn't have the role add it to the user
-                                                                         //await _userManager.RemoveFromRoleAsync(user, roleForUser);//if I were to remove a role from a user I would use this
-                    message = $"{User.UserName} is added to role {roleForUser}";
+                    if (roleForUser == "Project Manager")
+                    {
+                        ProjectManager projectManager = new ProjectManager(user);
+                        _db.Users.Add(projectManager);
+                        await _userManager.DeleteAsync(user);
+                        projectManager.Budget = budgetOrSalary;
+                        await _userManager.AddToRoleAsync(projectManager, roleForUser);//if user doesn't have the role add it to the user
+                        message = $"{projectManager.UserName} is added to the role {roleForUser}";
+                        return message;
+                    }
+                    if (roleForUser == "Developer")
+                    {
+                        Developer developer = new Developer(user);
+                        _db.Users.Add(developer);
+                        await _userManager.DeleteAsync(user);
+                        developer.DailySalary = budgetOrSalary;
+                        await _userManager.AddToRoleAsync(developer, roleForUser);//if user doesn't have the role add it to the user
+                        message = $"{developer.UserName} is added to the role {roleForUser}";
+                        return message;
+                    }
                     return message;
                 }
                 else
@@ -79,3 +97,6 @@ namespace AdvancedCSharpFinalProject.Models
         }
     }
 }
+
+//In OOP, you can't cast an instance of a parent class into a child class.
+//You can only cast a child instance into a parent that it inherits from.

@@ -1,0 +1,34 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@if(ViewBag.roleForUser == "Project Manager") 
+{
+    <form method="post" asp-action="SelectBudgetOrDailySalary">
+        <h2>Select Budget For Project Manager</h2>
+        <input type=number min=0 placeholder="Budget" name="budgetOrSalary"/>
+        <input type="hidden" name="userId" value="@ViewBag.userId"/>
+        <input type="hidden" name="roleForUser" value="@ViewBag.roleForUser"/>
+
+        <button type="submit">
+            Submit
+        </button>
+
+    </form>
+}
+@if(ViewBag.roleForUser == "Developer")
+{
+    <form method="post" asp-action="SelectBudgetOrDailySalary">
+        <h2>Select Daily Salary For Developer</h2>
+        <input type=number min=0 placeholder="Daily Salary" name="budgetOrSalary"/>
+        <input type="hidden" name="userId" value="@ViewBag.userId"/>
+        <input type="hidden" name="roleForUser" value="@ViewBag.roleForUser"/>
+
+        <button type="submit">
+            Submit
+        </button>
+
+    </form>
+}
