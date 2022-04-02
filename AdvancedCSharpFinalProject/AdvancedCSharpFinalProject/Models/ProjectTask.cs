@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public Project Project { get; set; }
-        public enum Priority { Low, Medium, High }
+        public Priority Priority { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public ICollection<Note> Notes { get; set; }
