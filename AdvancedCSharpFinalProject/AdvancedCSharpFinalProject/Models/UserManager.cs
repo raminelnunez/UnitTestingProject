@@ -7,8 +7,6 @@ namespace AdvancedCSharpFinalProject.Models
     {
         public ApplicationDbContext _db { get; set; }
         public UserManager<ApplicationUser> _userManager { get; set; }
-        public UserManager<Developer> _developerManager { get; set; }
-        public UserManager<ProjectManager> _projectManager { get; set; }
         public RoleManager<IdentityRole> _roleManager { get; set; }
         public ApplicationUser User { get; set; }
         public List<string> GetAllRolesOfUser(string userId)

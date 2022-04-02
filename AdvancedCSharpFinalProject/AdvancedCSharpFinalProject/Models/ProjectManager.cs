@@ -1,6 +1,6 @@
 ﻿namespace AdvancedCSharpFinalProject.Models
 {
-    public class ProjectManager : ApplicationUser 
+    public class ProjectManager : ApplicationUser
     {
         public ProjectManager(ApplicationUser user)
         {
@@ -17,4 +17,5 @@
         {
 
         }
+    }
 }
