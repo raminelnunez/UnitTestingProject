@@ -1,11 +1,11 @@
 ﻿namespace AdvancedCSharpFinalProject.Models
 {
-    public class Note
+    public class Note // a note 
     {
         public int Id { get; set; }
-        public ApplicationUser User { get; set; }
-        public string UserId { get; set; }
-        public Task Task { get; set; }
+        public Developer Developer { get; set; }
+        public string DeveloperId { get; set; }
+        public ProjectTask ProjectTask { get; set; }
         public int TaskId { get; set; }
         public string Description { get; set; }
     }
