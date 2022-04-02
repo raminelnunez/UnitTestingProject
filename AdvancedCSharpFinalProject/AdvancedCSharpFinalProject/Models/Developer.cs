@@ -3,6 +3,7 @@
     public class Developer : ApplicationUser //inherits from ApplicationUser
     {
         public ICollection<ProjectTask> ProjectTasks { get; set; }
+        public ICollection<Note> Notes { get; set; }
         public Developer(ApplicationUser user)
         {
             Email = user.Email;
@@ -14,6 +15,7 @@
             DailySalary = user.DailySalary;
 
             ProjectTasks = new HashSet<ProjectTask>();
+            Notes = new HashSet<Note>();
         }
         public Developer()
         {
