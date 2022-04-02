@@ -11,10 +11,10 @@
         public double ActualBudget { get; set; }
         public ProjectManager ProjectManager { get; set; }
         public string ProjectManagerId { get; set; }
-        public List<Developer> Developers { get; set; }
+        public ICollection<ProjectTask> ProjectTasks { get; set; }
         public void CalculateActualBudget()
         {
-            Developers.ForEach(developer => ActualBudget += developer.DailySalary);
+            ProjectTasks.ToList().ForEach(projectTask => ActualBudget += projectTask.Developer.DailySalary);
         }
     }
 }
