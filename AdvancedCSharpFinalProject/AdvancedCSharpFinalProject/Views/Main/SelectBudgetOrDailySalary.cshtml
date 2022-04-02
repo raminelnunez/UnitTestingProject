@@ -8,7 +8,7 @@
 {
     <form method="post" asp-action="SelectBudgetOrDailySalary">
         <h2>Select Budget For Project Manager</h2>
-        <input type=number min=0 placeholder="Budget" name="budgetOrSalary"/>
+        <input type=number min=1 placeholder="Budget" name="budgetOrSalary"/>
         <input type="hidden" name="userId" value="@ViewBag.userId"/>
         <input type="hidden" name="roleForUser" value="@ViewBag.roleForUser"/>
 
@@ -22,7 +22,7 @@
 {
     <form method="post" asp-action="SelectBudgetOrDailySalary">
         <h2>Select Daily Salary For Developer</h2>
-        <input type=number min=0 placeholder="Daily Salary" name="budgetOrSalary"/>
+        <input type=number min=1 placeholder="Daily Salary" name="budgetOrSalary"/>
         <input type="hidden" name="userId" value="@ViewBag.userId"/>
         <input type="hidden" name="roleForUser" value="@ViewBag.roleForUser"/>
 

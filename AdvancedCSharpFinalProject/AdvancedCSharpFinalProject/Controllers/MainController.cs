@@ -42,13 +42,22 @@ namespace AdvancedCSharpFinalProject.Controllers
             ViewBag.rolesList = new SelectList(_db.Roles.ToList(), "Name", "Name");
             return View();
         }
-        public IActionResult SelectBudgetOrDailySalary(string? userId, string? roleForUser)
+        public async Task<IActionResult> SelectBudgetOrDailySalary(string? userId, string? roleForUser)
         {
             if(userId != null && roleForUser != null)
             {
-                ViewBag.userId = userId;
-                ViewBag.roleForUser = roleForUser;
-                return View();
+                ApplicationUser user = await _userManager.FindByIdAsync(userId);
+                if(await _userManager.IsInRoleAsync(user, roleForUser))
+                {
+                    ViewBag.message = $"{user.UserName} is already in the role of {roleForUser}";
+                    return View("MessageView");
+                }
+                else
+                {
+                    ViewBag.userId = userId;
+                    ViewBag.roleForUser = roleForUser;
+                    return View();
+                }
             } 
             else
             {

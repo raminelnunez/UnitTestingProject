@@ -12,6 +12,5 @@ namespace AdvancedCSharpFinalProject.Data
         }
         public DbSet<ProjectManager> ProjectManager { get; set; }
         public DbSet<Developer> Developer { get; set; }
-        public DbSet<Project> Project { get; set; }
     }
 }

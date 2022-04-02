@@ -2,6 +2,7 @@
 {
     public class ProjectTask
     {
+        public int Id { get; set; }
         public Project Project { get; set; }
         public enum Priority { Low, Medium, High }
         public string Title { get; set; }
