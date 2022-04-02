@@ -1,11 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\AdvancedCSharpFinalProject",
-    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject",
-    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data",
-    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Models"
+    ""
   ],
-  "SelectedNode": "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data\\ApplicationDbContext.cs",
+  "SelectedNode": "\\AdvancedCSharpFinalProject.sln",
   "PreviewInSolutionExplorer": false
 }

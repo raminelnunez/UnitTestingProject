@@ -6,6 +6,5 @@ namespace AdvancedCSharpFinalProject.Models
     {
         public double DailySalary { get; set; }
         public double Budget { get; set; }
-
     }
 }
