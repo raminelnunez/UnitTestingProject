@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedCSharpFinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220401213638_AddProjectManagerAndDeveloperclass")]
-    partial class AddProjectManagerAndDeveloperclass
+    [Migration("20220402200136_AddDeveloperAndProjectManagerClass")]
+    partial class AddDeveloperAndProjectManagerClass
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,9 +31,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<double>("Budget")
-                        .HasColumnType("float");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

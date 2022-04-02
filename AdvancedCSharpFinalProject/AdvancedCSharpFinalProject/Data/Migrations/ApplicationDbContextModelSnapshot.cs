@@ -30,9 +30,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<double>("Budget")
-                        .HasColumnType("float");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");

@@ -10,7 +10,6 @@
             NormalizedUserName = user.NormalizedUserName;
             EmailConfirmed = true;
             PasswordHash = user.PasswordHash;
-            Budget = user.Budget;
             DailySalary = user.DailySalary;
         }
         public Developer()

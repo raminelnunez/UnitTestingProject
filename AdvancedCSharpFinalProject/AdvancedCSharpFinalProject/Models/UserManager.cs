@@ -16,42 +16,42 @@ namespace AdvancedCSharpFinalProject.Models
             List<string> roleNames = _db.Roles.Where(roles => allRoleIdsOfUser.Contains(roles.Id)).Select(roles => roles.Name).ToList();
             return roleNames;
         }
-        public async Task<string> AssignRoleToUser(string userId, string roleForUser, double budgetOrSalary) //does not return anything
+        public async Task<string> AssignRoleToUser(string userId, string roleForUser, double dailySalary) //does not return anything
         {
             string message= "";
             ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database
-            User = user;
+
             if (await _roleManager.RoleExistsAsync(roleForUser)) // check if role is in the database
             {
-                if (!await _userManager.IsInRoleAsync(User, roleForUser)) // check if the user is already in that role
+                if (roleForUser == "Project Manager")
                 {
-                    if (roleForUser == "Project Manager")
+                    ProjectManager projectManager = new ProjectManager(user);
+                    _db.Users.Add(projectManager);
+                    if (projectManager.DailySalary != 0)
                     {
-                        ProjectManager projectManager = new ProjectManager(user);
-                        _db.Users.Add(projectManager);
-                        await _userManager.DeleteAsync(user);
-                        projectManager.Budget = budgetOrSalary;
-                        await _userManager.AddToRoleAsync(projectManager, roleForUser);//if user doesn't have the role add it to the user
-                        message = $"{projectManager.UserName} is added to the role {roleForUser}";
-                        return message;
+                        await _userManager.AddToRoleAsync(projectManager, "Developer");
                     }
-                    if (roleForUser == "Developer")
-                    {
-                        Developer developer = new Developer(user);
-                        _db.Users.Add(developer);
-                        await _userManager.DeleteAsync(user);
-                        developer.DailySalary = budgetOrSalary;
-                        await _userManager.AddToRoleAsync(developer, roleForUser);//if user doesn't have the role add it to the user
-                        message = $"{developer.UserName} is added to the role {roleForUser}";
-                        return message;
-                    }
+                    await _userManager.DeleteAsync(user);
+                    projectManager.DailySalary = dailySalary;
+                    await _userManager.AddToRoleAsync(projectManager, roleForUser);
+                    message = $"{projectManager.UserName} is added to the role {roleForUser}";
                     return message;
                 }
-                else
+                if (roleForUser == "Developer")
                 {
-                    message = $"{User.UserName} is already in role {roleForUser}";
+                    Developer developer = new Developer(user);
+                    _db.Users.Add(developer);
+                    if (developer.DailySalary != 0)
+                    {
+                        await _userManager.AddToRoleAsync(developer, "Project Manager");
+                    }
+                    await _userManager.DeleteAsync(user);
+                    developer.DailySalary = dailySalary;
+                    await _userManager.AddToRoleAsync(developer, roleForUser);
+                    message = $"{developer.UserName} is added to the role {roleForUser}";
                     return message;
                 }
+                return message;
             }
             else
             {
