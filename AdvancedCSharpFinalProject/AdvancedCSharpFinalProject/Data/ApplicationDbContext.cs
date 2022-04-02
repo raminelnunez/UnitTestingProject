@@ -10,6 +10,10 @@ namespace AdvancedCSharpFinalProject.Data
             : base(options)
         {
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
         public DbSet<ProjectManager> ProjectManager { get; set; }
         public DbSet<Developer> Developer { get; set; }
     }
