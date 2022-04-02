@@ -2,6 +2,7 @@
 {
     public class Project
     {
+        public int Id { get; set; }
         public bool isCompleted { get; set; }
         public enum Priority { Low, Medium, High}
         public int CompletionPercentage { get; set; }
