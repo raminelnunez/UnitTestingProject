@@ -42,7 +42,7 @@ namespace AdvancedCSharpFinalProject.Controllers
             ViewBag.rolesList = new SelectList(_db.Roles.ToList(), "Name", "Name");
             return View();
         }
-        public async Task<IActionResult> SelectBudgetOrDailySalary(string? userId, string? roleForUser)
+        public async Task<IActionResult> SelectDailySalary(string? userId, string? roleForUser)
         {
             if(userId != null && roleForUser != null)
             {
@@ -66,14 +66,14 @@ namespace AdvancedCSharpFinalProject.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> SelectBudgetOrDailySalary(string? userId, string? roleForUser, double budgetOrSalary)
+        public async Task<IActionResult> SelectDailySalary(string? userId, string? roleForUser, double dailySalary)
         {
             if (userId != null && roleForUser != null)
             {
                 try
                 {
                     UserManager userManager = new UserManager(_db, _userManager, _roleManager);
-                    string message = await userManager.AssignRoleToUser(userId, roleForUser, budgetOrSalary); // AssignRoleToUser method on UserManager Class
+                    string message = await userManager.AssignRoleToUser(userId, roleForUser, dailySalary); // AssignRoleToUser method on UserManager Class
                     ViewBag.message = message;
                     return View("MessageView");
                 }

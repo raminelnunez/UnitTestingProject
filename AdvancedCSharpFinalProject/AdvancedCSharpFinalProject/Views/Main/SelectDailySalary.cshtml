@@ -6,9 +6,9 @@
 
 @if(ViewBag.roleForUser == "Project Manager") 
 {
-    <form method="post" asp-action="SelectBudgetOrDailySalary">
-        <h2>Select Budget For Project Manager</h2>
-        <input type=number min=1 placeholder="Budget" name="budgetOrSalary"/>
+    <form method="post" asp-action="SelectDailySalary">
+        <h2>Select Daily Salary For Project Manager</h2>
+        <input type=number min=1 placeholder="Budget" name="dailySalary"/>
         <input type="hidden" name="userId" value="@ViewBag.userId"/>
         <input type="hidden" name="roleForUser" value="@ViewBag.roleForUser"/>
 
@@ -20,9 +20,9 @@
 }
 @if(ViewBag.roleForUser == "Developer")
 {
-    <form method="post" asp-action="SelectBudgetOrDailySalary">
+    <form method="post" asp-action="SelectDailySalary">
         <h2>Select Daily Salary For Developer</h2>
-        <input type=number min=1 placeholder="Daily Salary" name="budgetOrSalary"/>
+        <input type=number min=1 placeholder="Daily Salary" name="dailySalary"/>
         <input type="hidden" name="userId" value="@ViewBag.userId"/>
         <input type="hidden" name="roleForUser" value="@ViewBag.roleForUser"/>
 

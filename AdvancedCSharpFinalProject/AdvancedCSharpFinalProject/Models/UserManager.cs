@@ -16,7 +16,7 @@ namespace AdvancedCSharpFinalProject.Models
             List<string> roleNames = _db.Roles.Where(roles => allRoleIdsOfUser.Contains(roles.Id)).Select(roles => roles.Name).ToList();
             return roleNames;
         }
-        public async Task<string> AssignRoleToUser(string userId, string roleForUser, double budgetOrSalary) //does not return anything
+        public async Task<string> AssignRoleToUser(string userId, string roleForUser, double dailySalary) //does not return anything
         {
             string message= "";
             ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database
@@ -32,7 +32,7 @@ namespace AdvancedCSharpFinalProject.Models
                         await _userManager.AddToRoleAsync(projectManager, "Developer");
                     }
                     await _userManager.DeleteAsync(user);
-                    projectManager.Budget = budgetOrSalary;
+                    projectManager.DailySalary = dailySalary;
                     await _userManager.AddToRoleAsync(projectManager, roleForUser);
                     message = $"{projectManager.UserName} is added to the role {roleForUser}";
                     return message;
@@ -41,12 +41,12 @@ namespace AdvancedCSharpFinalProject.Models
                 {
                     Developer developer = new Developer(user);
                     _db.Users.Add(developer);
-                    if (developer.Budget != 0)
+                    if (developer.DailySalary != 0)
                     {
                         await _userManager.AddToRoleAsync(developer, "Project Manager");
                     }
                     await _userManager.DeleteAsync(user);
-                    developer.DailySalary = budgetOrSalary;
+                    developer.DailySalary = dailySalary;
                     await _userManager.AddToRoleAsync(developer, roleForUser);
                     message = $"{developer.UserName} is added to the role {roleForUser}";
                     return message;
