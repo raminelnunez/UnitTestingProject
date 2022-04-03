@@ -16,6 +16,19 @@
         {
             ProjectTasks.ToList().ForEach(projectTask => ActualBudget += projectTask.Developer.DailySalary);
         }
+        public Project(ProjectManager projectManager, double assignedBudget, Priority priority, DateTime deadline)
+        {
+            ProjectManager = projectManager;
+            ProjectManagerId = projectManager.Id;
+            AssignedBudget = assignedBudget;
+            Priority = priority;
+            Deadline = deadline;
+            ProjectTasks = new HashSet<ProjectTask>();
+        }
+        public Project()
+        {
+
+        }
     }
 }
 
