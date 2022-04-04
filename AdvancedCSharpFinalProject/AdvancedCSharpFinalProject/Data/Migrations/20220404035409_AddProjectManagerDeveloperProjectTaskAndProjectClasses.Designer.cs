@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedCSharpFinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220404005955_AddTitleToProjectClass")]
-    partial class AddTitleToProjectClass
+    [Migration("20220404035409_AddProjectManagerDeveloperProjectTaskAndProjectClasses")]
+    partial class AddProjectManagerDeveloperProjectTaskAndProjectClasses
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -118,6 +118,9 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DeveloperId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
@@ -134,6 +137,8 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DeveloperId");
 
                     b.HasIndex("ProjectManagerId");
 
@@ -165,6 +170,9 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ProjectManagerId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -174,6 +182,8 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.HasIndex("DeveloperId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("ProjectManagerId");
 
                     b.ToTable("ProjectTask");
                 });
@@ -331,6 +341,10 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
 
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
                 {
+                    b.HasOne("AdvancedCSharpFinalProject.Models.Developer", null)
+                        .WithMany("Projects")
+                        .HasForeignKey("DeveloperId");
+
                     b.HasOne("AdvancedCSharpFinalProject.Models.ProjectManager", "ProjectManager")
                         .WithMany("Projects")
                         .HasForeignKey("ProjectManagerId")
@@ -353,6 +367,10 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("AdvancedCSharpFinalProject.Models.ProjectManager", null)
+                        .WithMany("ProjectTasks")
+                        .HasForeignKey("ProjectManagerId");
 
                     b.Navigation("Developer");
 
@@ -418,10 +436,14 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Developer", b =>
                 {
                     b.Navigation("ProjectTasks");
+
+                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectManager", b =>
                 {
+                    b.Navigation("ProjectTasks");
+
                     b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618

@@ -25,30 +25,24 @@ namespace AdvancedCSharpFinalProject.Models
             {
                 if (roleForUser == "Project Manager")
                 {
-                    ProjectManager projectManager = new ProjectManager(user);
-                    _db.Users.Add(projectManager);
-                    if (projectManager.DailySalary != 0)
+                    if (user.DailySalary != 0)
                     {
-                        await _userManager.AddToRoleAsync(projectManager, "Developer");
+                        await _userManager.AddToRoleAsync(user, "Developer");
                     }
-                    await _userManager.DeleteAsync(user);
-                    projectManager.DailySalary = dailySalary;
-                    await _userManager.AddToRoleAsync(projectManager, roleForUser);
-                    message = $"{projectManager.UserName} is added to the role {roleForUser}";
+                    user.DailySalary = dailySalary;
+                    await _userManager.AddToRoleAsync(user, roleForUser);
+                    message = $"{user.UserName} is added to the role {roleForUser}";
                     return message;
                 }
                 if (roleForUser == "Developer")
                 {
-                    Developer developer = new Developer(user);
-                    _db.Users.Add(developer);
-                    if (developer.DailySalary != 0)
+                    if (user.DailySalary != 0)
                     {
-                        await _userManager.AddToRoleAsync(developer, "Project Manager");
+                        await _userManager.AddToRoleAsync(user, "Project Manager");
                     }
-                    await _userManager.DeleteAsync(user);
-                    developer.DailySalary = dailySalary;
-                    await _userManager.AddToRoleAsync(developer, roleForUser);
-                    message = $"{developer.UserName} is added to the role {roleForUser}";
+                    user.DailySalary = dailySalary;
+                    await _userManager.AddToRoleAsync(user, roleForUser);
+                    message = $"{user.UserName} is added to the role {roleForUser}";
                     return message;
                 }
                 return message;

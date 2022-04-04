@@ -2,9 +2,9 @@
 {
     public class Developer : ApplicationUser //inherits from ApplicationUser
     {
-        public ICollection<ProjectTask> ProjectTasks { get; set; }
         public Developer(ApplicationUser user)
         {
+            Id = user.Id;
             Email = user.Email;
             NormalizedEmail = user.NormalizedEmail;
             UserName = user.UserName;

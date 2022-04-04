@@ -2,9 +2,9 @@
 {
     public class ProjectManager : ApplicationUser
     {
-        public ICollection<Project> Projects { get; set;}
         public ProjectManager(ApplicationUser user)
         {
+            Id = user.Id;
             Email = user.Email;
             NormalizedEmail = user.NormalizedEmail;
             UserName = user.UserName;

@@ -141,9 +141,11 @@ namespace AdvancedCSharpFinalProject.Controllers
             //add them manually
             ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
             ProjectManager projectManager = new ProjectManager(user);
+
             newProject.ProjectManager = projectManager;
             newProject.ProjectManagerId = projectManager.Id;
-            projectManager.Projects.Add(newProject);
+            user.Projects.Add(newProject);
+
             //Properties we need in order to create Project
             newProject.Priority = Priority.Low;
             newProject.Deadline = DateTime.Now;
@@ -155,7 +157,7 @@ namespace AdvancedCSharpFinalProject.Controllers
 
             if (TryValidateModel(newProject))
             {
-                await _userManager.UpdateAsync(projectManager);
+                await _userManager.UpdateAsync(user);
                 return View("Index");
             }
             return View();
