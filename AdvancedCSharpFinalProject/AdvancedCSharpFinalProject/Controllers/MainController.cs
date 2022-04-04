@@ -30,7 +30,7 @@ namespace AdvancedCSharpFinalProject.Controllers
             {
                 if ((bool)OrderByCompletion)
                 {
-                    ProjectTasks.OrderBy(t => t.)
+                    ProjectTasks = ProjectTasks.OrderBy(t => t.CompletionPercentage).ToList();
                 }
             }
 
@@ -38,7 +38,7 @@ namespace AdvancedCSharpFinalProject.Controllers
             {
                 if ((bool)OrderByPriority)
                 {
-
+                    ProjectTasks = ProjectTasks.OrderBy(t => t.Priority).ToList();
                 }
             }
 
@@ -46,7 +46,7 @@ namespace AdvancedCSharpFinalProject.Controllers
             {
                 if ((bool)HideComplete)
                 {
-
+                    ProjectTasks = ProjectTasks.Where(t => t.IsCompleted == false).ToList();
                 }
             }
 
