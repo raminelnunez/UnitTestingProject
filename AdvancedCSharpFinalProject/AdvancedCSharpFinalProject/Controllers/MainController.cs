@@ -116,10 +116,28 @@ namespace AdvancedCSharpFinalProject.Controllers
             }
 
         }
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult AddANewProject()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddANewProject(string title)
+        {
+            return View();
+        }
     }
 }
 
 /*
 Create a User Manager class that has functions to manage users and roles 
 (Get all roles for a user, assign roles to users, check if a user in a role)...etc
+
+Create a ProjectHelper class that contains functions to add, delete, update projects, 
+along with any other helper functions. 
+Those functions can only be accessed by project managers.
+
+A Project manager will have a dashboard page which shows all the projects with their related tasks 
+and assigned developers, the projects with high priorities appear first.
  */
