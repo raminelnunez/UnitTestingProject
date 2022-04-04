@@ -21,9 +21,36 @@ namespace AdvancedCSharpFinalProject.Controllers
             _roleManager = roleManager;
         }
 
-        public IActionResult ViewProject(int ProjectId)
+        public IActionResult ViewProject(int ProjectId, bool? OrderByCompletion, bool? OrderByPriority, bool? HideComplete)
         {
-            Project Project = _db.Project.Include(p => p.ProjectTasks).ThenInclude(t => t.Developer).ThenInclude(d => d.Id).First(p => p.Id == ProjectId);
+            Project Project = _db.Project.First(p => p.Id == ProjectId);
+            List<ProjectTask> ProjectTasks = _db.ProjectTask.Include(t => t.Developer).ThenInclude(d => d.UserName).Where(t => t.ProjectId == ProjectId).ToList();
+
+            if (OrderByCompletion != null)
+            {
+                if ((bool)OrderByCompletion)
+                {
+                    ProjectTasks.OrderBy(t => t.)
+                }
+            }
+
+            if (OrderByPriority != null)
+            {
+                if ((bool)OrderByPriority)
+                {
+
+                }
+            }
+
+            if (HideComplete != null)
+            {
+                if ((bool)HideComplete)
+                {
+
+                }
+            }
+
+            Project.ProjectTasks = ProjectTasks;
             return View(Project);
         }
 
