@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace AdvancedCSharpFinalProject.Controllers
 {
@@ -17,6 +19,22 @@ namespace AdvancedCSharpFinalProject.Controllers
             _db = Db;
             _userManager = userManager;
             _roleManager = roleManager;
+        }
+
+        public IActionResult ViewProject(int ProjectId)
+        {
+            Project Project = _db.Project.Include(p => p.ProjectTasks).ThenInclude(t => t.Developer).ThenInclude(d => d.Id).First(p => p.Id == ProjectId);
+            return View(Project);
+        }
+
+        public IActionResult CreateTask(int ProjectId)
+        {
+
+        }
+        public IActionResult ViewAllProjects()
+        {
+            List<Project> Projects = _db.Project.ToList();
+            return View(Projects);
         }
         public IActionResult Index()
         {

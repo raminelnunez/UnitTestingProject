@@ -5,12 +5,22 @@
         public int Id { get; set; }
         public Project Project { get; set; }
         public int ProjectId { get; set; }
-        public Developer Developer { get; set; }
-        public string DeveloperId { get; set; }
+        public Developer? Developer { get; set; }
+        public string? DeveloperId { get; set; }
         public Priority Priority { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Deadline { get; set; }
+
+        public ProjectTask(Project project, string title, string description, DateTime deadline, Priority priority)
+        {
+            Project = project;
+            ProjectId = project.Id;
+            Title = title;
+            Description = description;
+            Deadline = deadline;
+            Priority = priority;
+        }
 
         public ProjectTask(Project project, Developer developer, string title, string description, DateTime deadline, Priority priority)
         {
