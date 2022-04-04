@@ -122,14 +122,9 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddANewProject([Bind("Title")] Project newProject)//Bind properties that the form will provide you (in this case) Title
+        public async Task<IActionResult> AddANewProject([Bind("Title, AssignedBudget, Deadline, Priority")] Project newProject)//Bind properties that the form will provide you
         {
             //clear validation for properties you need but will not get from the form
-
-            ModelState.ClearValidationState("AssignedBudget");//will be added from the form
-            ModelState.ClearValidationState("Deadline");//will be added from the form
-            ModelState.ClearValidationState("Priority");//will be added from the form
-
             ModelState.ClearValidationState("ProjectManager");
             ModelState.ClearValidationState("ProjectManagerId");
             ModelState.ClearValidationState("ActualBudget");//we need to add ourselves
@@ -139,6 +134,7 @@ namespace AdvancedCSharpFinalProject.Controllers
 
 
             //add them manually
+            //Properties we need in order to create Project
             ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
             ProjectManager projectManager = new ProjectManager(user);
 
@@ -146,14 +142,10 @@ namespace AdvancedCSharpFinalProject.Controllers
             newProject.ProjectManagerId = projectManager.Id;
             user.Projects.Add(newProject);
 
-            //Properties we need in order to create Project
-            newProject.Priority = Priority.Low;
-            newProject.Deadline = DateTime.Now;
-            newProject.AssignedBudget = 134;
             newProject.ProjectTasks = new HashSet<ProjectTask>();
             newProject.IsCompleted = false;
-            newProject.CompletionPercentage = 12;
-            newProject.ActualBudget = 123;
+            newProject.CompletionPercentage = 0;
+            newProject.ActualBudget = 0;
 
             if (TryValidateModel(newProject))
             {

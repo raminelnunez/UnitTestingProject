@@ -4,13 +4,24 @@
 @{
 }
 @model Project
-
+@{
+    int year = DateTime.Now.Year;
+    int month = DateTime.Now.Month;
+    int day = DateTime.Now.Day;
+    //string date = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}";
+    string date = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}-{(day < 10 ? "0"+day.ToString() : day.ToString())}";
+    date = date;
+    //"2019-02-18"
+}
 <h1>Make Your Project</h1>
 
 <form method="post" asp-action="AddANewProject">
     <div>
-            <input type="text" asp-for="Title"/>
-            <span asp-validation-for="Title" class="text-danger"></span>
+        <input type="text" asp-for="Title"/>
+        <select asp-items="@Html.GetEnumSelectList<Priority>()" asp-for="Priority"></select>
+        <input type="number" min="1" asp-for="AssignedBudget" placeholder="Estimated Budget"/>
+        <input type="date" min="@date" asp-for="Deadline"/>
+        <span asp-validation-for="Title" class="text-danger"></span>
     </div>
     <button type="submit">Create</button>
 </form>
