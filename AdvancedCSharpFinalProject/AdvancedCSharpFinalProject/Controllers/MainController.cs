@@ -12,7 +12,6 @@ namespace AdvancedCSharpFinalProject.Controllers
         private ApplicationDbContext _db { get; set; }
         private UserManager<ApplicationUser> _userManager { get; set; }
         private RoleManager<IdentityRole> _roleManager { get; set; }
-
         public MainController(ApplicationDbContext Db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _db = Db;
@@ -123,8 +122,42 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddANewProject(string title)
+        public async Task<IActionResult> AddANewProject([Bind("Title")] Project newProject)//Bind properties that the form will provide you (in this case) Title
         {
+            //clear validation for properties you need but will not get from the form
+
+            ModelState.ClearValidationState("AssignedBudget");//will be added from the form
+            ModelState.ClearValidationState("Deadline");//will be added from the form
+            ModelState.ClearValidationState("Priority");//will be added from the form
+
+            ModelState.ClearValidationState("ProjectManager");
+            ModelState.ClearValidationState("ProjectManagerId");
+            ModelState.ClearValidationState("ActualBudget");//we need to add ourselves
+            ModelState.ClearValidationState("IsCompleted");//we need to add ourselves
+            ModelState.ClearValidationState("CompletionPercentage");// we need to add ourselves
+            ModelState.ClearValidationState("ProjectTasks");//ProjectTasks needs to be instantiated
+
+
+            //add them manually
+            ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+            ProjectManager projectManager = new ProjectManager(user);
+            newProject.ProjectManager = projectManager;
+            newProject.ProjectManagerId = projectManager.Id;
+            projectManager.Projects.Add(newProject);
+            //Properties we need in order to create Project
+            newProject.Priority = Priority.Low;
+            newProject.Deadline = DateTime.Now;
+            newProject.AssignedBudget = 134;
+            newProject.ProjectTasks = new HashSet<ProjectTask>();
+            newProject.IsCompleted = false;
+            newProject.CompletionPercentage = 12;
+            newProject.ActualBudget = 123;
+
+            if (TryValidateModel(newProject))
+            {
+                await _userManager.UpdateAsync(projectManager);
+                return View("Index");
+            }
             return View();
         }
     }

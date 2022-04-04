@@ -8,10 +8,15 @@
 <h1>Make Your Project</h1>
 
 <form method="post" asp-action="AddANewProject">
-
+    <div>
+            <input type="text" asp-for="Title"/>
+            <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <button type="submit">Create</button>
 </form>
 
 @section Scripts {
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+@*   @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}*@
+   <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }
