@@ -20,16 +20,25 @@
 <hr />
 
 <ul>
+    @if (Model.ProjectTasks.Count() > 0)
+    {
     @foreach(ProjectTask task in Model.ProjectTasks)
     {
         <li>
             <a asp-action="ViewTask" asp-route-TaskId=@task.Id>@task.Title</a>
             <ul>
                 <li>Developer: @task.Developer.UserName</li>
-                <li></li>
-                <li></li>
+                <li>Deadline: @task.Deadline</li>
+                <li>Priority: @task.Priority</li>
+                <li>Completion: @task.CompletionPercentage / 100</li>
             </ul>
         </li>
-        
+    }    
     }
+    
 </ul>
+
+<hr />
+
+<a asp-action="CreateTask" asp-route-ProjectId=@Model.Id>Create Task</a>
+

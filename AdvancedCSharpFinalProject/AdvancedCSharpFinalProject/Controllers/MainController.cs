@@ -24,7 +24,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         public IActionResult ViewProject(int ProjectId, bool? OrderByCompletion, bool? OrderByPriority, bool? HideComplete)
         {
             Project Project = _db.Project.First(p => p.Id == ProjectId);
-            List<ProjectTask> ProjectTasks = _db.ProjectTask.Include(t => t.Developer).ThenInclude(d => d.UserName).Where(t => t.ProjectId == ProjectId).ToList();
+            List<ProjectTask>? ProjectTasks = _db.ProjectTask.Include(t => t.Developer).ThenInclude(d => d.UserName).Where(t => t.ProjectId == ProjectId).ToList();
 
             if (OrderByCompletion != null)
             {
@@ -56,7 +56,8 @@ namespace AdvancedCSharpFinalProject.Controllers
 
         public IActionResult CreateTask(int ProjectId)
         {
-
+            // work in progress
+            return View(ProjectId);
         }
         public IActionResult ViewAllProjects()
         {
