@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace AdvancedCSharpFinalProject.Controllers
 {
@@ -17,6 +19,50 @@ namespace AdvancedCSharpFinalProject.Controllers
             _db = Db;
             _userManager = userManager;
             _roleManager = roleManager;
+        }
+
+        public IActionResult ViewProject(int ProjectId, bool? OrderByCompletion, bool? OrderByPriority, bool? HideComplete)
+        {
+            Project Project = _db.Project.First(p => p.Id == ProjectId);
+            List<ProjectTask>? ProjectTasks = _db.ProjectTask.Include(t => t.Developer).ThenInclude(d => d.UserName).Where(t => t.ProjectId == ProjectId).ToList();
+
+            if (OrderByCompletion != null)
+            {
+                if ((bool)OrderByCompletion)
+                {
+                    ProjectTasks = ProjectTasks.OrderBy(t => t.CompletionPercentage).ToList();
+                }
+            }
+
+            if (OrderByPriority != null)
+            {
+                if ((bool)OrderByPriority)
+                {
+                    ProjectTasks = ProjectTasks.OrderBy(t => t.Priority).ToList();
+                }
+            }
+
+            if (HideComplete != null)
+            {
+                if ((bool)HideComplete)
+                {
+                    ProjectTasks = ProjectTasks.Where(t => t.IsCompleted == false).ToList();
+                }
+            }
+
+            Project.ProjectTasks = ProjectTasks;
+            return View(Project);
+        }
+
+        public IActionResult CreateTask(int ProjectId)
+        {
+            // work in progress
+            return View(ProjectId);
+        }
+        public IActionResult ViewAllProjects()
+        {
+            List<Project> Projects = _db.Project.ToList();
+            return View(Projects);
         }
         public IActionResult Index()
         {
