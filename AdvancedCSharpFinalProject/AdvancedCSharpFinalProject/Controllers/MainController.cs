@@ -193,6 +193,10 @@ namespace AdvancedCSharpFinalProject.Controllers
             }
             return View();
         }
+        public IActionResult UpdateProject()
+        {
+            return View();
+        }
     }
 }
 
