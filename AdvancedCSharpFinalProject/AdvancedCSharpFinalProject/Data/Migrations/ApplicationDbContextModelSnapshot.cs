@@ -96,6 +96,96 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
                 });
 
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<double>("ActualBudget")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AssignedBudget")
+                        .HasColumnType("float");
+
+                    b.Property<float>("CompletionPercentage")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("Deadline")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeveloperId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProjectManagerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeveloperId");
+
+                    b.HasIndex("ProjectManagerId");
+
+                    b.ToTable("Project");
+                });
+
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Deadline")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeveloperId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProjectManagerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeveloperId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ProjectManagerId");
+
+                    b.ToTable("ProjectTask");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -247,6 +337,44 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.HasDiscriminator().HasValue("ProjectManager");
                 });
 
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
+                {
+                    b.HasOne("AdvancedCSharpFinalProject.Models.Developer", null)
+                        .WithMany("Projects")
+                        .HasForeignKey("DeveloperId");
+
+                    b.HasOne("AdvancedCSharpFinalProject.Models.ProjectManager", "ProjectManager")
+                        .WithMany("Projects")
+                        .HasForeignKey("ProjectManagerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProjectManager");
+                });
+
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectTask", b =>
+                {
+                    b.HasOne("AdvancedCSharpFinalProject.Models.Developer", "Developer")
+                        .WithMany("ProjectTasks")
+                        .HasForeignKey("DeveloperId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AdvancedCSharpFinalProject.Models.Project", "Project")
+                        .WithMany("ProjectTasks")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("AdvancedCSharpFinalProject.Models.ProjectManager", null)
+                        .WithMany("ProjectTasks")
+                        .HasForeignKey("ProjectManagerId");
+
+                    b.Navigation("Developer");
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -296,6 +424,25 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
+                {
+                    b.Navigation("ProjectTasks");
+                });
+
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Developer", b =>
+                {
+                    b.Navigation("ProjectTasks");
+
+                    b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectManager", b =>
+                {
+                    b.Navigation("ProjectTasks");
+
+                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }

@@ -4,6 +4,7 @@
     {
         public ProjectManager(ApplicationUser user)
         {
+            Id = user.Id;
             Email = user.Email;
             NormalizedEmail = user.NormalizedEmail;
             UserName = user.UserName;
@@ -11,6 +12,8 @@
             EmailConfirmed = true;
             PasswordHash = user.PasswordHash;
             DailySalary = user.DailySalary;
+
+            Projects = new HashSet<Project>();
         }
         public ProjectManager()
         {

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace AdvancedCSharpFinalProject.Controllers
 {
@@ -12,12 +14,55 @@ namespace AdvancedCSharpFinalProject.Controllers
         private ApplicationDbContext _db { get; set; }
         private UserManager<ApplicationUser> _userManager { get; set; }
         private RoleManager<IdentityRole> _roleManager { get; set; }
-
         public MainController(ApplicationDbContext Db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _db = Db;
             _userManager = userManager;
             _roleManager = roleManager;
+        }
+
+        public IActionResult ViewProject(int ProjectId, bool? OrderByCompletion, bool? OrderByPriority, bool? HideComplete)
+        {
+            Project Project = _db.Project.First(p => p.Id == ProjectId);
+            List<ProjectTask>? ProjectTasks = _db.ProjectTask.Include(t => t.Developer).ThenInclude(d => d.UserName).Where(t => t.ProjectId == ProjectId).ToList();
+
+            if (OrderByCompletion != null)
+            {
+                if ((bool)OrderByCompletion)
+                {
+                    ProjectTasks = ProjectTasks.OrderBy(t => t.CompletionPercentage).ToList();
+                }
+            }
+
+            if (OrderByPriority != null)
+            {
+                if ((bool)OrderByPriority)
+                {
+                    ProjectTasks = ProjectTasks.OrderBy(t => t.Priority).ToList();
+                }
+            }
+
+            if (HideComplete != null)
+            {
+                if ((bool)HideComplete)
+                {
+                    ProjectTasks = ProjectTasks.Where(t => t.IsCompleted == false).ToList();
+                }
+            }
+
+            Project.ProjectTasks = ProjectTasks;
+            return View(Project);
+        }
+
+        public IActionResult CreateTask(int ProjectId)
+        {
+            // work in progress
+            return View(ProjectId);
+        }
+        public IActionResult ViewAllProjects()
+        {
+            List<Project> Projects = _db.Project.ToList();
+            return View(Projects);
         }
         public IActionResult Index()
         {
@@ -116,10 +161,56 @@ namespace AdvancedCSharpFinalProject.Controllers
             }
 
         }
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult AddANewProject()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddANewProject([Bind("Title, AssignedBudget, Deadline, Priority")] Project newProject)//Bind properties that the form will provide you
+        {
+            //clear validation for properties you need but will not get from the form
+            ModelState.ClearValidationState("ProjectManager");
+            ModelState.ClearValidationState("ProjectManagerId");
+            ModelState.ClearValidationState("ActualBudget");//we need to add ourselves
+            ModelState.ClearValidationState("IsCompleted");//we need to add ourselves
+            ModelState.ClearValidationState("CompletionPercentage");// we need to add ourselves
+            ModelState.ClearValidationState("ProjectTasks");//ProjectTasks needs to be instantiated
+
+
+            //add them manually
+            //Properties we need in order to create Project
+            ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+            ProjectManager projectManager = new ProjectManager(user);
+
+            newProject.ProjectManager = projectManager;
+            newProject.ProjectManagerId = projectManager.Id;
+            user.Projects.Add(newProject);
+
+            newProject.ProjectTasks = new HashSet<ProjectTask>();
+            newProject.IsCompleted = false;
+            newProject.CompletionPercentage = 0;
+            newProject.ActualBudget = 0;
+
+            if (TryValidateModel(newProject))
+            {
+                await _userManager.UpdateAsync(user);
+                return View("Index");
+            }
+            return View();
+        }
     }
 }
 
 /*
 Create a User Manager class that has functions to manage users and roles 
 (Get all roles for a user, assign roles to users, check if a user in a role)...etc
+
+Create a ProjectHelper class that contains functions to add, delete, update projects, 
+along with any other helper functions. 
+Those functions can only be accessed by project managers.
+
+A Project manager will have a dashboard page which shows all the projects with their related tasks 
+and assigned developers, the projects with high priorities appear first.
  */
