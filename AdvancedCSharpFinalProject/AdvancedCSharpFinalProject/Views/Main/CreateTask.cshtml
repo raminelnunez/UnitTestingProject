@@ -1,7 +1,21 @@
-﻿@*
+﻿@using AdvancedCSharpFinalProject.Models
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
 @model int
-
+   
+<h1>Create Task</h1>
+<form method="post" action="CreateTask">
+    <input type="hidden" name="ProjectId" value=@Model/>
+    <input type="text" name="title" value="Title">
+    <input type="text" name="description" value="Description">
+    <input type="date" name="deadline" value="">
+    <select id="priority" name="priority">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+    </select>
+    <input type="submit" value="Submit">
+</form>
