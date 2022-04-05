@@ -181,21 +181,14 @@ namespace AdvancedCSharpFinalProject.Controllers
 
             //add them manually
             //Properties we need in order to create Project
-            ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
-            ProjectManager projectManager = new ProjectManager(user);
+            ApplicationUser projectManager = await _userManager.FindByNameAsync(User.Identity.Name);
 
-            newProject.ProjectManager = projectManager;
-            newProject.ProjectManagerId = projectManager.Id;
-            user.Projects.Add(newProject);
-
-            newProject.ProjectTasks = new HashSet<ProjectTask>();
-            newProject.IsCompleted = false;
-            newProject.CompletionPercentage = 0;
-            newProject.ActualBudget = 0;
+            ProjectHelper projectHelper = new ProjectHelper(_userManager, projectManager);
+            newProject = projectHelper.AddProject(newProject);
 
             if (TryValidateModel(newProject))
             {
-                await _userManager.UpdateAsync(user);
+                await _userManager.UpdateAsync(projectManager);
                 return View("Index");
             }
             return View();
