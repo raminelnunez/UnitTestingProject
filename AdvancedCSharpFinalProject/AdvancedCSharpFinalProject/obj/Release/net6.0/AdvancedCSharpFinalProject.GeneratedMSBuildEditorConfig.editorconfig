@@ -8,11 +8,11 @@ build_property.PlatformNeutralAssembly =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AdvancedCSharpFinalProject
 build_property.RootNamespace = AdvancedCSharpFinalProject
-build_property.ProjectDir = C:\Users\Raminel\source\repos\FinalProjectSD340\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\
+build_property.ProjectDir = C:\Users\Raminel\Source\Repos\FinalProjectSD340\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Raminel\source\repos\FinalProjectSD340\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject
+build_property.MSBuildProjectDirectory = C:\Users\Raminel\Source\Repos\FinalProjectSD340\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject
 build_property._RazorSourceGeneratorDebug = 
 
 [C:/Users/Raminel/source/repos/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Areas/Identity/Pages/_ViewStart.cshtml]
