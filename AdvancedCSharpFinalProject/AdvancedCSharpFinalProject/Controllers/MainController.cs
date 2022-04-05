@@ -21,7 +21,6 @@ namespace AdvancedCSharpFinalProject.Controllers
             _roleManager = roleManager;
         }
 
-        int GITHUBTEST = 100;
         public IActionResult ViewProject(int ProjectId, bool? OrderByCompletion, bool? OrderByPriority, bool? HideComplete)
         {
             Project Project = _db.Project.First(p => p.Id == ProjectId);
