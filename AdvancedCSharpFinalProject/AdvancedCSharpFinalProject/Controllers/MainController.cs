@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace AdvancedCSharpFinalProject.Controllers
 {
+    [Authorize]
     public class MainController : Controller
     {
         private ApplicationDbContext _db { get; set; }
@@ -59,16 +60,27 @@ namespace AdvancedCSharpFinalProject.Controllers
             // work in progress
             return View(ProjectId);
         }
+        [Authorize(Roles ="Project Manager")]
         public IActionResult ViewAllProjects()
         {
-            List<Project> Projects = _db.Project.ToList();
+            List<Project> Projects = _db.Project.Include(project => project.ProjectManager).ToList();
             return View(Projects);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+            List<string> roleNamesOfCurrentUser = userManager.GetAllRolesOfUser(user.Id);// GetAllRolesOfUser method on UserManager Class
+            if(roleNamesOfCurrentUser.Any())
+            {
+                ViewBag.NoRolesForCurrentUser = false;
+            }
+            else
+            {
+                ViewBag.NoRolesForCurrentUser = true; 
+            }
             return View();
         }
-        [Authorize]
         public IActionResult GetAllRolesForAUser(string? userId)
         {
             ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
