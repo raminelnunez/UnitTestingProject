@@ -54,10 +54,23 @@ namespace AdvancedCSharpFinalProject.Controllers
             return View(Project);
         }
 
+        [Authorize(Roles = "Project Manager")]
         public IActionResult CreateTask(int ProjectId)
         {
-            // work in progress
             return View(ProjectId);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult CreateTask(int projectId, string title, string description, DateTime deadline, Priority priority)
+        {
+            Project project = _db.Project.First(p => p.Id == projectId);
+            ProjectTask task = new ProjectTask();
+            task = new ProjectTask(project, title, description, deadline, priority);
+            TaskHelper taskHelper = new TaskHelper();
+            taskHelper.AddTask(_db, task);
+
+            return Redirect($"ViewProject?ProjectId={project.Id}");
         }
         public IActionResult ViewAllProjects()
         {
