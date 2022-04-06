@@ -63,7 +63,10 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles ="Project Manager")]
         public IActionResult ViewAllProjects()
         {
-            List<Project> Projects = _db.Project.Include(project => project.ProjectManager).ToList();
+            List<Project> Projects = _db.Project
+                .Include(project => project.ProjectManager)
+                .OrderByDescending(project => project.Priority)
+                .ToList();
             return View(Projects);
         }
         public async Task<IActionResult> Index()
@@ -107,6 +110,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                 if(await _userManager.IsInRoleAsync(user, roleForUser))
                 {
                     ViewBag.message = $"{user.UserName} is already in the role of {roleForUser}";
+                    ViewBag.action = "Index";
+                    ViewBag.actionMessage = "Back to Index";
                     return View("MessageView");
                 }
                 else
@@ -132,6 +137,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                     UserManager userManager = new UserManager(_db, _userManager, _roleManager);
                     string message = await userManager.AssignRoleToUser(userId, roleForUser, dailySalary); // AssignRoleToUser method on UserManager Class
                     ViewBag.message = message;
+                    ViewBag.action = "Index";
+                    ViewBag.actionMessage = "Back to Index";
                     return View("MessageView");
                 }
                 catch (Exception ex)
@@ -160,6 +167,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                     UserManager userManager = new UserManager(_db, _userManager, _roleManager);
                     string message = await userManager.CheckIfAUserIsInARole(userId, roleToCheck);
                     ViewBag.message = message;
+                    ViewBag.action = "Index";
+                    ViewBag.actionMessage = "Back to Index";
                     return View("MessageView");
                 }
                 catch(Exception ex)
@@ -240,8 +249,11 @@ namespace AdvancedCSharpFinalProject.Controllers
                     project.AssignedBudget = updatedProject.AssignedBudget;
                     project.Deadline = updatedProject.Deadline;
                     project.IsCompleted = updatedProject.IsCompleted;
+                    project.Priority = updatedProject.Priority;
                     _db.SaveChanges();
                     ViewBag.message = $"Project: {project.Title} has been updated";
+                    ViewBag.action = "ViewAllProjects";
+                    ViewBag.actionMessage = "Back to Projects";
                     return View("MessageView");
                 }
                 catch (Exception ex)
