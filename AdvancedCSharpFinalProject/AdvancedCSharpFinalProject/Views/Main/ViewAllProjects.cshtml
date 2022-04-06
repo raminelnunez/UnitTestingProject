@@ -40,36 +40,43 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var project in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => project.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsCompleted)
+                @if(project.IsCompleted == true)
+                {
+                    <div style="font-weight: bold;color: lime;">Complete</div>
+                }
+                else
+                {
+                    <div style="font-weight: bold;color: red;">Incomplete</div>
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Priority)
+                @Html.DisplayFor(modelItem => project.Priority)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CompletionPercentage)
+                @Html.DisplayFor(modelItem => project.CompletionPercentage)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Deadline)
+                @Html.DisplayFor(modelItem => project.Deadline)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AssignedBudget)
+                @Html.DisplayFor(modelItem => project.AssignedBudget)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ActualBudget)
+                @Html.DisplayFor(modelItem => project.ActualBudget)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ProjectManager.UserName)
+                @Html.DisplayFor(modelItem => project.ProjectManager.UserName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="UpdateProject" asp-route-projectId="@project.Id">Update</a> |
+                <a asp-action="Details" asp-route-id="@project.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@project.Id">Delete</a>
             </td>
         </tr>
 }

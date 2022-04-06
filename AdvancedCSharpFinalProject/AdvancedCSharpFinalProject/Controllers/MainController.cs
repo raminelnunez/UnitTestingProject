@@ -205,9 +205,54 @@ namespace AdvancedCSharpFinalProject.Controllers
             }
             return View();
         }
-        public IActionResult UpdateProject()
+        public IActionResult UpdateProject(int? projectId)
         {
-            return View();
+            if(projectId != null)
+            {
+                try
+                {
+                    Project projectToUpdate = _db.Project.First(project => project.Id == projectId);
+                    return View(projectToUpdate);
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("projectId is null");
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateProject(int? projectId, Project updatedProject)
+        {
+            if(projectId != null)
+            {
+                try
+                {
+                    Project project = _db.Project.First(project => project.Id == projectId);
+                    //values that can be changed
+                    project.Title = updatedProject.Title;
+                    project.CompletionPercentage = updatedProject.CompletionPercentage;
+                    project.ActualBudget = updatedProject.ActualBudget;
+                    project.AssignedBudget = updatedProject.AssignedBudget;
+                    project.Deadline = updatedProject.Deadline;
+                    project.IsCompleted = updatedProject.IsCompleted;
+                    _db.SaveChanges();
+                    ViewBag.message = $"Project: {project.Title} has been updated";
+                    return View("MessageView");
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("projectId is null");
+            }
         }
     }
 }
