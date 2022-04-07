@@ -5,12 +5,12 @@
 }
 @model Project
 @{
-    int year = DateTime.Now.Year;
+int year = DateTime.Now.Year;
     int month = DateTime.Now.Month;
     int day = DateTime.Now.Day;
-    //string date = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}";
-    string date = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}-{(day < 10 ? "0"+day.ToString() : day.ToString())}";
-    date = date;
+    int hour = DateTime.Now.Hour;
+    int minute = DateTime.Now.Minute;
+    string currentDate = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}-{(day < 10 ? "0"+day.ToString() : day.ToString())}T{(hour < 10 ? "0"+hour.ToString() : hour.ToString())}:{(minute < 10 ? "0"+minute.ToString() : minute.ToString())}";
     //"2019-02-18"
 }
 <h1>Make Your Project</h1>
@@ -20,7 +20,7 @@
         <input type="text" asp-for="Title"/>
         <select asp-items="@Html.GetEnumSelectList<Priority>()" asp-for="Priority"></select>
         <input type="number" min="1" asp-for="AssignedBudget" placeholder="Estimated Budget"/>
-        <input type="date" min="@date" asp-for="Deadline"/>
+        <input type="datetime-local" min="@currentDate" asp-for="Deadline"/>
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
     <button type="submit">Create</button>

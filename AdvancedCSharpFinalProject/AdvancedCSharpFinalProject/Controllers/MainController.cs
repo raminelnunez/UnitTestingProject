@@ -204,7 +204,7 @@ namespace AdvancedCSharpFinalProject.Controllers
             //Properties we need in order to create Project
             ApplicationUser projectManager = await _userManager.FindByNameAsync(User.Identity.Name);
 
-            ProjectHelper projectHelper = new ProjectHelper(_userManager, projectManager);
+            ProjectHelper projectHelper = new ProjectHelper(projectManager);
             newProject = projectHelper.AddProject(newProject);
 
             if (TryValidateModel(newProject))
@@ -242,14 +242,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                 try
                 {
                     Project project = _db.Project.First(project => project.Id == projectId);
-                    //values that can be changed
-                    project.Title = updatedProject.Title;
-                    project.CompletionPercentage = updatedProject.CompletionPercentage;
-                    project.ActualBudget = updatedProject.ActualBudget;
-                    project.AssignedBudget = updatedProject.AssignedBudget;
-                    project.Deadline = updatedProject.Deadline;
-                    project.IsCompleted = updatedProject.IsCompleted;
-                    project.Priority = updatedProject.Priority;
+                    ProjectHelper projectHelper = new ProjectHelper();
+                    projectHelper.UpdateProject(project, updatedProject);
                     _db.SaveChanges();
                     ViewBag.message = $"Project: {project.Title} has been updated";
                     ViewBag.action = "ViewAllProjects";
