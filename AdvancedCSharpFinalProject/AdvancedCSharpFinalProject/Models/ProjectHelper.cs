@@ -4,7 +4,6 @@ namespace AdvancedCSharpFinalProject.Models
 {
     public class ProjectHelper
     {
-        public UserManager<ApplicationUser> _userManager { get; set; }
         public ApplicationUser ProjectManager { get; set; }
         public Project AddProject(Project newProject)
         {
@@ -21,10 +20,24 @@ namespace AdvancedCSharpFinalProject.Models
 
             return newProject;
         }
-        public ProjectHelper(UserManager<ApplicationUser> userManager, ApplicationUser projectManager)
+        public void UpdateProject(Project project, Project updatedProject)
         {
-            _userManager = userManager;
+            //values that can be changed
+            project.Title = updatedProject.Title;
+            project.CompletionPercentage = updatedProject.CompletionPercentage;
+            project.ActualBudget = updatedProject.ActualBudget;
+            project.AssignedBudget = updatedProject.AssignedBudget;
+            project.Deadline = updatedProject.Deadline;
+            project.IsCompleted = updatedProject.IsCompleted;
+            project.Priority = updatedProject.Priority;
+        }
+        public ProjectHelper(ApplicationUser projectManager)
+        {
             ProjectManager = projectManager;
+        }
+        public ProjectHelper()
+        {
+
         }
     }
 }
