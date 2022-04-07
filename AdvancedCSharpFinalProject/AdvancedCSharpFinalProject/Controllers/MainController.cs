@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace AdvancedCSharpFinalProject.Controllers
 {
+    [Authorize]
     public class MainController : Controller
     {
         private ApplicationDbContext _db { get; set; }
@@ -74,14 +75,27 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         public IActionResult ViewAllProjects()
         {
-            List<Project> Projects = _db.Project.ToList();
+            List<Project> Projects = _db.Project
+                .Include(project => project.ProjectManager)
+                .OrderByDescending(project => project.Priority)
+                .ToList();
             return View(Projects);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+            List<string> roleNamesOfCurrentUser = userManager.GetAllRolesOfUser(user.Id);// GetAllRolesOfUser method on UserManager Class
+            if(roleNamesOfCurrentUser.Any())
+            {
+                ViewBag.NoRolesForCurrentUser = false;
+            }
+            else
+            {
+                ViewBag.NoRolesForCurrentUser = true; 
+            }
             return View();
         }
-        [Authorize]
         public IActionResult GetAllRolesForAUser(string? userId)
         {
             ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
@@ -108,6 +122,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                 if(await _userManager.IsInRoleAsync(user, roleForUser))
                 {
                     ViewBag.message = $"{user.UserName} is already in the role of {roleForUser}";
+                    ViewBag.action = "Index";
+                    ViewBag.actionMessage = "Back to Index";
                     return View("MessageView");
                 }
                 else
@@ -133,6 +149,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                     UserManager userManager = new UserManager(_db, _userManager, _roleManager);
                     string message = await userManager.AssignRoleToUser(userId, roleForUser, dailySalary); // AssignRoleToUser method on UserManager Class
                     ViewBag.message = message;
+                    ViewBag.action = "Index";
+                    ViewBag.actionMessage = "Back to Index";
                     return View("MessageView");
                 }
                 catch (Exception ex)
@@ -161,6 +179,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                     UserManager userManager = new UserManager(_db, _userManager, _roleManager);
                     string message = await userManager.CheckIfAUserIsInARole(userId, roleToCheck);
                     ViewBag.message = message;
+                    ViewBag.action = "Index";
+                    ViewBag.actionMessage = "Back to Index";
                     return View("MessageView");
                 }
                 catch(Exception ex)
@@ -196,15 +216,97 @@ namespace AdvancedCSharpFinalProject.Controllers
             //Properties we need in order to create Project
             ApplicationUser projectManager = await _userManager.FindByNameAsync(User.Identity.Name);
 
-            ProjectHelper projectHelper = new ProjectHelper(_userManager, projectManager);
+            ProjectHelper projectHelper = new ProjectHelper(projectManager);
             newProject = projectHelper.AddProject(newProject);
 
             if (TryValidateModel(newProject))
             {
                 await _userManager.UpdateAsync(projectManager);
-                return View("Index");
+                ViewBag.message = $"Project: <b style=\"color:purple\">{newProject.Title}</b> created";
+                ViewBag.action = "ViewAllProjects";
+                ViewBag.actionMessage = "Back to Projects";
+                return View("MessageView");
             }
             return View();
+        }
+        public IActionResult UpdateProject(int? projectId)
+        {
+            if(projectId != null)
+            {
+                try
+                {
+                    Project projectToUpdate = _db.Project.First(project => project.Id == projectId);
+                    return View(projectToUpdate);
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("projectId is null");
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateProject(int? projectId, Project updatedProject)
+        {
+            if(projectId != null)
+            {
+                try
+                {
+                    Project project = _db.Project.First(project => project.Id == projectId);
+                    ProjectHelper projectHelper = new ProjectHelper();
+                    projectHelper.UpdateProject(project, updatedProject);
+                    _db.SaveChanges();
+                    ViewBag.message = $"Project: <b style=\"color:purple\">{project.Title}</b> has been updated";
+                    ViewBag.action = "ViewAllProjects";
+                    ViewBag.actionMessage = "Back to Projects";
+                    return View("MessageView");
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("projectId is null");
+            }
+        }
+        public IActionResult DeleteWarning(int? projectId)
+        {
+            Project project = _db.Project.First(project => project.Id == projectId);
+            ViewBag.message = $"Project: <b style=\"color:purple\">{project.Title}</b> will be deleted permanently";
+            ViewBag.abortAction = "ViewAllProjects";
+            ViewBag.ProjectId = projectId;
+            return View();
+        }
+        public IActionResult DeleteProject(int? projectId)
+        {
+            if(projectId != null)
+            {
+                try
+                {
+                    Project projectToDelete = _db.Project.First(project => project.Id == projectId);
+                    ProjectHelper projectHelper = new ProjectHelper(_db);
+                    projectHelper.DeleteProject(projectToDelete);
+                    _db.SaveChanges();
+                    ViewBag.message = $"Project: <b style=\"color:purple\">{projectToDelete.Title}</b> has been deleted";
+                    ViewBag.action = "ViewAllProjects";
+                    ViewBag.actionMessage = "Back to Projects";
+                    return View("MessageView");
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("projectId is null");
+            }
         }
     }
 }

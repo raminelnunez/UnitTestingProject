@@ -1,0 +1,91 @@
+﻿@model IEnumerable<AdvancedCSharpFinalProject.Models.Project>
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>All Projects</h1>
+
+<p>
+    <a asp-action="AddANewProject">Create New</a>
+</p>
+@if(!Model.Any())
+{
+    <div>No Projects made yet</div>
+}else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCompleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompletionPercentage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Deadline)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AssignedBudget)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActualBudget)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectManager)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var project in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => project.Title)
+            </td>
+            <td>
+                @if(project.IsCompleted == true)
+                {
+                    <div style="font-weight: bold;color: lime;">Complete</div>
+                }
+                else
+                {
+                    <div style="font-weight: bold;color: red;">Incomplete</div>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => project.Priority)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => project.CompletionPercentage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => project.Deadline)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => project.AssignedBudget)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => project.ActualBudget)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => project.ProjectManager.UserName)
+            </td>
+            <td>
+                <a asp-action="UpdateProject" asp-route-projectId="@project.Id">Update</a> |
+                <a asp-action="Details" asp-route-id="@project.Id">Details</a> |
+                <a asp-action="DeleteWarning" asp-route-projectId="@project.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+}

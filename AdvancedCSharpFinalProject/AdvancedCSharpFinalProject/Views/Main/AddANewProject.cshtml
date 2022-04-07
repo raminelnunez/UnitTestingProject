@@ -5,29 +5,52 @@
 }
 @model Project
 @{
-    int year = DateTime.Now.Year;
+int year = DateTime.Now.Year;
     int month = DateTime.Now.Month;
     int day = DateTime.Now.Day;
-    //string date = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}";
-    string date = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}-{(day < 10 ? "0"+day.ToString() : day.ToString())}";
-    date = date;
+    int hour = DateTime.Now.Hour;
+    int minute = DateTime.Now.Minute;
+    string currentDate = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}-{(day < 10 ? "0"+day.ToString() : day.ToString())}T{(hour < 10 ? "0"+hour.ToString() : hour.ToString())}:{(minute < 10 ? "0"+minute.ToString() : minute.ToString())}";
     //"2019-02-18"
 }
 <h1>Make Your Project</h1>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-action="AddANewProject">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<form method="post" asp-action="AddANewProject">
-    <div>
-        <input type="text" asp-for="Title"/>
-        <select asp-items="@Html.GetEnumSelectList<Priority>()" asp-for="Priority"></select>
-        <input type="number" min="1" asp-for="AssignedBudget" placeholder="Estimated Budget"/>
-        <input type="date" min="@date" asp-for="Deadline"/>
-        <span asp-validation-for="Title" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Priority" class="control-label"></label>
+                <select asp-for="Priority" class="form-control" asp-items="@Html.GetEnumSelectList<Priority>()"></select>
+                <span asp-validation-for="Priority" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Deadline" class="control-label"></label>
+                <input type="datetime-local" min="@currentDate" asp-for="Deadline" class="form-control" />
+                <span asp-validation-for="Deadline" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AssignedBudget" class="control-label"></label>
+                <input asp-for="AssignedBudget" class="form-control" />
+                <span asp-validation-for="AssignedBudget" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" style="margin: 2rem 0rem 2rem 0rem;"/>
+            </div>
+        </form>
     </div>
-    <button type="submit">Create</button>
-</form>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
 
 @section Scripts {
-@*   @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}*@
    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

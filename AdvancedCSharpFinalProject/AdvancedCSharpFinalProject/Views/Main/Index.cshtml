@@ -3,7 +3,17 @@
 *@
 @{
 }
-<h3><a asp-controller="Main" asp-action="GetAllRolesForAUser">Get All Roles For A User</a></h3>
-<h3><a asp-controller="Main" asp-action="AssignRoleToUser">Assign Role To User</a></h3>
-<h3><a asp-controller="Main" asp-action="CheckIfAUserIsInARole">Check If A User Is In A Role</a></h3>
-<h3><a asp-controller="Main" asp-action="AddANewProject">Add A New Project</a></h3>
+
+@if(ViewBag.NoRolesForCurrentUser == true)
+{
+    <h3>Current logged in user is not in any roles: No feature to Access</h3>
+}
+else
+{
+   <h3><a asp-controller="Main" asp-action="GetAllRolesForAUser">Get All Roles For A User</a></h3>
+   <h3><a asp-controller="Main" asp-action="AssignRoleToUser">Assign Role To User</a></h3>
+   <h3><a asp-controller="Main" asp-action="CheckIfAUserIsInARole">Check If A User Is In A Role</a></h3>
+   <h3><a asp-controller="Main" asp-action="AddANewProject">Add A New Project</a></h3>
+   <h3><a asp-controller="Main" asp-action="ViewAllProjects">View All Projects</a></h3>
+}
+
