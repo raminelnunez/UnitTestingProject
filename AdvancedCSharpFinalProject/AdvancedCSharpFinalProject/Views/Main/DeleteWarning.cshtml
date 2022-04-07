@@ -1,0 +1,12 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h2 style="text-align: center;">@Html.Raw(ViewBag.message)</h2>
+
+<div style="display: flex;justify-content: space-evenly;margin-top: 2rem;">
+    <h3><a asp-action="DeleteProject" asp-route-projectId="@ViewBag.ProjectId">Yes, Delete this Project</a></h3>
+    <h3><a asp-action="@ViewBag.abortAction">No</a></h3>
+</div>
+
