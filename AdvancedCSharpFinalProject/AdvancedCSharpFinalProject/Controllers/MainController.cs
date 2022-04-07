@@ -210,7 +210,10 @@ namespace AdvancedCSharpFinalProject.Controllers
             if (TryValidateModel(newProject))
             {
                 await _userManager.UpdateAsync(projectManager);
-                return View("Index");
+                ViewBag.message = $"Project: <b style=\"color:purple\">{newProject.Title}</b> created";
+                ViewBag.action = "ViewAllProjects";
+                ViewBag.actionMessage = "Back to Projects";
+                return View("MessageView");
             }
             return View();
         }
@@ -245,12 +248,45 @@ namespace AdvancedCSharpFinalProject.Controllers
                     ProjectHelper projectHelper = new ProjectHelper();
                     projectHelper.UpdateProject(project, updatedProject);
                     _db.SaveChanges();
-                    ViewBag.message = $"Project: {project.Title} has been updated";
+                    ViewBag.message = $"Project: <b style=\"color:purple\">{project.Title}</b> has been updated";
                     ViewBag.action = "ViewAllProjects";
                     ViewBag.actionMessage = "Back to Projects";
                     return View("MessageView");
                 }
                 catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("projectId is null");
+            }
+        }
+        public IActionResult DeleteWarning(int? projectId)
+        {
+            Project project = _db.Project.First(project => project.Id == projectId);
+            ViewBag.message = $"Project: <b style=\"color:purple\">{project.Title}</b> will be deleted permanently";
+            ViewBag.abortAction = "ViewAllProjects";
+            ViewBag.ProjectId = projectId;
+            return View();
+        }
+        public IActionResult DeleteProject(int? projectId)
+        {
+            if(projectId != null)
+            {
+                try
+                {
+                    Project projectToDelete = _db.Project.First(project => project.Id == projectId);
+                    ProjectHelper projectHelper = new ProjectHelper(_db);
+                    projectHelper.DeleteProject(projectToDelete);
+                    _db.SaveChanges();
+                    ViewBag.message = $"Project: <b style=\"color:purple\">{projectToDelete.Title}</b> has been deleted";
+                    ViewBag.action = "ViewAllProjects";
+                    ViewBag.actionMessage = "Back to Projects";
+                    return View("MessageView");
+                }
+                catch(Exception ex)
                 {
                     return NotFound(ex.Message);
                 }
