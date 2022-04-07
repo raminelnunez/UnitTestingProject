@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AdvancedCSharpFinalProject.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace AdvancedCSharpFinalProject.Models
 {
     public class ProjectHelper
     {
+        public ApplicationDbContext db { get; set; }
         public ApplicationUser ProjectManager { get; set; }
         public Project AddProject(Project newProject)
         {
@@ -24,16 +26,39 @@ namespace AdvancedCSharpFinalProject.Models
         {
             //values that can be changed
             project.Title = updatedProject.Title;
-            project.CompletionPercentage = updatedProject.CompletionPercentage;
             project.ActualBudget = updatedProject.ActualBudget;
             project.AssignedBudget = updatedProject.AssignedBudget;
             project.Deadline = updatedProject.Deadline;
             project.IsCompleted = updatedProject.IsCompleted;
             project.Priority = updatedProject.Priority;
+            if(updatedProject.IsCompleted == true)
+            {
+                project.CompletionPercentage = 100;
+            }
+            else
+            {
+                project.CompletionPercentage = updatedProject.CompletionPercentage;
+            }
+            if(updatedProject.CompletionPercentage == 100)
+            {
+                project.IsCompleted = true;
+            }
+            else
+            {
+                project.IsCompleted = updatedProject.IsCompleted;
+            }
+        }
+        public void DeleteProject(Project projectToDelete)
+        {
+            db.Project.Remove(projectToDelete);
         }
         public ProjectHelper(ApplicationUser projectManager)
         {
             ProjectManager = projectManager;
+        }
+        public ProjectHelper(ApplicationDbContext _db)
+        {
+            db = _db;
         }
         public ProjectHelper()
         {
