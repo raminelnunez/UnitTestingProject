@@ -321,4 +321,8 @@ Those functions can only be accessed by project managers.
 
 A Project manager will have a dashboard page which shows all the projects with their related tasks 
 and assigned developers, the projects with high priorities appear first.
+
+Developers can view all their tasks (but can’t view other developers’ tasks), 
+also a developer can update a task to change the completed percentage of the task, or mark it totally completed, 
+when the task is marked completed, the developer can leave a comment to describe any notes or hints`.
  */
