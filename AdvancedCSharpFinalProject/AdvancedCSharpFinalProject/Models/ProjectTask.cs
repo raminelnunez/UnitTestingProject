@@ -24,7 +24,7 @@
             Priority = priority;
         }
 
-        public ProjectTask(Project project, Developer developer, string title, string description, DateTime deadline, Priority priority)
+        public ProjectTask(Project project, Developer? developer, string title, string description, DateTime deadline, Priority priority)
         {
             Project = project;
             ProjectId = project.Id;

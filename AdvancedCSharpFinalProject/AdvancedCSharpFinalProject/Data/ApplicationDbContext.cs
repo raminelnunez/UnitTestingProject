@@ -44,6 +44,7 @@ namespace AdvancedCSharpFinalProject.Data
             //breakTable: Note
 
         }
+
         public DbSet<Project> Project { get; set; }
         public DbSet<ProjectTask> ProjectTask { get; set; }
     }
