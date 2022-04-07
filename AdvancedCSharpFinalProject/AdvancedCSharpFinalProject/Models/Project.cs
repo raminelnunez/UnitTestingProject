@@ -6,12 +6,17 @@ namespace AdvancedCSharpFinalProject.Models
         public int Id { get; set; }
         [StringLength(200, MinimumLength = 3, ErrorMessage ="Title has to be more than 3 and less than 200 characters")]
         public string Title { get; set; }
+        [Display(Name ="Completion Status")]
         public bool IsCompleted { get; set; }
         public Priority Priority { get; set; }
+        [Display(Name = "Completion %")]
         public float CompletionPercentage { get; set; }
         public DateTime Deadline { get; set; }
+        [Display(Name = "Assigned Budget")]
         public double AssignedBudget { get; set; }
+        [Display(Name = "Actual Budget")]
         public double ActualBudget { get; set; }
+        [Display(Name = "Project Manager")]
         public ProjectManager ProjectManager { get; set; }
         public string ProjectManagerId { get; set; }
         public ICollection<ProjectTask> ProjectTasks { get; set; }
