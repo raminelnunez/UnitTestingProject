@@ -22,30 +22,36 @@ namespace AdvancedCSharpFinalProject.Controllers
             _roleManager = roleManager;
         }
 
-        public IActionResult ViewProject(int ProjectId, bool? OrderByCompletion, bool? OrderByPriority, bool? HideComplete)
+        public IActionResult ViewProject(int ProjectId, string? orderType)
         {
-            Project Project = _db.Project.First(p => p.Id == ProjectId);
-            List<ProjectTask>? ProjectTasks = _db.ProjectTask.Include(t => t.Developer).ThenInclude(d => d.UserName).Where(t => t.ProjectId == ProjectId).ToList();
-
-            if (OrderByCompletion != null)
+            Project Project = _db.Project.Include(project => project.ProjectManager).First(p => p.Id == ProjectId);
+            List<ProjectTask>? ProjectTasks = _db.ProjectTask.Include(t => t.Developer).Where(t => t.ProjectId == ProjectId).ToList();
+            List<SelectListItem> orderBySelectList = new List<SelectListItem>()
             {
-                if ((bool)OrderByCompletion)
+                new SelectListItem("Order By Completion", "OrderByCompletion"),
+                new SelectListItem("Order By Priority", "OrderByPriority"),
+                new SelectListItem("Hide Completed Task", "HideComplete"),
+            };
+            ViewBag.orderBySelectList = orderBySelectList;
+            if (orderType != null)
+            {
+                if (orderType == "OrderByCompletion")
                 {
                     ProjectTasks = ProjectTasks.OrderBy(t => t.CompletionPercentage).ToList();
                 }
             }
 
-            if (OrderByPriority != null)
+            if (orderType != null)
             {
-                if ((bool)OrderByPriority)
+                if (orderType == "OrderByPriority")
                 {
-                    ProjectTasks = ProjectTasks.OrderBy(t => t.Priority).ToList();
+                    ProjectTasks = ProjectTasks.OrderByDescending(t => t.Priority).ToList();
                 }
             }
 
-            if (HideComplete != null)
+            if (orderType != null)
             {
-                if ((bool)HideComplete)
+                if (orderType == "HideComplete")
                 {
                     ProjectTasks = ProjectTasks.Where(t => t.IsCompleted == false).ToList();
                 }
@@ -58,20 +64,128 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult CreateTask(int ProjectId)
         {
-            return View(ProjectId);
+            Project project =  _db.Project.First(project => project.Id == ProjectId);
+            ViewBag.ProjectTitle = project.Title;
+            ViewBag.ProjectId = ProjectId;
+            return View();
         }
 
         [HttpPost]
         [Authorize(Roles = "Project Manager")]
-        public IActionResult CreateTask(int projectId, string title, string description, DateTime deadline, Priority priority)
+        public IActionResult CreateTask([Bind("ProjectId, Priority, Title, Description, Deadline")] ProjectTask newProjectTask)
         {
-            Project project = _db.Project.First(p => p.Id == projectId);
-            ProjectTask task = new ProjectTask();
-            task = new ProjectTask(project, title, description, deadline, priority);
-            TaskHelper taskHelper = new TaskHelper();
-            taskHelper.AddTask(_db, task);
+            //Project project = _db.Project.First(p => p.Id == projectId);
+            //ProjectTask task = new ProjectTask();
+            //task = new ProjectTask(project, title, description, deadline, priority);
+            //TaskHelper taskHelper = new TaskHelper();
+            //taskHelper.AddTask(_db, task);
 
-            return Redirect($"ViewProject?ProjectId={project.Id}");
+            //return Redirect($"ViewProject?ProjectId={project.Id}");
+
+            ModelState.ClearValidationState("IsCompleted");//we need to add ourselves
+            ModelState.ClearValidationState("CompletionPercentage");// we need to add ourselves
+            ModelState.ClearValidationState("Project");// we need to add ourselves
+
+            newProjectTask.IsCompleted = false;
+            newProjectTask.CompletionPercentage = 0;
+
+            Project projectOfTheTask = _db.Project
+                .Include(project => project.ProjectTasks)
+                .Include(project => project.ProjectManager)
+                .First(project => project.Id == newProjectTask.ProjectId);
+            projectOfTheTask.ProjectTasks.Add(newProjectTask);
+            newProjectTask.Project = projectOfTheTask;
+
+            TaskHelper taskHelper = new TaskHelper();
+            taskHelper.AddTask(_db, newProjectTask);
+
+            if (TryValidateModel(newProjectTask))
+            {
+                _db.SaveChanges();
+                return RedirectToAction("ViewProject", new { ProjectId = projectOfTheTask.Id });
+            }
+            return View();
+
+        }
+        public IActionResult ViewTask(int? taskId)
+        {
+            if(taskId != null)
+            {
+                try
+                {
+                    ProjectTask taskToView = _db.ProjectTask
+                        .Include(projectTask => projectTask.Developer)
+                        .Include(projectTask => projectTask.Project).ThenInclude(project => project.ProjectManager)
+                        .First(projectTask => projectTask.Id == taskId);
+                    return View(taskToView);
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("taskId is null");
+            }
+
+        }
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult AssignTaskToDeveloper(int? taskId)
+        {
+            if(taskId != null)
+            {
+                try
+                {
+                    List<ApplicationUser> developers = _db.Users.Where(user => user.IsDeveloper == true).ToList();
+                    ViewBag.developerList = new SelectList(developers, "Id", "UserName");
+                    ProjectTask taskToAssign = _db.ProjectTask
+                       .Include(projectTask => projectTask.Developer)
+                       .Include(projectTask => projectTask.Project).ThenInclude(project => project.ProjectManager)
+                       .First(projectTask => projectTask.Id == taskId);
+                    return View(taskToAssign);
+
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("taskId is null");
+            }
+        }
+        [Authorize(Roles = "Project Manager")]
+        [HttpPost]
+        public IActionResult AssignTaskToDeveloper(int? taskId, string? developerId)
+        {
+            if(taskId !=null && developerId != null)
+            {
+                try
+                {
+                    ApplicationUser developer = _db.Users
+                        .First(user => user.Id == developerId);
+
+                    ProjectTask taskToAssign = _db.ProjectTask
+                        .Include(task => task.Developer)
+                        .First(task => task.Id == taskId);
+
+                    TaskHelper taskHelper = new TaskHelper();
+                    taskHelper.AddDeveloperToTask(_db, taskToAssign, developer);
+
+                    _db.SaveChanges();
+                    return RedirectToAction("ViewProject", new { ProjectId = taskToAssign.ProjectId });
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("taskId or developerId is null");
+            }
         }
         public IActionResult ViewAllProjects()
         {

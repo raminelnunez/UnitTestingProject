@@ -10,14 +10,14 @@ namespace AdvancedCSharpFinalProject.Models
         public void AddTask(ApplicationDbContext db, ProjectTask task)
         {
             db.ProjectTask.Add(task);
-            db.SaveChanges();
         }
 
-        public void AddDeveloperToTask(ApplicationDbContext db, ProjectTask task, Developer developer)
+        public void AddDeveloperToTask(ApplicationDbContext db, ProjectTask task, ApplicationUser developer)
         {
             task.Developer = developer;
+            task.DeveloperId = developer.Id;
+            developer.ProjectTasks.Add(task);
             db.Update(task);
-            db.SaveChanges();
         }
 
         public void DeleteTask(ApplicationDbContext db, ProjectTask task)

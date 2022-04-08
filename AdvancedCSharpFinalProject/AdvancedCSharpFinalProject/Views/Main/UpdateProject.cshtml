@@ -41,7 +41,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="CompletionPercentage" class="control-label"></label>
-                <input type="number" min="0" max="100" asp-for="CompletionPercentage" class="form-control" />
+                <input type="range" min="0" max="100" asp-for="CompletionPercentage" oninput="this.nextElementSibling.value = this.value"/>
+                <output>@Model.CompletionPercentage</output>
                 <span asp-validation-for="CompletionPercentage" class="text-danger"></span>
             </div>
             <div class="form-group">

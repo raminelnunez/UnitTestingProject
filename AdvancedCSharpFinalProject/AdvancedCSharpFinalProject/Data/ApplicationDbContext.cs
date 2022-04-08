@@ -19,7 +19,7 @@ namespace AdvancedCSharpFinalProject.Data
             builder.Entity<ProjectTask>().HasKey(projectTask => projectTask.Id);
 
             //ProjectManager to Project (One To Many)
-            builder.Entity<ProjectManager>()
+            builder.Entity<ApplicationUser>()
                 .HasMany(projectManager => projectManager.Projects)
                 .WithOne(project => project.ProjectManager)
                 .HasForeignKey(project => project.ProjectManagerId);

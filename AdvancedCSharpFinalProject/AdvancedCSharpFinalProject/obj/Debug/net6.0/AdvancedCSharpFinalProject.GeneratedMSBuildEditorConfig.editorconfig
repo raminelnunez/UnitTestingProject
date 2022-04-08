@@ -35,6 +35,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxBc3NpZ25Sb2xlVG9Vc2VyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/AssignTaskToDeveloper.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxBc3NpZ25UYXNrVG9EZXZlbG9wZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/CheckIfAUserIsInARole.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxDaGVja0lmQVVzZXJJc0luQVJvbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -73,6 +77,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewProject.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxWaWV3UHJvamVjdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewTask.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxWaWV3VGFzay5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Shared/Error.cshtml]

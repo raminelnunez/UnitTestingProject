@@ -41,7 +41,8 @@ namespace AdvancedCSharpFinalProject.Models
                     UserName = "musab03@gmail.com",
                     NormalizedUserName = "MUSAB03@GMAIL.COM",
                     EmailConfirmed = true,
-                    DailySalary = 100
+                    DailySalary = 100,
+                    IsDeveloper = true,
                 };
                 var firstUserDeveloperHashedPassword = passwordHasher.HashPassword(firstUserDeveloper, "Pass@12");
                 firstUserDeveloper.PasswordHash = firstUserDeveloperHashedPassword;
@@ -57,7 +58,10 @@ namespace AdvancedCSharpFinalProject.Models
                     UserName = "raminel03@gmail.com",
                     NormalizedUserName = "RAMINEL03@GMAIL.COM",
                     EmailConfirmed = true,
-                    DailySalary= 100 //Developer.DailySalary
+                    DailySalary = 100,//Developer.DailySalary
+                    IsProjectManager = true,
+                    IsDeveloper = true,
+
                 };
                 var secondUserProjectManagerHashedPassword = passwordHasher.HashPassword(secondUserProjectManager, "Pass@12");
                 secondUserProjectManager.PasswordHash = secondUserProjectManagerHashedPassword;

@@ -12,6 +12,8 @@
             EmailConfirmed = true;
             PasswordHash = user.PasswordHash;
             DailySalary = user.DailySalary;
+            IsDeveloper = user.IsDeveloper; 
+            IsProjectManager = user.IsProjectManager;
 
             Projects = new HashSet<Project>();
         }
