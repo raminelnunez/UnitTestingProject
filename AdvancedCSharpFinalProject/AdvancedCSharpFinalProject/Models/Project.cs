@@ -17,14 +17,14 @@ namespace AdvancedCSharpFinalProject.Models
         [Display(Name = "Actual Budget")]
         public double ActualBudget { get; set; }
         [Display(Name = "Project Manager")]
-        public ProjectManager ProjectManager { get; set; }
+        public ApplicationUser ProjectManager { get; set; }
         public string ProjectManagerId { get; set; }
         public ICollection<ProjectTask> ProjectTasks { get; set; }
         public void CalculateActualBudget()
         {
             ProjectTasks.ToList().ForEach(projectTask => ActualBudget += projectTask.Developer.DailySalary);
         }
-        public Project(ProjectManager projectManager, string title, double assignedBudget, Priority priority, DateTime deadline)
+        public Project(ApplicationUser projectManager, string title, double assignedBudget, Priority priority, DateTime deadline)
         {
             ProjectManager = projectManager;
             ProjectManagerId = projectManager.Id;
