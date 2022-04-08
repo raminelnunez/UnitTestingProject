@@ -4,6 +4,7 @@ using AdvancedCSharpFinalProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedCSharpFinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220407192439_AddColumnCompletionPercentageAndIsCompleteToProjectTask")]
+    partial class AddColumnCompletionPercentageAndIsCompleteToProjectTask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,12 +48,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeveloper")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsProjectManager")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -122,6 +118,9 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DeveloperId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
@@ -138,6 +137,8 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DeveloperId");
 
                     b.HasIndex("ProjectManagerId");
 
@@ -174,16 +175,20 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ProjectManagerId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DeveloperId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("ProjectManagerId");
 
                     b.ToTable("ProjectTask");
                 });
@@ -332,9 +337,20 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.HasDiscriminator().HasValue("Developer");
                 });
 
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectManager", b =>
+                {
+                    b.HasBaseType("AdvancedCSharpFinalProject.Models.ApplicationUser");
+
+                    b.HasDiscriminator().HasValue("ProjectManager");
+                });
+
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
                 {
-                    b.HasOne("AdvancedCSharpFinalProject.Models.ApplicationUser", "ProjectManager")
+                    b.HasOne("AdvancedCSharpFinalProject.Models.Developer", null)
+                        .WithMany("Projects")
+                        .HasForeignKey("DeveloperId");
+
+                    b.HasOne("AdvancedCSharpFinalProject.Models.ProjectManager", "ProjectManager")
                         .WithMany("Projects")
                         .HasForeignKey("ProjectManagerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -345,7 +361,7 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
 
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectTask", b =>
                 {
-                    b.HasOne("AdvancedCSharpFinalProject.Models.ApplicationUser", "Developer")
+                    b.HasOne("AdvancedCSharpFinalProject.Models.Developer", "Developer")
                         .WithMany("ProjectTasks")
                         .HasForeignKey("DeveloperId");
 
@@ -354,6 +370,10 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("AdvancedCSharpFinalProject.Models.ProjectManager", null)
+                        .WithMany("ProjectTasks")
+                        .HasForeignKey("ProjectManagerId");
 
                     b.Navigation("Developer");
 
@@ -411,16 +431,23 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ApplicationUser", b =>
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
+                {
+                    b.Navigation("ProjectTasks");
+                });
+
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Developer", b =>
                 {
                     b.Navigation("ProjectTasks");
 
                     b.Navigation("Projects");
                 });
 
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectManager", b =>
                 {
                     b.Navigation("ProjectTasks");
+
+                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }
