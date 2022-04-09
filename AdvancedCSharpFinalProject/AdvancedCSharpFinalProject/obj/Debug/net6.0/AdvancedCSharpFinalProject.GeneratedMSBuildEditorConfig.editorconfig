@@ -71,6 +71,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxNZXNzYWdlVmlldy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/NotificationDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxOb3RpZmljYXRpb25EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/SelectDailySalary.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxTZWxlY3REYWlseVNhbGFyeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -85,6 +89,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewAllProjects.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxWaWV3QWxsUHJvamVjdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewNotifications.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxWaWV3Tm90aWZpY2F0aW9ucy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewProject.cshtml]
