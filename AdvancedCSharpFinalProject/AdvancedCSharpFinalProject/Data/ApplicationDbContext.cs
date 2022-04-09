@@ -57,10 +57,18 @@ namespace AdvancedCSharpFinalProject.Data
                 .HasForeignKey(comment => comment.ProjectTaskId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            //Notification to ApplicationUser (One To Many)
+            builder.Entity<ApplicationUser>()
+                .HasMany(user => user.Notifications)
+                .WithOne(notification => notification.TargetUser)
+                .HasForeignKey(notification => notification.TargetUserId);
+            
+
         }
 
         public DbSet<Project> Project { get; set; }
         public DbSet<ProjectTask> ProjectTask { get; set; }
         public DbSet<Comment> Comment { get; set; }
+        public DbSet<Notification> Notification { get; set; }
     }
 }
