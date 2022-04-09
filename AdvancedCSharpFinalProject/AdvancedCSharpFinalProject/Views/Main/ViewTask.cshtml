@@ -4,10 +4,9 @@
     ViewData["Title"] = "ViewTask";
 }
 
-<h1>ViewTask</h1>
+<h1>View Task</h1>
 
 <div>
-    <h4>ProjectTask</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -74,8 +73,65 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
-    <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
-    <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
-</div>
+@if(Model.CompletionPercentage == 100 || Model.IsCompleted == true)
+{
+    <h2>Comments</h2>
+    <hr />
+    @if(Model.Comments.Any())
+    {
+        //Show comments
+            @foreach(Comment comment in Model.Comments)
+            {
+                <div style="display: flex;justify-content: space-evenly;border-color: black;border-style: solid;border-radius: 2rem;background-color: aliceblue;padding: 2rem;margin-bottom: 2rem;">
+                   <div>
+                        <div style="color: brown;font-weight: bold;">@comment.Content</div>
+                        <div>Date: @comment.CommentDate.ToShortDateString()</div>
+
+                    </div>
+                        @if(Model.DeveloperId == ViewBag.currentUser.Id) 
+                        {
+                            <a asp-action="DeleteComment" asp-route-commentId=@comment.Id>Delete</a>
+                        }
+                </div>
+            }
+    }
+    else
+    {
+        <div>No Comments for Task yet!!</div>
+    }
+    if(Model.DeveloperId == ViewBag.currentUser.Id)
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+          <a asp-action="AddCommentToTask" asp-route-taskId="@Model.Id" asp-route-developerId="@Model.DeveloperId">Comment</a> |  
+         <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+         <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+    else
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+            <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+            <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
+            <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+
+}
+else
+{
+    if(Model.DeveloperId == ViewBag.currentUser.Id)
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+         <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+         <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+    else
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+            <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+            <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
+            <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+}
