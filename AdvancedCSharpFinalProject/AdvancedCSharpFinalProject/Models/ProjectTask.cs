@@ -19,33 +19,35 @@ namespace AdvancedCSharpFinalProject.Models
         public string Description { get; set; }
         public DateTime Deadline { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public bool IsNotified { get; set; }
 
-        public ProjectTask(Project project, string title, string description, DateTime deadline, Priority priority)
-        {
-            Project = project;
-            ProjectId = project.Id;
-            Title = title;
-            Description = description;
-            Deadline = deadline;
-            Priority = priority;
-            Comments = new HashSet<Comment>();
-        }
+        //public ProjectTask(Project project, string title, string description, DateTime deadline, Priority priority)
+        //{
+        //    Project = project;
+        //    ProjectId = project.Id;
+        //    Title = title;
+        //    Description = description;
+        //    Deadline = deadline;
+        //    Priority = priority;
+        //    Comments = new HashSet<Comment>();
 
-        public ProjectTask(Project project, ApplicationUser? developer, string title, string description, DateTime deadline, Priority priority)
-        {
-            Project = project;
-            ProjectId = project.Id;
-            Developer = developer;
-            DeveloperId = developer.Id;
-            Title = title;
-            Description = description;
-            Deadline = deadline;
-            Priority = priority;
-            Comments = new HashSet<Comment>();
-        }
+        //}
 
-        public ProjectTask()
-        {
-        }
+        //public ProjectTask(Project project, ApplicationUser? developer, string title, string description, DateTime deadline, Priority priority)
+        //{
+        //    Project = project;
+        //    ProjectId = project.Id;
+        //    Developer = developer;
+        //    DeveloperId = developer.Id;
+        //    Title = title;
+        //    Description = description;
+        //    Deadline = deadline;
+        //    Priority = priority;
+        //    Comments = new HashSet<Comment>();
+        //}
+
+        //public ProjectTask()
+        //{
+        //}
     }
 }

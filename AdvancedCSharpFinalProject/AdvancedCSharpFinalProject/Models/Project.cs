@@ -20,6 +20,7 @@ namespace AdvancedCSharpFinalProject.Models
         public ApplicationUser ProjectManager { get; set; }
         public string ProjectManagerId { get; set; }
         public ICollection<ProjectTask> ProjectTasks { get; set; }
+        public bool IsNotified { get; set; }
         public void CalculateActualBudget()
         {
             ProjectTasks.ToList().ForEach(projectTask => ActualBudget += projectTask.Developer.DailySalary);

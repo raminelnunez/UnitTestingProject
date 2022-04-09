@@ -30,6 +30,7 @@ namespace AdvancedCSharpFinalProject.Models
             project.Deadline = updatedProject.Deadline;
             project.IsCompleted = updatedProject.IsCompleted;
             project.Priority = updatedProject.Priority;
+            project.IsNotified = false;
             if(updatedProject.IsCompleted == true)
             {
                 project.CompletionPercentage = 100;

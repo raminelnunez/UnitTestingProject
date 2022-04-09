@@ -28,6 +28,7 @@ namespace AdvancedCSharpFinalProject.Models
             task.Title = updatedTask.Title;
             task.Description = updatedTask.Description;
             task.Priority = updatedTask.Priority;
+            task.IsNotified = false;
 
             if (updatedTask.IsCompleted == true)
             {
