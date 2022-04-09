@@ -28,22 +28,28 @@ namespace AdvancedCSharpFinalProject.Models
             task.Title = updatedTask.Title;
             task.Description = updatedTask.Description;
             task.Priority = updatedTask.Priority;
-            if(updatedTask.CompletionPercentage == 100)
+
+            if (updatedTask.IsCompleted == true)
             {
                 task.IsCompleted = true;
                 task.CompletionPercentage = 100;
+                updatedTask.CompletionPercentage = 100;
             }
             else
             {
                 task.CompletionPercentage = updatedTask.CompletionPercentage;
+                task.IsCompleted = updatedTask.IsCompleted;
             }
-            if(updatedTask.IsCompleted == true)
+            if (updatedTask.CompletionPercentage == 100)
             {
+                updatedTask.IsCompleted = true;
                 task.IsCompleted = true;
                 task.CompletionPercentage = 100;
             }
             else
             {
+                updatedTask.IsCompleted= false;
+                task.CompletionPercentage = updatedTask.CompletionPercentage;
                 task.IsCompleted = updatedTask.IsCompleted;
             }
         }
