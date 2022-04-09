@@ -21,7 +21,119 @@ namespace AdvancedCSharpFinalProject.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
+        public async Task<IActionResult> Index()
+        {
+            ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+            List<string> roleNamesOfCurrentUser = userManager.GetAllRolesOfUser(user.Id);// GetAllRolesOfUser method on UserManager Class
+            if (roleNamesOfCurrentUser.Any())
+            {
+                ViewBag.NoRolesForCurrentUser = false;
+            }
+            else
+            {
+                ViewBag.NoRolesForCurrentUser = true;
+            }
+            return View();
+        }
+        public IActionResult GetAllRolesForAUser(string? userId)
+        {
+            ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
+            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+            List<string> roleNamesOfUser = userManager.GetAllRolesOfUser(userId);// GetAllRolesOfUser method on UserManager Class
+            if (userManager.User != null)
+            {
+                ViewBag.UserName = userManager.User.UserName;
+            }
+            return View(roleNamesOfUser);
+        }
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult AssignRoleToUser()
+        {
+            ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
+            ViewBag.rolesList = new SelectList(_db.Roles.ToList(), "Name", "Name");
+            return View();
+        }
+        public async Task<IActionResult> SelectDailySalary(string? userId, string? roleForUser)
+        {
+            if (userId != null && roleForUser != null)
+            {
+                ApplicationUser user = await _userManager.FindByIdAsync(userId);
+                if (await _userManager.IsInRoleAsync(user, roleForUser))
+                {
+                    ViewBag.message = $"{user.UserName} is already in the role of {roleForUser}";
+                    ViewBag.action = "Index";
+                    ViewBag.actionMessage = "Back to Index";
+                    return View("MessageView");
+                }
+                else
+                {
+                    ViewBag.userId = userId;
+                    ViewBag.roleForUser = roleForUser;
+                    return View();
+                }
+            }
+            else
+            {
+                return BadRequest("Bad Request");
+            }
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectDailySalary(string? userId, string? roleForUser, double dailySalary)
+        {
+            if (userId != null && roleForUser != null)
+            {
+                try
+                {
+                    UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+                    string message = await userManager.AssignRoleToUser(userId, roleForUser, dailySalary); // AssignRoleToUser method on UserManager Class
+                    ViewBag.message = message;
+                    ViewBag.action = "Index";
+                    ViewBag.actionMessage = "Back to Index";
+                    return View("MessageView");
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Bad Request");
+            }
+        }
+        public IActionResult CheckIfAUserIsInARole()
+        {
+            ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
+            ViewBag.rolesList = new SelectList(_db.Roles.ToList(), "Name", "Name");
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CheckIfAUserIsInARole(string? userId, string? roleToCheck)
+        {
+            if (userId != null && roleToCheck != null)
+            {
+                try
+                {
+                    UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+                    string message = await userManager.CheckIfAUserIsInARole(userId, roleToCheck);
+                    ViewBag.message = message;
+                    ViewBag.action = "Index";
+                    ViewBag.actionMessage = "Back to Index";
+                    return View("MessageView");
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Bad Request");
+            }
+
+        }
         public IActionResult ViewProject(int ProjectId, string? orderType)
         {
             Project Project = _db.Project.Include(project => project.ProjectManager).First(p => p.Id == ProjectId);
@@ -187,115 +299,17 @@ namespace AdvancedCSharpFinalProject.Controllers
                 return BadRequest("taskId or developerId is null");
             }
         }
-        public IActionResult ViewAllProjects()
+        public IActionResult UpdateTask(int? taskId)
         {
-            List<Project> Projects = _db.Project
-                .Include(project => project.ProjectManager)
-                .OrderByDescending(project => project.Priority)
-                .ToList();
-            return View(Projects);
-        }
-        public async Task<IActionResult> Index()
-        {
-            ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
-            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
-            List<string> roleNamesOfCurrentUser = userManager.GetAllRolesOfUser(user.Id);// GetAllRolesOfUser method on UserManager Class
-            if(roleNamesOfCurrentUser.Any())
-            {
-                ViewBag.NoRolesForCurrentUser = false;
-            }
-            else
-            {
-                ViewBag.NoRolesForCurrentUser = true; 
-            }
-            return View();
-        }
-        public IActionResult GetAllRolesForAUser(string? userId)
-        {
-            ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
-            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
-            List<string> roleNamesOfUser = userManager.GetAllRolesOfUser(userId);// GetAllRolesOfUser method on UserManager Class
-            if (userManager.User != null)
-            {
-                ViewBag.UserName = userManager.User.UserName;
-            }
-            return View(roleNamesOfUser);
-        }
-        [Authorize(Roles = "Project Manager")]
-        public IActionResult AssignRoleToUser()
-        {
-            ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
-            ViewBag.rolesList = new SelectList(_db.Roles.ToList(), "Name", "Name");
-            return View();
-        }
-        public async Task<IActionResult> SelectDailySalary(string? userId, string? roleForUser)
-        {
-            if(userId != null && roleForUser != null)
-            {
-                ApplicationUser user = await _userManager.FindByIdAsync(userId);
-                if(await _userManager.IsInRoleAsync(user, roleForUser))
-                {
-                    ViewBag.message = $"{user.UserName} is already in the role of {roleForUser}";
-                    ViewBag.action = "Index";
-                    ViewBag.actionMessage = "Back to Index";
-                    return View("MessageView");
-                }
-                else
-                {
-                    ViewBag.userId = userId;
-                    ViewBag.roleForUser = roleForUser;
-                    return View();
-                }
-            } 
-            else
-            {
-                return BadRequest("Bad Request");
-            }
-
-        }
-        [HttpPost]
-        public async Task<IActionResult> SelectDailySalary(string? userId, string? roleForUser, double dailySalary)
-        {
-            if (userId != null && roleForUser != null)
+            if(taskId != null)
             {
                 try
                 {
-                    UserManager userManager = new UserManager(_db, _userManager, _roleManager);
-                    string message = await userManager.AssignRoleToUser(userId, roleForUser, dailySalary); // AssignRoleToUser method on UserManager Class
-                    ViewBag.message = message;
-                    ViewBag.action = "Index";
-                    ViewBag.actionMessage = "Back to Index";
-                    return View("MessageView");
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(ex.Message);
-                }
-            }
-            else
-            {
-                return BadRequest("Bad Request");
-            }
-        }
-        public IActionResult CheckIfAUserIsInARole()
-        {
-            ViewBag.usersList = new SelectList(_db.Users.ToList(), "Id", "UserName");
-            ViewBag.rolesList = new SelectList(_db.Roles.ToList(), "Name", "Name");
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> CheckIfAUserIsInARole(string? userId, string? roleToCheck)
-        {
-            if(userId != null && roleToCheck != null)
-            {
-                try
-                {
-                    UserManager userManager = new UserManager(_db, _userManager, _roleManager);
-                    string message = await userManager.CheckIfAUserIsInARole(userId, roleToCheck);
-                    ViewBag.message = message;
-                    ViewBag.action = "Index";
-                    ViewBag.actionMessage = "Back to Index";
-                    return View("MessageView");
+                    ProjectTask taskToUpdate = _db.ProjectTask
+                        .Include(task => task.Developer)
+                        .Include(task => task.Project)
+                        .First(task => task.Id == taskId);
+                    return View(taskToUpdate);
                 }
                 catch(Exception ex)
                 {
@@ -304,9 +318,96 @@ namespace AdvancedCSharpFinalProject.Controllers
             }
             else
             {
-                return BadRequest("Bad Request");
+                return BadRequest("taskId is null");
             }
+        }
+        [HttpPost]
+        public IActionResult UpdateTask(int? taskId, ProjectTask updatedTask)
+        {
+            if(taskId != null)
+            {
+                try
+                {
+                    ProjectTask task = _db.ProjectTask
+                       .Include(task => task.Developer)
+                       .Include(task => task.Project)
+                       .First(task => task.Id == taskId);
+                    TaskHelper taskHelper = new TaskHelper();
 
+                    taskHelper.UpdateTask(task, updatedTask);
+                    _db.SaveChanges();
+
+                    return RedirectToAction("ViewTask", new {taskId = task.Id});
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("taskId is null at Post");
+            }
+        }
+        public IActionResult DeleteWarningForTask(int? taskId)
+        {
+            if(taskId != null)
+            {
+                try
+                {
+                    ProjectTask task = _db.ProjectTask
+                      .First(task => task.Id == taskId);
+
+                    ViewBag.message = $"Task: <b style=\"color:purple\">{task.Title}</b> will be deleted permanently";
+                    ViewBag.abortAction = "ViewProject";
+                    ViewBag.taskId = taskId;
+                    ViewBag.projectId = task.ProjectId;
+                    return View();
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("taskId is null at DeleteWarningForTask");
+            }
+        }
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult DeleteTask(int? taskId)
+        {
+            if(taskId != null)
+            {
+                try
+                {
+                    ProjectTask taskToDelete = _db.ProjectTask
+                       .Include(task => task.Developer)
+                       .Include(task => task.Project)
+                       .First(task => task.Id == taskId);
+                    TaskHelper taskHelper = new TaskHelper();
+                    taskHelper.DeleteTask(_db, taskToDelete);
+                    _db.SaveChanges();
+                    return RedirectToAction("ViewProject", new { ProjectId = taskToDelete.ProjectId });
+
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("taskId is null at DeleteTask");
+            }
+        }
+        public IActionResult ViewAllProjects()
+        {
+            List<Project> Projects = _db.Project
+                .Include(project => project.ProjectManager)
+                .OrderByDescending(project => project.Priority)
+                .ToList();
+            return View(Projects);
         }
         [Authorize(Roles = "Project Manager")]
         public IActionResult AddANewProject()
@@ -397,6 +498,7 @@ namespace AdvancedCSharpFinalProject.Controllers
             ViewBag.ProjectId = projectId;
             return View();
         }
+        [Authorize(Roles = "Project Manager")]
         public IActionResult DeleteProject(int? projectId)
         {
             if(projectId != null)
