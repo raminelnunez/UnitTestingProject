@@ -19,11 +19,38 @@ namespace AdvancedCSharpFinalProject.Models
             developer.ProjectTasks.Add(task);
             db.Update(task);
         }
+        public void UpdateTask(ProjectTask task, ProjectTask updatedTask)
+        {
+            task.Id = updatedTask.Id;
+            task.DeveloperId = updatedTask.DeveloperId;
+            task.ProjectId = updatedTask.ProjectId;
+            task.Deadline = updatedTask.Deadline;
+            task.Title = updatedTask.Title;
+            task.Description = updatedTask.Description;
+            task.Priority = updatedTask.Priority;
+            if(updatedTask.CompletionPercentage == 100)
+            {
+                task.IsCompleted = true;
+                task.CompletionPercentage = 100;
+            }
+            else
+            {
+                task.CompletionPercentage = updatedTask.CompletionPercentage;
+            }
+            if(updatedTask.IsCompleted == true)
+            {
+                task.IsCompleted = true;
+                task.CompletionPercentage = 100;
+            }
+            else
+            {
+                task.IsCompleted = updatedTask.IsCompleted;
+            }
+        }
 
         public void DeleteTask(ApplicationDbContext db, ProjectTask task)
         {
             db.ProjectTask.Remove(task);
-            db.SaveChanges();
         }
     }
 }
