@@ -23,18 +23,54 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            ApplicationUser user = await _userManager.FindByNameAsync(User.Identity.Name);
-            UserManager userManager = new UserManager(_db, _userManager, _roleManager);
-            List<string> roleNamesOfCurrentUser = userManager.GetAllRolesOfUser(user.Id);// GetAllRolesOfUser method on UserManager Class
-            if (roleNamesOfCurrentUser.Any())
+            try
             {
-                ViewBag.NoRolesForCurrentUser = false;
+                DateTime currentDate = DateTime.Now.Date;
+                ApplicationUser currentUser = _db.Users
+                    .Include(user => user.Projects)
+                    .Include(user => user.Notifications)
+                    .Include(user => user.ProjectTasks)
+                    .ThenInclude(task => task.Project)
+                    .First(user => user.UserName == User.Identity.Name);
+                UserManager userManager = new UserManager(_db, _userManager, _roleManager);
+                List<string> roleNamesOfCurrentUser = userManager.GetAllRolesOfUser(currentUser.Id);// GetAllRolesOfUser method on UserManager Class
+                if (roleNamesOfCurrentUser.Any())
+                {
+                    ViewBag.NoRolesForCurrentUser = false;
+                }
+                else
+                {
+                    ViewBag.NoRolesForCurrentUser = true;
+                }
+                if(currentUser.IsDeveloper == true)
+                {
+                    if(currentUser.ProjectTasks.Any())
+                    {
+                        foreach(ProjectTask task in currentUser.ProjectTasks)
+                        {
+                            //(EndDate.Date - StartDate.Date).Days
+                            double daysLeft = (task.Deadline.Date - currentDate).TotalDays;
+                            if (daysLeft <= 1 && task.IsNotified == false)
+                            {
+                                Notification notification = new Notification(currentUser, $"{task.Title}: {daysLeft} day left till deadline {task.Deadline}");
+                                currentUser.Notifications.Add(notification);
+                                task.IsNotified = true;
+                                _db.Notification.Add(notification);
+                                _db.SaveChanges();
+                            }
+                        }
+                    }
+
+                }
+                return View(currentUser);
             }
-            else
+            catch(Exception ex)
             {
-                ViewBag.NoRolesForCurrentUser = true;
+                return NotFound(ex.Message + "At Index");
             }
-            return View();
+            //A developer will get a notification when their task is only one day to pass the deadline.
+            //The Developers should be able to see the number of notifications in their homepage,
+            //they can click on this number to go to a page where they can see all the notifications in detail.
         }
         public IActionResult GetAllRolesForAUser(string? userId)
         {
@@ -619,6 +655,92 @@ namespace AdvancedCSharpFinalProject.Controllers
                 return BadRequest("commentId was null");
             }
         }
+        public IActionResult ViewNotifications(string? currentUserId)
+        {
+            if (currentUserId != null)
+            {
+                try
+                {
+                    List<Notification> notificationOfUser = _db.Notification
+                        .Include(notification => notification.TargetUser)
+                        .Where(notification => notification.TargetUserId == currentUserId).ToList();
+                    return View(notificationOfUser);
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message + " At ViewNotifications");
+                }
+            }
+            else
+            {
+                return BadRequest("currentUserId is null at ViewNotifications");
+            }
+        }
+        public IActionResult DeleteNotification(int? notificationId)
+        {
+            if(notificationId != null)
+            {
+                try
+                {
+                    Notification notificationToDelete = _db.Notification.First(notification => notification.Id == notificationId);
+                    _db.Remove(notificationToDelete);
+                    _db.SaveChanges();
+                    return RedirectToAction("ViewNotifications", new {currentUserId = notificationToDelete.TargetUserId});
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message + " At DeleteNotification");
+                }
+            }
+            else
+            {
+                return BadRequest("notificationId is null at DeleteNotification");
+            }
+        }
+        public IActionResult NotificationDetails(int? notificationId)
+        {
+            if (notificationId != null)
+            {
+                try
+                {
+                    Notification notification = _db.Notification
+                        .Include(notification => notification.TargetUser)
+                        .First(notification => notification.Id == notificationId);
+
+                    return View(notification);
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message + " At NotificationDetails");
+                }
+            }
+            else
+            {
+                return BadRequest("notificationId is null at NotificationDetails");
+            }
+        }
+        public IActionResult MarkNotificationAsRead(int? notificationId)
+        {
+            if (notificationId != null)
+            {
+                try
+                {
+                    Notification notification = _db.Notification.First(notification => notification.Id == notificationId);
+                    notification.IsRead = true;
+                    _db.SaveChanges();
+
+                    return RedirectToAction("NotificationDetails", new {notificationId = notificationId});
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message + " At MarkNotificationAsRead");
+                }
+            }
+            else
+            {
+                return BadRequest("notificationId is null at MarkNotificationAsRead");
+            }
+        }
 
 
     }
@@ -628,17 +750,27 @@ namespace AdvancedCSharpFinalProject.Controllers
 Create a User Manager class that has functions to manage users and roles 
 (Get all roles for a user, assign roles to users, check if a user in a role)...etc
 
-Create a ProjectHelper class that contains functions to add, delete, update projects, 
-along with any other helper functions. 
-Those functions can only be accessed by project managers.
-
-Create a TaskHelper class that contains functions to add, delete, update tasks, and assign a task to a developer, 
-those functions can only be accessed by project managers.
-
 A Project manager will have a dashboard page which shows all the projects with their related tasks 
 and assigned developers, the projects with high priorities appear first.
 
 Developers can view all their tasks (but can’t view other developers’ tasks), 
 also a developer can update a task to change the completed percentage of the task, or mark it totally completed, 
 when the task is marked completed, the developer can leave a comment to describe any notes or hints`.
+
+A developer will get a notification when the task is only one day to pass the deadline. 
+The Developers should be able to see the number of notifications in their homepage, 
+they can click on this number to go to a page where they can see all the notifications in detail.
+
+-->The project manager can see a list of the tasks that are not finished yet and passed their deadline.
+
+-->The project manager will get a notification if a project passed a deadline with any unfinished tasks.
+-->A project manager gets a notification whenever a task or a project is completed.
+
+Developers can leave an urgent Note to a task to mention a bug or a problem preventing them from completing the task, 
+in this case a notification is sent to the Project Manager.
+
+Add a new property to the notifications to determine if it is new or opened (unread).
+
+Add a link called “Notifications” to the project manager dashboard which will take the manager to see all his notifications, 
+this link also shows the number of current unopened notifications.
  */
