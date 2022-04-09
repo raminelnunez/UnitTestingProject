@@ -125,7 +125,7 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
 
                     b.HasIndex("ProjectTaskId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comment", (string)null);
                 });
 
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
@@ -167,7 +167,7 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
 
                     b.HasIndex("ProjectManagerId");
 
-                    b.ToTable("Project");
+                    b.ToTable("Project", (string)null);
                 });
 
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectTask", b =>
@@ -211,7 +211,7 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectTask");
+                    b.ToTable("ProjectTask", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
