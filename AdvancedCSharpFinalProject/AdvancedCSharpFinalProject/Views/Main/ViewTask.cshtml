@@ -75,6 +75,7 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+    <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
     <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
 </div>
