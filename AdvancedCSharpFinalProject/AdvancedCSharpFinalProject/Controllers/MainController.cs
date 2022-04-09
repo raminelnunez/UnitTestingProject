@@ -199,26 +199,36 @@ namespace AdvancedCSharpFinalProject.Controllers
             ModelState.ClearValidationState("IsCompleted");//we need to add ourselves
             ModelState.ClearValidationState("CompletionPercentage");// we need to add ourselves
             ModelState.ClearValidationState("Project");// we need to add ourselves
-
-            newProjectTask.IsCompleted = false;
-            newProjectTask.CompletionPercentage = 0;
-
-            Project projectOfTheTask = _db.Project
-                .Include(project => project.ProjectTasks)
-                .Include(project => project.ProjectManager)
-                .First(project => project.Id == newProjectTask.ProjectId);
-            projectOfTheTask.ProjectTasks.Add(newProjectTask);
-            newProjectTask.Project = projectOfTheTask;
-
-            TaskHelper taskHelper = new TaskHelper();
-            taskHelper.AddTask(_db, newProjectTask);
-
-            if (TryValidateModel(newProjectTask))
+            ModelState.ClearValidationState("Comments");// we need to add ourselves
+            try
             {
-                _db.SaveChanges();
-                return RedirectToAction("ViewProject", new { ProjectId = projectOfTheTask.Id });
+                newProjectTask.IsCompleted = false;
+                newProjectTask.CompletionPercentage = 0;
+                newProjectTask.Comments = new HashSet<Comment>();
+
+                Project projectOfTheTask = _db.Project
+                    .Include(project => project.ProjectTasks)
+                    .Include(project => project.ProjectManager)
+                    .First(project => project.Id == newProjectTask.ProjectId);
+                projectOfTheTask.ProjectTasks.Add(newProjectTask);
+                newProjectTask.Project = projectOfTheTask;
+
+                TaskHelper taskHelper = new TaskHelper();
+                taskHelper.AddTask(_db, newProjectTask);
+
+                if (TryValidateModel(newProjectTask))
+                {
+                    _db.SaveChanges();
+                    return RedirectToAction("ViewProject", new { ProjectId = projectOfTheTask.Id });
+                }
+                return View();
             }
-            return View();
+            catch(Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+
 
         }
         public async Task<IActionResult> ViewTask(int? taskId)
@@ -392,7 +402,9 @@ namespace AdvancedCSharpFinalProject.Controllers
                     ProjectTask taskToDelete = _db.ProjectTask
                        .Include(task => task.Developer)
                        .Include(task => task.Project)
+                       .Include(task => task.Comments)
                        .First(task => task.Id == taskId);
+                    _db.Comment.RemoveRange(taskToDelete.Comments.ToList());
                     TaskHelper taskHelper = new TaskHelper();
                     taskHelper.DeleteTask(_db, taskToDelete);
                     _db.SaveChanges();
@@ -516,7 +528,18 @@ namespace AdvancedCSharpFinalProject.Controllers
             {
                 try
                 {
-                    Project projectToDelete = _db.Project.First(project => project.Id == projectId);
+                    Project projectToDelete = _db.Project
+                        .Include(project => project.ProjectTasks)
+                        .ThenInclude(task => task.Comments)
+                        .First(project => project.Id == projectId);
+
+                    List<Comment> commentsToDelete = _db.Comment
+                        .Include(comment => comment.ProjectTask)
+                        .Where(comment => comment.ProjectTask.ProjectId == projectId).ToList();
+
+                    _db.Comment.RemoveRange(commentsToDelete);
+                    _db.ProjectTask.RemoveRange(projectToDelete.ProjectTasks.ToList());
+
                     ProjectHelper projectHelper = new ProjectHelper(_db);
                     projectHelper.DeleteProject(projectToDelete);
                     _db.SaveChanges();
@@ -575,7 +598,7 @@ namespace AdvancedCSharpFinalProject.Controllers
             return View();
         }
         [Authorize(Roles = "Developer")]
-        public async Task<IActionResult> DeleteComment(int? commentId)
+        public IActionResult DeleteComment(int? commentId)
         {
             if(commentId != null)
             {
