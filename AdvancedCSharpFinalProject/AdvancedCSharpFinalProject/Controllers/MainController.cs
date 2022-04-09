@@ -178,7 +178,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult CreateTask(int ProjectId)
         {
-            Project project =  _db.Project.First(project => project.Id == ProjectId);
+            Project project = _db.Project.First(project => project.Id == ProjectId);
             ViewBag.ProjectTitle = project.Title;
             ViewBag.ProjectId = ProjectId;
             return View();
@@ -223,7 +223,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         public async Task<IActionResult> ViewTask(int? taskId)
         {
-            if(taskId != null)
+            if (taskId != null)
             {
                 try
                 {
@@ -250,7 +250,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult AssignTaskToDeveloper(int? taskId)
         {
-            if(taskId != null)
+            if (taskId != null)
             {
                 try
                 {
@@ -263,7 +263,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                     return View(taskToAssign);
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return NotFound(ex.Message);
                 }
@@ -277,7 +277,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [HttpPost]
         public IActionResult AssignTaskToDeveloper(int? taskId, string? developerId)
         {
-            if(taskId !=null && developerId != null)
+            if (taskId != null && developerId != null)
             {
                 try
                 {
@@ -294,7 +294,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                     _db.SaveChanges();
                     return RedirectToAction("ViewProject", new { ProjectId = taskToAssign.ProjectId });
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return NotFound(ex.Message);
                 }
@@ -307,7 +307,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Developer, ProjectManager")]
         public IActionResult UpdateTask(int? taskId)
         {
-            if(taskId != null)
+            if (taskId != null)
             {
                 try
                 {
@@ -317,7 +317,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                         .First(task => task.Id == taskId);
                     return View(taskToUpdate);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return NotFound(ex.Message);
                 }
@@ -331,7 +331,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Developer, ProjectManager")]
         public IActionResult UpdateTask(int? taskId, ProjectTask updatedTask)
         {
-            if(taskId != null)
+            if (taskId != null)
             {
                 try
                 {
@@ -344,9 +344,9 @@ namespace AdvancedCSharpFinalProject.Controllers
                     taskHelper.UpdateTask(task, updatedTask);
                     _db.SaveChanges();
 
-                    return RedirectToAction("ViewTask", new {taskId = task.Id});
+                    return RedirectToAction("ViewTask", new { taskId = task.Id });
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return NotFound(ex.Message);
                 }
@@ -359,7 +359,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult DeleteWarningForTask(int? taskId)
         {
-            if(taskId != null)
+            if (taskId != null)
             {
                 try
                 {
@@ -385,7 +385,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult DeleteTask(int? taskId)
         {
-            if(taskId != null)
+            if (taskId != null)
             {
                 try
                 {
@@ -399,7 +399,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                     return RedirectToAction("ViewProject", new { ProjectId = taskToDelete.ProjectId });
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return NotFound(ex.Message);
                 }
@@ -455,14 +455,14 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult UpdateProject(int? projectId)
         {
-            if(projectId != null)
+            if (projectId != null)
             {
                 try
                 {
                     Project projectToUpdate = _db.Project.First(project => project.Id == projectId);
                     return View(projectToUpdate);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return NotFound(ex.Message);
                 }
@@ -477,7 +477,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateProject(int? projectId, Project updatedProject)
         {
-            if(projectId != null)
+            if (projectId != null)
             {
                 try
                 {
@@ -512,7 +512,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult DeleteProject(int? projectId)
         {
-            if(projectId != null)
+            if (projectId != null)
             {
                 try
                 {
@@ -525,7 +525,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                     ViewBag.actionMessage = "Back to Projects";
                     return View("MessageView");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return NotFound(ex.Message);
                 }
@@ -546,14 +546,9 @@ namespace AdvancedCSharpFinalProject.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCommentToTask([Bind("Content, CommentDate, ProjectTaskId, DeveloperId")] Comment newComment)
         {
-            //ModelState.Clear();
             ModelState.ClearValidationState("Developer");
             ModelState.ClearValidationState("ProjectTask");
 
-            //ApplicationUser? developer = _db.Users
-            //    .Include(developer => developer.Comments)
-            //    .Include(developer => developer.ProjectTasks)
-            //    .First(user => user);
             ApplicationUser? developer = await _userManager.FindByNameAsync(User.Identity.Name);
 
 
@@ -572,17 +567,34 @@ namespace AdvancedCSharpFinalProject.Controllers
             projectTask.Comments.Add(newComment);
             _db.Comment.Add(newComment);
 
-            if(TryValidateModel(newComment))
+            if (TryValidateModel(newComment))
             {
                 _db.SaveChanges();
-                return RedirectToAction("ViewTask", new {taskId = projectTask.Id});
+                return RedirectToAction("ViewTask", new { taskId = projectTask.Id });
             }
-
-
-
-
-
             return View();
+        }
+        [Authorize(Roles = "Developer")]
+        public async Task<IActionResult> DeleteComment(int? commentId)
+        {
+            if(commentId != null)
+            {
+                try
+                {
+                    Comment commentToDelete = _db.Comment.First(comment => comment.Id == commentId);
+                    _db.Remove(commentToDelete);
+                    _db.SaveChanges();
+                    return RedirectToAction("ViewTask", new {taskId = commentToDelete.ProjectTaskId});
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("commentId was null");
+            }
         }
 
 
