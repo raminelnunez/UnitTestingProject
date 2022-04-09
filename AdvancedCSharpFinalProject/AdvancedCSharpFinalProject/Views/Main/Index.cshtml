@@ -3,6 +3,7 @@
 *@
 @{
 }
+@model ApplicationUser
 
 @if(ViewBag.NoRolesForCurrentUser == true)
 {
@@ -14,6 +15,11 @@ else
    <h3><a asp-controller="Main" asp-action="AssignRoleToUser">Assign Role To User</a></h3>
    <h3><a asp-controller="Main" asp-action="CheckIfAUserIsInARole">Check If A User Is In A Role</a></h3>
    <h3><a asp-controller="Main" asp-action="AddANewProject">Add A New Project</a></h3>
-   <h3><a asp-controller="Main" asp-action="ViewAllProjects">View All Projects</a></h3>
+    <h3><a asp-controller="Main" asp-action="ViewAllProjects">View All Projects</a></h3>
+    if(Model.IsProjectManager == true)
+    {
+        <h3><a asp-controller="Main" asp-action="ViewUnfinishedTaskThatPassedDeadline" asp-route-currentUserId="@Model.Id"> View unfinished Task that passed Deadline</a></h3>
+    }
+    <h3><a asp-controller="Main" asp-action="ViewNotifications" asp-route-currentUserId="@Model.Id"> Notification(@Model.Notifications.Count())</a></h3>
 }
 
