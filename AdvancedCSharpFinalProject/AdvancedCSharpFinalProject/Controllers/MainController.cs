@@ -134,10 +134,12 @@ namespace AdvancedCSharpFinalProject.Controllers
             }
 
         }
-        public IActionResult ViewProject(int ProjectId, string? orderType)
+        public async Task<IActionResult> ViewProject(int ProjectId, string? orderType)
         {
             Project Project = _db.Project.Include(project => project.ProjectManager).First(p => p.Id == ProjectId);
             List<ProjectTask>? ProjectTasks = _db.ProjectTask.Include(t => t.Developer).Where(t => t.ProjectId == ProjectId).ToList();
+            ApplicationUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            ViewBag.currentUser = currentUser;
             List<SelectListItem> orderBySelectList = new List<SelectListItem>()
             {
                 new SelectListItem("Order By Completion", "OrderByCompletion"),
@@ -444,6 +446,7 @@ namespace AdvancedCSharpFinalProject.Controllers
             }
             return View();
         }
+        [Authorize(Roles = "Project Manager")]
         public IActionResult UpdateProject(int? projectId)
         {
             if(projectId != null)
@@ -463,6 +466,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                 return BadRequest("projectId is null");
             }
         }
+        [Authorize(Roles = "Project Manager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult UpdateProject(int? projectId, Project updatedProject)
@@ -490,6 +494,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                 return BadRequest("projectId is null");
             }
         }
+        [Authorize(Roles = "Project Manager")]
         public IActionResult DeleteWarning(int? projectId)
         {
             Project project = _db.Project.First(project => project.Id == projectId);
@@ -534,6 +539,9 @@ Create a User Manager class that has functions to manage users and roles
 Create a ProjectHelper class that contains functions to add, delete, update projects, 
 along with any other helper functions. 
 Those functions can only be accessed by project managers.
+
+Create a TaskHelper class that contains functions to add, delete, update tasks, and assign a task to a developer, 
+those functions can only be accessed by project managers.
 
 A Project manager will have a dashboard page which shows all the projects with their related tasks 
 and assigned developers, the projects with high priorities appear first.

@@ -80,30 +80,53 @@
     </div>
 
 <ul>
-    @if (Model.ProjectTasks.Count() > 0)
+    @if (Model.ProjectTasks.Any())
     {
         @foreach(ProjectTask task in Model.ProjectTasks)
         {
-            <li>
-                <a asp-action="ViewTask" asp-route-taskId=@task.Id>@task.Title</a>
                 <ul>
-                        @if(task.Developer != null)
+                        @if(ViewBag.currentUser.IsProjectManager == true)
                         {
-                        <li>Developer: @task.Developer.UserName</li>
-                        <li>Deadline: @task.Deadline</li>
-                        <li>Priority: @task.Priority</li>
-                        <li>Completion: @task.CompletionPercentage / 100</li>
+                            @if(task.Developer != null)
+                            {
+                                <a asp-action="ViewTask" asp-route-taskId=@task.Id>@task.Title</a>
+                                <li>Developer: @task.Developer.UserName</li>
+                                <li>Deadline: @task.Deadline</li>
+                                <li>Priority: @task.Priority</li>
+                                <li>Completion: @task.CompletionPercentage / 100</li>
+                            }
+                            else
+                            {
+                                <a asp-action="ViewTask" asp-route-taskId=@task.Id>@task.Title</a>
+                                <li>No Developer assigned <a asp-action="AssignTaskToDeveloper" asp-route-taskId="@task.Id">Assign Developer</a></li>
+                                <li>Deadline: @task.Deadline</li>
+                                <li>Priority: @task.Priority</li>
+                                <li>Completion: @task.CompletionPercentage / 100</li>
+                            }
                         }
-                        else
+                        else //they are Developer
                         {
-                        <li>No Developer assigned <a asp-action="AssignTaskToDeveloper" asp-route-taskId="@task.Id">Assign Developer</a></li>
-                        <li>Deadline: @task.Deadline</li>
-                        <li>Priority: @task.Priority</li>
-                        <li>Completion: @task.CompletionPercentage / 100</li>
-                        
-                        }
-                </ul>
-            </li>
+                            @if(task.Developer != null)
+                            {
+                                @if(task.DeveloperId == ViewBag.currentUser.Id) 
+                                {
+                                    <a asp-action="ViewTask" asp-route-taskId=@task.Id>@task.Title</a>
+                                    <li>Developer: @task.Developer.UserName</li>
+                                    <li>Deadline: @task.Deadline</li>
+                                    <li>Priority: @task.Priority</li>
+                                    <li>Completion: @task.CompletionPercentage / 100</li>
+                                }
+                                else 
+                                {
+                                    <div>No Tasks for @ViewBag.currentUser.UserName yet!!</div>
+
+                                }
+                            }
+                            else
+                            {
+                            }
+                    }
+                    </ul>
          }
      }
      else 
