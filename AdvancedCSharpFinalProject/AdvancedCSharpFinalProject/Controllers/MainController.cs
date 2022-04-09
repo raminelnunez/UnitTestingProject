@@ -221,14 +221,17 @@ namespace AdvancedCSharpFinalProject.Controllers
             return View();
 
         }
-        public IActionResult ViewTask(int? taskId)
+        public async Task<IActionResult> ViewTask(int? taskId)
         {
             if(taskId != null)
             {
                 try
                 {
+                    ApplicationUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+                    ViewBag.currentUser = currentUser;
                     ProjectTask taskToView = _db.ProjectTask
                         .Include(projectTask => projectTask.Developer)
+                        .Include(projectTask => projectTask.Comments)
                         .Include(projectTask => projectTask.Project).ThenInclude(project => project.ProjectManager)
                         .First(projectTask => projectTask.Id == taskId);
                     return View(taskToView);
@@ -301,6 +304,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                 return BadRequest("taskId or developerId is null");
             }
         }
+        [Authorize(Roles = "Developer, ProjectManager")]
         public IActionResult UpdateTask(int? taskId)
         {
             if(taskId != null)
@@ -324,6 +328,7 @@ namespace AdvancedCSharpFinalProject.Controllers
             }
         }
         [HttpPost]
+        [Authorize(Roles = "Developer, ProjectManager")]
         public IActionResult UpdateTask(int? taskId, ProjectTask updatedTask)
         {
             if(taskId != null)
@@ -351,6 +356,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                 return BadRequest("taskId is null at Post");
             }
         }
+        [Authorize(Roles = "Project Manager")]
         public IActionResult DeleteWarningForTask(int? taskId)
         {
             if(taskId != null)
@@ -529,6 +535,57 @@ namespace AdvancedCSharpFinalProject.Controllers
                 return BadRequest("projectId is null");
             }
         }
+        [Authorize(Roles = "Developer")]
+        public IActionResult AddCommentToTask(int? taskId, string? developerId)
+        {
+            ViewBag.taskId = taskId;
+            ViewBag.developerId = developerId;
+            return View();
+        }
+        [Authorize(Roles = "Developer")]
+        [HttpPost]
+        public async Task<IActionResult> AddCommentToTask([Bind("Content, CommentDate, ProjectTaskId, DeveloperId")] Comment newComment)
+        {
+            //ModelState.Clear();
+            ModelState.ClearValidationState("Developer");
+            ModelState.ClearValidationState("ProjectTask");
+
+            //ApplicationUser? developer = _db.Users
+            //    .Include(developer => developer.Comments)
+            //    .Include(developer => developer.ProjectTasks)
+            //    .First(user => user);
+            ApplicationUser? developer = await _userManager.FindByNameAsync(User.Identity.Name);
+
+
+            ProjectTask projectTask = _db.ProjectTask // NEEDS everything from all objects
+                .Include(projectTask => projectTask.Developer)
+                .Include(projectTask => projectTask.Project)
+                .ThenInclude(project => project.ProjectManager)
+                .Include(projectTask => projectTask.Comments)
+                .First(task => task.Id == newComment.ProjectTaskId);
+
+            newComment.Developer = developer;
+            newComment.DeveloperId = developer.Id;
+            newComment.ProjectTask = projectTask;
+
+            developer.Comments.Add(newComment);
+            projectTask.Comments.Add(newComment);
+            _db.Comment.Add(newComment);
+
+            if(TryValidateModel(newComment))
+            {
+                _db.SaveChanges();
+                return RedirectToAction("ViewTask", new {taskId = projectTask.Id});
+            }
+
+
+
+
+
+            return View();
+        }
+
+
     }
 }
 
