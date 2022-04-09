@@ -34,7 +34,7 @@ namespace AdvancedCSharpFinalProject.Models
                 var passwordHasher = new PasswordHasher<ApplicationUser>();
 
                 //user1 as a Developer
-                ApplicationUser firstUserDeveloper = new Developer()
+                ApplicationUser firstUserDeveloper = new ApplicationUser()
                 {
                     Email = "musab03@gmail.com",
                     NormalizedEmail = "MUSAB03@GMAIL.COM",
@@ -51,7 +51,7 @@ namespace AdvancedCSharpFinalProject.Models
 
 
                 //user2 as a ProjectManager and a Developer
-                ApplicationUser secondUserProjectManager = new ProjectManager() //Discriminator will say ProjectManager(because we instantiate it as a ProjectManager)
+                ApplicationUser secondUserProjectManager = new ApplicationUser() //Discriminator will say ProjectManager(because we instantiate it as a ProjectManager)
                 {
                     Email = "raminel03@gmail.com",
                     NormalizedEmail = "RAMINEL03@GMAIL.COM",

@@ -18,6 +18,7 @@ namespace AdvancedCSharpFinalProject.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Deadline { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
         public ProjectTask(Project project, string title, string description, DateTime deadline, Priority priority)
         {
@@ -27,6 +28,7 @@ namespace AdvancedCSharpFinalProject.Models
             Description = description;
             Deadline = deadline;
             Priority = priority;
+            Comments = new HashSet<Comment>();
         }
 
         public ProjectTask(Project project, ApplicationUser? developer, string title, string description, DateTime deadline, Priority priority)
@@ -39,6 +41,7 @@ namespace AdvancedCSharpFinalProject.Models
             Description = description;
             Deadline = deadline;
             Priority = priority;
+            Comments = new HashSet<Comment>();
         }
 
         public ProjectTask()

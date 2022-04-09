@@ -9,10 +9,12 @@ namespace AdvancedCSharpFinalProject.Models
         public ICollection<Project> Projects { get; set; }
         public bool IsDeveloper { get; set; }
         public bool IsProjectManager { get; set; }
+        public ICollection<Comment> Comments { get; set; }
         public ApplicationUser()
         {
             Projects = new HashSet<Project>();
             ProjectTasks = new HashSet<ProjectTask>();
+            Comments = new HashSet<Comment>();
         }
 
     }

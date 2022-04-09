@@ -41,11 +41,26 @@ namespace AdvancedCSharpFinalProject.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             //ProjectTask to Developer (Many to Many)
-            //breakTable: Note
+            //breakTable: Comment
+
+            //for Developer to Comment
+            builder.Entity<Comment>()
+                .HasOne(comment => comment.Developer)
+                .WithMany(developer => developer.Comments)
+                .HasForeignKey(comment => comment.DeveloperId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            //for ProjectTask to Comment
+            builder.Entity<Comment>()
+                .HasOne(comment => comment.ProjectTask)
+                .WithMany(projectTask => projectTask.Comments)
+                .HasForeignKey(comment => comment.ProjectTaskId)
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
 
         public DbSet<Project> Project { get; set; }
         public DbSet<ProjectTask> ProjectTask { get; set; }
+        public DbSet<Comment> Comment { get; set; }
     }
 }
