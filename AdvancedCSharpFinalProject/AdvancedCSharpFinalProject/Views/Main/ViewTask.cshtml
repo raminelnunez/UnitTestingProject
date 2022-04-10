@@ -99,7 +99,15 @@
     {
         <div>No Comments for Task yet!!</div>
     }
-    if(Model.DeveloperId == ViewBag.currentUser.Id)
+    if(Model.DeveloperId == ViewBag.currentUser.Id && ViewBag.currentUser.IsProjectManager == true)
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+          <a asp-action="AddCommentToTask" asp-route-taskId="@Model.Id" asp-route-developerId="@Model.DeveloperId">Comment</a> |  
+          <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
+         <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+         <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }else if(Model.DeveloperId == ViewBag.currentUser.Id)
     {
         <div style="margin: 2rem 0 2rem 0;">
           <a asp-action="AddCommentToTask" asp-route-taskId="@Model.Id" asp-route-developerId="@Model.DeveloperId">Comment</a> |  
@@ -119,7 +127,16 @@
 }
 else
 {
-    if(Model.DeveloperId == ViewBag.currentUser.Id)
+    if(Model.DeveloperId == ViewBag.currentUser.Id && ViewBag.currentUser.IsProjectManager == true)
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+         <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+         <a asp-action="AddNoteToTask"  asp-route-taskId="@Model.Id" asp-route-developerId="@Model.DeveloperId">Add Urgent Note</a> |
+         <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
+         <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+    else if(Model.DeveloperId == ViewBag.currentUser.Id)
     {
         <div style="margin: 2rem 0 2rem 0;">
          <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |

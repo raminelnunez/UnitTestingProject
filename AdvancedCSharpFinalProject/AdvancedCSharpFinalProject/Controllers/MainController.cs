@@ -293,6 +293,11 @@ namespace AdvancedCSharpFinalProject.Controllers
                 Project projectOfTheTask = _db.Project
                     .Include(project => project.ProjectTasks)
                     .Include(project => project.ProjectManager)
+                    .Include(project => project.ProjectTasks)
+                    .ThenInclude(task => task.Comments)
+                    .Include(project => project.ProjectTasks)
+                    .ThenInclude(task => task.Notes)
+                    .ThenInclude(note => note.Developer)
                     .First(project => project.Id == newProjectTask.ProjectId);
                 projectOfTheTask.ProjectTasks.Add(newProjectTask);
                 newProjectTask.Project = projectOfTheTask;
@@ -931,14 +936,14 @@ Add a new property to the notifications to determine if it is new or opened (unr
 Add a link called “Notifications” to the project manager dashboard which will take the manager to see all his notifications, 
 this link also shows the number of current unopened notifications.
 
-We need to support the “Budget” functionality in our Projects. 
+-->We need to support the “Budget” functionality in our Projects. 
 When you create a project, you need to provide the assigned budget to this project. 
 
 Also when you create a new User in the system, 
 you need to define the daily salary of 
 this User (e.g. developer number 4 gets paid 200$ a day, Manager Number 1 gets 1000$ for managing each project).
 
-Create a page for Project Managers where they can see the Projects that exceeded their Budgets.
+-->Create a page for Project Managers where they can see the Projects that exceeded their Budgets.
 
-When a Project is done, the Project Manager should be able to see what the total cost of this Project is.
+When a Project is done(Completed), the Project Manager should be able to see what the total cost of this Project is.
  */
