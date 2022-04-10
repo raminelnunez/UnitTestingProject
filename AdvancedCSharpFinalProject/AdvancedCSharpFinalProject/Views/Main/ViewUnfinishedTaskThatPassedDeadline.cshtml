@@ -1,0 +1,73 @@
+﻿@model IEnumerable<AdvancedCSharpFinalProject.Models.ProjectTask>
+
+@{
+    ViewData["Title"] = "ViewUnfinishedTaskThatPassedDeadline";
+}
+
+<h1>Unfinished Task That Passed Their Deadline</h1>
+
+<p>
+    <a asp-action="Index">Back To Index</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Project)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Developer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCompleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompletionPercentage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Deadline)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Project.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Developer.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority)
+            </td>
+            <td>
+                @if(item.IsCompleted == true)
+                {
+                    <div style="font-weight: bold;color: lime;">Complete</div>
+                }
+                else
+                {
+                    <div style="font-weight: bold;color: red;">Incomplete</div>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompletionPercentage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Deadline)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

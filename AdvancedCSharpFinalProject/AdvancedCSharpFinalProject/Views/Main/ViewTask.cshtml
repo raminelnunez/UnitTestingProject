@@ -123,6 +123,7 @@ else
     {
         <div style="margin: 2rem 0 2rem 0;">
          <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+         <a asp-action="AddNoteToTask"  asp-route-taskId="@Model.Id" asp-route-developerId="@Model.DeveloperId">Add Urgent Note</a> |
          <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
         </div>
     }
@@ -135,3 +136,22 @@ else
         </div>
     }
 }
+<h3>Urgent Notes</h3>
+@if(Model.Notes.Any())
+    {
+        //Show notes
+            @foreach(Note note in Model.Notes)
+            {
+                <div style="display: flex;justify-content: space-evenly;border-color: black;border-style: solid;border-radius: 2rem;background-color: aliceblue;padding: 2rem;margin-bottom: 2rem;">
+                   <div>
+                        <div style="color: brown;font-weight: bold;">@note.Content</div>
+                        <div>Date: @note.CommentDate.ToShortDateString()</div>
+
+                    </div>
+                        @if(Model.DeveloperId == ViewBag.currentUser.Id) 
+                        {
+                            <a asp-action="DeleteNote" asp-route-noteId=@note.Id>Delete</a>
+                        }
+                </div>
+            }
+    }

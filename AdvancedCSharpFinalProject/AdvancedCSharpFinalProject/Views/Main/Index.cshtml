@@ -18,8 +18,8 @@ else
     <h3><a asp-controller="Main" asp-action="ViewAllProjects">View All Projects</a></h3>
     if(Model.IsProjectManager == true)
     {
-        <h3><a asp-controller="Main" asp-action="ViewUnfinishedTaskThatPassedDeadline" asp-route-currentUserId="@Model.Id"> View unfinished Task that passed Deadline</a></h3>
+        <h3><a asp-controller="Main" asp-action="ViewUnfinishedTaskThatPassedDeadline"> View unfinished Task that passed Deadline</a></h3>
     }
-    <h3><a asp-controller="Main" asp-action="ViewNotifications" asp-route-currentUserId="@Model.Id"> Notification(@Model.Notifications.Count())</a></h3>
+    <h3 style="margin: 12rem 0rem 2rem 0rem;"><a asp-controller="Main" asp-action="ViewNotifications" asp-route-currentUserId="@Model.Id"> Notification(@Model.Notifications.Count())</a></h3>
 }
 
