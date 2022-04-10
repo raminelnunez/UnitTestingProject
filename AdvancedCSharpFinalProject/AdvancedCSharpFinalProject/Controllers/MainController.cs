@@ -28,12 +28,16 @@ namespace AdvancedCSharpFinalProject.Controllers
                 DateTime currentDate = DateTime.Now.Date;
                 ApplicationUser currentUser = _db.Users
                     .Include(user => user.Projects)
+                    .ThenInclude(project => project.ProjectTasks)
                     .Include(user => user.Notifications)
                     .Include(user => user.ProjectTasks)
                     .ThenInclude(task => task.Project)
                     .First(user => user.UserName == User.Identity.Name);
                 UserManager userManager = new UserManager(_db, _userManager, _roleManager);
                 List<string> roleNamesOfCurrentUser = userManager.GetAllRolesOfUser(currentUser.Id);// GetAllRolesOfUser method on UserManager Class
+                List<Project> allProjects = _db.Project
+                    .Include(project => project.ProjectTasks)
+                    .ToList();
                 if (roleNamesOfCurrentUser.Any())
                 {
                     ViewBag.NoRolesForCurrentUser = false;
@@ -42,7 +46,56 @@ namespace AdvancedCSharpFinalProject.Controllers
                 {
                     ViewBag.NoRolesForCurrentUser = true;
                 }
-                if(currentUser.IsDeveloper == true)
+                if(currentUser.IsProjectManager == true)
+                {
+                    if(allProjects.Any())
+                    {
+                        foreach(Project project in allProjects)
+                        {
+                            if (project.IsCompleted == true && project.IsNotified == false)
+                            {
+                                Notification notification = new Notification(currentUser, $"Project: {project.Title} has been completed ");
+                                project.IsNotified = true;
+                                _db.Notification.Add(notification);
+                                _db.SaveChanges();
+
+                            }
+                            foreach (ProjectTask task in project.ProjectTasks)
+                            {
+                                if (task.IsCompleted == true && task.IsNotified == false)
+                                {
+                                    Notification notification = new Notification(currentUser, $"Task: {task.Title} has been completed ");
+                                    task.IsNotified = true;
+                                    _db.Notification.Add(notification);
+                                    _db.SaveChanges();
+                                }
+                            }
+                            int res = DateTime.Compare(project.Deadline, DateTime.Now);
+                            if(res < 0) //This project has passed its deadline
+                            {
+                                foreach(ProjectTask task in project.ProjectTasks)
+                                {
+                                    if (task.IsCompleted == false && project.IsNotified == false)
+                                    {
+                                        Notification notification = new Notification(currentUser, $"{project.Title}: has an unfinished task Task: {task.Title}");
+                                        project.IsNotified = true;
+                                        currentUser.Notifications.Add(notification);
+                                        _db.Notification.Add(notification);
+                                        _db.SaveChanges();
+                                    }
+                                }
+
+                                //deadline is earlier than the currentDate (deadline= april 3, currentDate= april 4)
+                                //Notification notification = new Notification(currentUser, $"{project}");
+                                //-->The project manager will get a notification if a project passed a deadline with any unfinished tasks.
+                                //--> A project manager gets a notification whenever a task or a project is completed.
+                            }
+
+
+                        }
+                    }
+                }
+                if (currentUser.IsDeveloper == true)
                 {
                     if(currentUser.ProjectTasks.Any())
                     {
@@ -52,7 +105,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                             double daysLeft = (task.Deadline.Date - currentDate).TotalDays;
                             if (daysLeft <= 1 && task.IsNotified == false)
                             {
-                                Notification notification = new Notification(currentUser, $"{task.Title}: {daysLeft} day left till deadline {task.Deadline}");
+                                Notification notification = new Notification(currentUser, $"{task.Title}: deadline was {task.Deadline}");
                                 currentUser.Notifications.Add(notification);
                                 task.IsNotified = true;
                                 _db.Notification.Add(notification);
@@ -224,23 +277,18 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult CreateTask([Bind("ProjectId, Priority, Title, Description, Deadline")] ProjectTask newProjectTask)
         {
-            //Project project = _db.Project.First(p => p.Id == projectId);
-            //ProjectTask task = new ProjectTask();
-            //task = new ProjectTask(project, title, description, deadline, priority);
-            //TaskHelper taskHelper = new TaskHelper();
-            //taskHelper.AddTask(_db, task);
-
-            //return Redirect($"ViewProject?ProjectId={project.Id}");
 
             ModelState.ClearValidationState("IsCompleted");//we need to add ourselves
             ModelState.ClearValidationState("CompletionPercentage");// we need to add ourselves
             ModelState.ClearValidationState("Project");// we need to add ourselves
             ModelState.ClearValidationState("Comments");// we need to add ourselves
+            ModelState.ClearValidationState("Notes");// we need to add ourselves
             try
             {
                 newProjectTask.IsCompleted = false;
                 newProjectTask.CompletionPercentage = 0;
                 newProjectTask.Comments = new HashSet<Comment>();
+                newProjectTask.Notes = new HashSet<Note>();
 
                 Project projectOfTheTask = _db.Project
                     .Include(project => project.ProjectTasks)
@@ -278,6 +326,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                     ProjectTask taskToView = _db.ProjectTask
                         .Include(projectTask => projectTask.Developer)
                         .Include(projectTask => projectTask.Comments)
+                        .Include(projectTask => projectTask.Notes)
                         .Include(projectTask => projectTask.Project).ThenInclude(project => project.ProjectManager)
                         .First(projectTask => projectTask.Id == taskId);
                     return View(taskToView);
@@ -439,8 +488,10 @@ namespace AdvancedCSharpFinalProject.Controllers
                        .Include(task => task.Developer)
                        .Include(task => task.Project)
                        .Include(task => task.Comments)
+                       .Include(task => task.Notes)
                        .First(task => task.Id == taskId);
                     _db.Comment.RemoveRange(taskToDelete.Comments.ToList());
+                    _db.Note.RemoveRange(taskToDelete.Notes.ToList());
                     TaskHelper taskHelper = new TaskHelper();
                     taskHelper.DeleteTask(_db, taskToDelete);
                     _db.SaveChanges();
@@ -616,6 +667,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                 .Include(projectTask => projectTask.Project)
                 .ThenInclude(project => project.ProjectManager)
                 .Include(projectTask => projectTask.Comments)
+                .Include(projectTask => projectTask.Notes)
                 .First(task => task.Id == newComment.ProjectTaskId);
 
             newComment.Developer = developer;
@@ -741,7 +793,112 @@ namespace AdvancedCSharpFinalProject.Controllers
                 return BadRequest("notificationId is null at MarkNotificationAsRead");
             }
         }
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult ViewUnfinishedTaskThatPassedDeadline()
+        {
+            //-->The project manager can see a list of the tasks that are not finished yet and passed their deadline.
+            try
+            {
+                //int res = DateTime.Compare(d1, d2); compares d1 to d2
+                List<ProjectTask> unfinishedTask = new List<ProjectTask>();
+                List<ProjectTask> allTasks = _db.ProjectTask
+                    .Include(task => task.Project)
+                    .Include(task => task.Developer)
+                    .Include(task => task.Comments)
+                    .ToList();
+                foreach(ProjectTask task in allTasks)
+                {
+                    int res = DateTime.Compare(task.Deadline, DateTime.Now);
+                    if(res < 0)
+                    {
+                        //deadline is earlier than the currentDate (deadline= april 3, currentDate= april 4)
+                        if(task.IsCompleted == false)
+                        {
+                            unfinishedTask.Add(task);
+                        }
+                    }
+                    if (res == 0)
+                    {
+                        //deadline is the same as currentDate  (deadline= april 4, currentDate= april 4)
+                    }
+                    if (res > 0)
+                    {
+                        //deadline is later than currentDate (deadline= april 4, currentDate= april 3)
+                    }
+                }
+                return View(unfinishedTask);
+            }
+            catch(Exception ex)
+            {
+                return NotFound(ex.Message + " ViewUnfinishedTaskThatPassedDeadline");
+            }
 
+        }
+        [Authorize(Roles = "Developer")]
+        public IActionResult AddNoteToTask(int? taskId, string? developerId)
+        {
+            ViewBag.taskId = taskId;
+            ViewBag.developerId = developerId;
+            return View();
+        }
+        [Authorize(Roles = "Developer")]
+        [HttpPost]
+        public async Task<IActionResult> AddNoteToTask([Bind("Content, CommentDate, ProjectTaskId, DeveloperId")] Note newNote)
+        {
+            ModelState.ClearValidationState("Developer");
+            ModelState.ClearValidationState("ProjectTask");
+
+            ApplicationUser? developer = await _userManager.FindByNameAsync(User.Identity.Name);
+
+
+            ProjectTask projectTask = _db.ProjectTask // NEEDS everything from all objects
+                .Include(projectTask => projectTask.Developer)
+                .Include(projectTask => projectTask.Project)
+                .ThenInclude(project => project.ProjectManager)
+                .Include(projectTask => projectTask.Comments)
+                .Include(projectTask => projectTask.Notes)
+                .First(task => task.Id == newNote.ProjectTaskId);
+
+            newNote.Developer = developer;
+            newNote.DeveloperId = developer.Id;
+            newNote.ProjectTask = projectTask;
+
+            developer.Notes.Add(newNote);
+            projectTask.Notes.Add(newNote);
+            _db.Note.Add(newNote);
+
+            if (TryValidateModel(newNote))
+            {
+                Notification notification = new Notification(projectTask.Project.ProjectManager, $"Urgent note by {developer.UserName} for task: {projectTask.Title}");
+                projectTask.Project.ProjectManager.Notifications.Add(notification);
+                _db.Notification.Add(notification);
+                _db.SaveChanges();
+                return RedirectToAction("ViewTask", new { taskId = projectTask.Id });
+            }
+            return View();
+        }
+        [Authorize(Roles = "Developer")]
+        public IActionResult DeleteNote(int? noteId)
+        {
+            if (noteId != null)
+            {
+                try
+                {
+                    Note noteToDelete = _db.Note.First(note => note.Id == noteId);
+                    _db.Remove(noteToDelete);
+                    _db.SaveChanges();
+                    return RedirectToAction("ViewTask", new { taskId = noteToDelete.ProjectTaskId });
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("noteId was null");
+            }
+        }
 
     }
 }
@@ -766,11 +923,22 @@ they can click on this number to go to a page where they can see all the notific
 -->The project manager will get a notification if a project passed a deadline with any unfinished tasks.
 -->A project manager gets a notification whenever a task or a project is completed.
 
-Developers can leave an urgent Note to a task to mention a bug or a problem preventing them from completing the task, 
+-->Developers can leave an urgent Note to a task to mention a bug or a problem preventing them from completing the task, 
 in this case a notification is sent to the Project Manager.
 
 Add a new property to the notifications to determine if it is new or opened (unread).
 
 Add a link called “Notifications” to the project manager dashboard which will take the manager to see all his notifications, 
 this link also shows the number of current unopened notifications.
+
+We need to support the “Budget” functionality in our Projects. 
+When you create a project, you need to provide the assigned budget to this project. 
+
+Also when you create a new User in the system, 
+you need to define the daily salary of 
+this User (e.g. developer number 4 gets paid 200$ a day, Manager Number 1 gets 1000$ for managing each project).
+
+Create a page for Project Managers where they can see the Projects that exceeded their Budgets.
+
+When a Project is done, the Project Manager should be able to see what the total cost of this Project is.
  */
