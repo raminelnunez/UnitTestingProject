@@ -19,6 +19,7 @@ namespace AdvancedCSharpFinalProject.Models
         public string Description { get; set; }
         public DateTime Deadline { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<Note> Notes { get; set; }
         public bool IsNotified { get; set; }
 
         //public ProjectTask(Project project, string title, string description, DateTime deadline, Priority priority)

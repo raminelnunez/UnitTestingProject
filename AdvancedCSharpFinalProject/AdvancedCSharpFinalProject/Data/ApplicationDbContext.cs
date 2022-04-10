@@ -62,7 +62,24 @@ namespace AdvancedCSharpFinalProject.Data
                 .HasMany(user => user.Notifications)
                 .WithOne(notification => notification.TargetUser)
                 .HasForeignKey(notification => notification.TargetUserId);
-            
+
+            //ProjectTask to Developer (Many to Many)
+            //breakTable: Note
+
+            //for Developer to Comment
+            builder.Entity<Note>()
+                .HasOne(comment => comment.Developer)
+                .WithMany(developer => developer.Notes)
+                .HasForeignKey(comment => comment.DeveloperId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            //for ProjectTask to Comment
+            builder.Entity<Note>()
+                .HasOne(comment => comment.ProjectTask)
+                .WithMany(projectTask => projectTask.Notes)
+                .HasForeignKey(comment => comment.ProjectTaskId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
         }
 
@@ -70,5 +87,6 @@ namespace AdvancedCSharpFinalProject.Data
         public DbSet<ProjectTask> ProjectTask { get; set; }
         public DbSet<Comment> Comment { get; set; }
         public DbSet<Notification> Notification { get; set; }
+        public DbSet<Note> Note { get; set; }
     }
 }
