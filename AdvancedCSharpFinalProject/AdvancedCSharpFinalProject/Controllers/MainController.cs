@@ -59,7 +59,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                                 {
                                     if (task.IsCompleted == false && project.IsNotified == false)
                                     {
-                                        Notification notification = new Notification(currentUser, $"Project: <b style=\"color:purple\">{project.Title}</b>: had an unfinished Task: <b style=\"color:purple\">{task.Title}</b>");
+                                        Notification notification = new Notification(currentUser, $"Project: <b style=\"color:purple\">{project.Title}</b> passed it's deadline with an unfinished Task: <b style=\"color:purple\">{task.Title}</b>");
                                         project.IsNotified = true;
                                         currentUser.Notifications.Add(notification);
                                         _db.Notification.Add(notification);
@@ -428,7 +428,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                     taskHelper.UpdateTask(task, updatedTask);
                     if(task.IsCompleted == true)
                     {
-                        Notification notification = new Notification(task.Project.ProjectManager, $"Task: <b style=\"color:purple\">{task.Title}</b> has been completed ");
+                        Notification notification = new Notification(task.Project.ProjectManager, $"Task: <b style=\"color:purple\">{task.Title}</b> of Project: <b style=\"color:purple\">{task.Project.Title}</b> has been completed ");
                         task.Project.ProjectManager.Notifications.Add(notification);
                         _db.Notification.Add(notification);
                         _db.SaveChanges();
@@ -598,7 +598,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                                 task.IsCompleted = true;
                                 task.CompletionPercentage = 100;
                                 task.IsNotified = false;
-                                Notification notification = new Notification(task.Project.ProjectManager, $"Task: <b style=\"color:purple\">{task.Title}</b> has been completed ");
+                                Notification notification = new Notification(task.Project.ProjectManager, $"Task: <b style=\"color:purple\">{task.Title}</b> of Project: <b style=\"color:purple\">{project.Title}</b> has been completed ");
                                 task.Project.ProjectManager.Notifications.Add(notification);
                                 _db.Notification.Add(notification);
                             }
