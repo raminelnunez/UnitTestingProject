@@ -53,12 +53,7 @@
             <div class="form-group">
                 <label asp-for="AssignedBudget" class="control-label"></label>
                 <input asp-for="AssignedBudget" class="form-control" />
-                <span asp-validation-for="AssignedBudget" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ActualBudget" class="control-label"></label>
-                <input asp-for="ActualBudget" class="form-control" />
-                <span asp-validation-for="ActualBudget" class="text-danger"></span>
+                <span asp-validation-for="AssignedBudget" min=0 class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" style="margin: 2rem 0rem 2rem 0rem;"/>

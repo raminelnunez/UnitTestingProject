@@ -5,19 +5,21 @@
 }
 @model Project
 @{
-int year = DateTime.Now.Year;
+    int year = DateTime.Now.Year;
     int month = DateTime.Now.Month;
     int day = DateTime.Now.Day;
     int hour = DateTime.Now.Hour;
     int minute = DateTime.Now.Minute;
     string currentDate = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}-{(day < 10 ? "0"+day.ToString() : day.ToString())}T{(hour < 10 ? "0"+hour.ToString() : hour.ToString())}:{(minute < 10 ? "0"+minute.ToString() : minute.ToString())}";
     //"2019-02-18"
+    DateTime currentDate2 = DateTime.Now;
 }
 <h1>Make Your Project</h1>
 <div class="row">
     <div class="col-md-4">
         <form method="post" asp-action="AddANewProject">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CreatedDate" value="@DateTime.Now"/>
 
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
@@ -36,7 +38,7 @@ int year = DateTime.Now.Year;
             </div>
             <div class="form-group">
                 <label asp-for="AssignedBudget" class="control-label"></label>
-                <input asp-for="AssignedBudget" class="form-control" />
+                <input asp-for="AssignedBudget" min=0 class="form-control" />
                 <span asp-validation-for="AssignedBudget" class="text-danger"></span>
             </div>
             <div class="form-group">

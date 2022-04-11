@@ -72,7 +72,7 @@ namespace AdvancedCSharpFinalProject.Models
 
                 //A User can be a ProjectManager and a Developer
 
-                //testUser as a just a user(potential to become a Developer and ProjectManager)
+                //testUser is just a user(potential to become a Developer and ProjectManager)
                 ApplicationUser testUserDeveloper = new ApplicationUser()
                 {
                     Email = "testuser03@gmail.com",
