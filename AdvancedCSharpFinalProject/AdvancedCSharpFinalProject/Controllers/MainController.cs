@@ -52,24 +52,6 @@ namespace AdvancedCSharpFinalProject.Controllers
                     {
                         foreach(Project project in allProjects)
                         {
-                            if (project.IsCompleted == true && project.IsNotified == false)
-                            {
-                                Notification notification = new Notification(currentUser, $"Project: {project.Title} has been completed ");
-                                project.IsNotified = true;
-                                _db.Notification.Add(notification);
-                                _db.SaveChanges();
-
-                            }
-                            foreach (ProjectTask task in project.ProjectTasks)
-                            {
-                                if (task.IsCompleted == true && task.IsNotified == false)
-                                {
-                                    Notification notification = new Notification(currentUser, $"Task: {task.Title} has been completed ");
-                                    task.IsNotified = true;
-                                    _db.Notification.Add(notification);
-                                    _db.SaveChanges();
-                                }
-                            }
                             int res = DateTime.Compare(project.Deadline, DateTime.Now);
                             if(res < 0) //This project has passed its deadline
                             {
@@ -77,7 +59,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                                 {
                                     if (task.IsCompleted == false && project.IsNotified == false)
                                     {
-                                        Notification notification = new Notification(currentUser, $"{project.Title}: has an unfinished task Task: {task.Title}");
+                                        Notification notification = new Notification(currentUser, $"Project: <b style=\"color:purple\">{project.Title}</b>: had an unfinished Task: <b style=\"color:purple\">{task.Title}</b>");
                                         project.IsNotified = true;
                                         currentUser.Notifications.Add(notification);
                                         _db.Notification.Add(notification);
@@ -105,7 +87,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                             double daysLeft = (task.Deadline.Date - currentDate).TotalDays;
                             if (daysLeft <= 1 && task.IsNotified == false)
                             {
-                                Notification notification = new Notification(currentUser, $"{task.Title}: deadline was {task.Deadline}");
+                                Notification notification = new Notification(currentUser, $"Task: <b style=\"color:purple\">{task.Title}</b> of Project: <b style=\"color:purple\">{task.Project.Title}</b> deadline is near!! Deadline: <b>{task.Deadline}</b>");
                                 currentUser.Notifications.Add(notification);
                                 task.IsNotified = true;
                                 _db.Notification.Add(notification);
@@ -438,10 +420,20 @@ namespace AdvancedCSharpFinalProject.Controllers
                     ProjectTask task = _db.ProjectTask
                        .Include(task => task.Developer)
                        .Include(task => task.Project)
+                       .ThenInclude(project => project.ProjectManager)
+                       .ThenInclude(projectManager => projectManager.Notifications)
                        .First(task => task.Id == taskId);
                     TaskHelper taskHelper = new TaskHelper();
 
                     taskHelper.UpdateTask(task, updatedTask);
+                    if(task.IsCompleted == true)
+                    {
+                        Notification notification = new Notification(task.Project.ProjectManager, $"Task: <b style=\"color:purple\">{task.Title}</b> has been completed ");
+                        task.Project.ProjectManager.Notifications.Add(notification);
+                        _db.Notification.Add(notification);
+                        _db.SaveChanges();
+
+                    }
                     _db.SaveChanges();
 
                     return RedirectToAction("ViewTask", new { taskId = task.Id });
@@ -513,12 +505,14 @@ namespace AdvancedCSharpFinalProject.Controllers
                 return BadRequest("taskId is null at DeleteTask");
             }
         }
-        public IActionResult ViewAllProjects()
+        public async Task<IActionResult> ViewAllProjects()
         {
             List<Project> Projects = _db.Project
                 .Include(project => project.ProjectManager)
                 .OrderByDescending(project => project.Priority)
                 .ToList();
+            ApplicationUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            ViewBag.currentUser = currentUser;
             return View(Projects);
         }
         [Authorize(Roles = "Project Manager")]
@@ -528,7 +522,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddANewProject([Bind("Title, AssignedBudget, Deadline, Priority")] Project newProject)//Bind properties that the form will provide you
+        public async Task<IActionResult> AddANewProject([Bind("Title, AssignedBudget, Deadline, Priority, CreatedDate")] Project newProject)//Bind properties that the form will provide you
         {
             //clear validation for properties you need but will not get from the form
             ModelState.ClearValidationState("ProjectManager");
@@ -585,9 +579,31 @@ namespace AdvancedCSharpFinalProject.Controllers
             {
                 try
                 {
-                    Project project = _db.Project.First(project => project.Id == projectId);
+                    Project project = _db.Project
+                        .Include(project => project.ProjectTasks)
+                        .Include(project => project.ProjectManager)
+                        .ThenInclude(projectManager => projectManager.Notifications)
+                        .First(project => project.Id == projectId);
                     ProjectHelper projectHelper = new ProjectHelper();
                     projectHelper.UpdateProject(project, updatedProject);
+                    if (project.IsCompleted == true)
+                    {
+                        Notification notificationProject = new Notification(project.ProjectManager, $"Project: <b style=\"color:purple\">{project.Title}</b> has been completed ");
+                        project.IsNotified = true;
+                        _db.Notification.Add(notificationProject);
+                        foreach (ProjectTask task in project.ProjectTasks)
+                        {
+                            if(task.IsCompleted == false)
+                            {
+                                task.IsCompleted = true;
+                                task.CompletionPercentage = 100;
+                                task.IsNotified = false;
+                                Notification notification = new Notification(task.Project.ProjectManager, $"Task: <b style=\"color:purple\">{task.Title}</b> has been completed ");
+                                task.Project.ProjectManager.Notifications.Add(notification);
+                                _db.Notification.Add(notification);
+                            }
+                        }
+                    }
                     _db.SaveChanges();
                     ViewBag.message = $"Project: <b style=\"color:purple\">{project.Title}</b> has been updated";
                     ViewBag.action = "ViewAllProjects";
@@ -622,14 +638,17 @@ namespace AdvancedCSharpFinalProject.Controllers
                 {
                     Project projectToDelete = _db.Project
                         .Include(project => project.ProjectTasks)
-                        .ThenInclude(task => task.Comments)
                         .First(project => project.Id == projectId);
 
                     List<Comment> commentsToDelete = _db.Comment
                         .Include(comment => comment.ProjectTask)
                         .Where(comment => comment.ProjectTask.ProjectId == projectId).ToList();
+                    List<Note> notesToDelete = _db.Note
+                        .Include(comment => comment.ProjectTask)
+                        .Where(comment => comment.ProjectTask.ProjectId == projectId).ToList();
 
                     _db.Comment.RemoveRange(commentsToDelete);
+                    _db.Note.RemoveRange(notesToDelete); 
                     _db.ProjectTask.RemoveRange(projectToDelete.ProjectTasks.ToList());
 
                     ProjectHelper projectHelper = new ProjectHelper(_db);
@@ -874,7 +893,7 @@ namespace AdvancedCSharpFinalProject.Controllers
 
             if (TryValidateModel(newNote))
             {
-                Notification notification = new Notification(projectTask.Project.ProjectManager, $"Urgent note by {developer.UserName} for task: {projectTask.Title}");
+                Notification notification = new Notification(projectTask.Project.ProjectManager, $"Urgent note by <b style=\"color:purple\">{developer.UserName}</b> for task: <b style=\"color:purple\">{projectTask.Title}</b>");
                 projectTask.Project.ProjectManager.Notifications.Add(notification);
                 _db.Notification.Add(notification);
                 _db.SaveChanges();
@@ -902,6 +921,42 @@ namespace AdvancedCSharpFinalProject.Controllers
             else
             {
                 return BadRequest("noteId was null");
+            }
+        }
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult ProjectsThatExceededTheirBudgets()
+        {
+            List<Project> projectsThatExceededTheirBudget = _db.Project
+                .Include(project => project.ProjectManager)
+                .Where(project => project.ActualBudget > project.AssignedBudget).ToList();
+            return View(projectsThatExceededTheirBudget);
+        }
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult SeeActualBudget(int? projectId)
+        {
+            if(projectId != null)
+            {
+                try
+                {
+                    Project project = _db.Project
+                        .Include(project => project.ProjectTasks)
+                        .ThenInclude(task => task.Developer)
+                        .First(project => project.Id == projectId);
+                    project.ActualBudget = 0;//make it zero if it already had a value
+                    project.CalculateActualBudget();
+                    _db.SaveChanges();
+                    return RedirectToAction("ViewAllProjects");
+
+                }
+                catch(Exception ex)
+                {
+                    return NotFound(ex.Message + " at SeeActualBudget");
+                }
+
+            }
+            else
+            {
+                return BadRequest("projectId is null at SeeActualBudget");
             }
         }
 
@@ -945,5 +1000,5 @@ this User (e.g. developer number 4 gets paid 200$ a day, Manager Number 1 gets 1
 
 -->Create a page for Project Managers where they can see the Projects that exceeded their Budgets.
 
-When a Project is done(Completed), the Project Manager should be able to see what the total cost of this Project is.
+-->When a Project is done(Completed), the Project Manager should be able to see what the total cost of this Project is.
  */
