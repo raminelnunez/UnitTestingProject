@@ -1,0 +1,89 @@
+﻿@model AdvancedCSharpFinalProject.Models.ProjectTask
+
+@{
+    ViewData["Title"] = "AssignTaskToDeveloper";
+}
+
+<h1>Assign Task To Developer</h1>
+<hr />
+
+<div>
+    <h4>ProjectTask</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Project)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Project.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Developer)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.Developer == null)
+            {
+               <div style="font-weight: bold;color: grey;">Developer not assigned</div>
+            }
+            else
+            {
+               <div style="font-weight: bold;color: rebeccapurple;">@Model.Developer.UserName</div>
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Priority)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Priority)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsCompleted)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.IsCompleted == true)
+            {
+               <div style="font-weight: bold;color: lime;">Complete</div>
+            }
+            else
+            {
+               <div style="font-weight: bold;color: red;">Incomplete</div>
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CompletionPercentage)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CompletionPercentage)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Deadline)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Deadline)
+        </dd>
+    </dl>
+</div>
+<h4>Developers</h4>
+<form method="post" asp-action="AssignTaskToDeveloper">
+    <select asp-items="@ViewBag.developerList" name=developerId>
+
+    </select>
+    <input type="submit" value="Assign" class="btn btn-primary" />
+    <input type="hidden" value="@Model.Id" name="taskId"/>
+
+</form>
+<div>
+    <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+</div>

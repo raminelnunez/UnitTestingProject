@@ -27,12 +27,40 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/AddANewProject.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxBZGRBTmV3UHJvamVjdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/AddCommentToTask.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxBZGRDb21tZW50VG9UYXNrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/AddNoteToTask.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxBZGROb3RlVG9UYXNrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/AssignRoleToUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxBc3NpZ25Sb2xlVG9Vc2VyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/AssignTaskToDeveloper.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxBc3NpZ25UYXNrVG9EZXZlbG9wZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/CheckIfAUserIsInARole.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxDaGVja0lmQVVzZXJJc0luQVJvbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/CreateTask.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxDcmVhdGVUYXNrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/DeleteWarning.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxEZWxldGVXYXJuaW5nLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/DeleteWarningForTask.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxEZWxldGVXYXJuaW5nRm9yVGFzay5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/GetAllRolesForAUser.cshtml]
@@ -45,6 +73,46 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/MessageView.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxNZXNzYWdlVmlldy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/NotificationDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxOb3RpZmljYXRpb25EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ProjectsThatExceededTheirBudgets.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxQcm9qZWN0c1RoYXRFeGNlZWRlZFRoZWlyQnVkZ2V0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/SelectDailySalary.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxTZWxlY3REYWlseVNhbGFyeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/UpdateProject.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxVcGRhdGVQcm9qZWN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/UpdateTask.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxVcGRhdGVUYXNrLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewAllProjects.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxWaWV3QWxsUHJvamVjdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewNotifications.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxWaWV3Tm90aWZpY2F0aW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewProject.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxWaWV3UHJvamVjdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewTask.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxWaWV3VGFzay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Main/ViewUnfinishedTaskThatPassedDeadline.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpblxWaWV3VW5maW5pc2hlZFRhc2tUaGF0UGFzc2VkRGVhZGxpbmUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Muhammad Musab/Desktop/FinalProjectSD340/AdvancedCSharpFinalProject/AdvancedCSharpFinalProject/Views/Shared/Error.cshtml]

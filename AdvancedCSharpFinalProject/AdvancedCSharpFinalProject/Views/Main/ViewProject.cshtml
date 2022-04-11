@@ -1,0 +1,145 @@
+﻿@model AdvancedCSharpFinalProject.Models.Project
+
+@{
+    ViewData["Title"] = "ViewProject2";
+}
+
+<h1> Project: <p style="font-weight: bold;color: purple;">@Model.Title</p></h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsCompleted)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.IsCompleted == true)
+            {
+               <div style="font-weight: bold;color: lime;">Complete</div>
+            }
+            else
+            {
+               <div style="font-weight: bold;color: red;">Incomplete</div>
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Priority)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Priority)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CompletionPercentage)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CompletionPercentage)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Deadline)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Deadline)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AssignedBudget)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AssignedBudget)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ActualBudget)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ActualBudget)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ProjectManager)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ProjectManager.UserName)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <hr />
+
+    <div style="display: flex;justify-content: space-between;">
+         <h4>Tasks</h4>
+         <form method="get" asp-action="ViewProject">
+             <select asp-items="@ViewBag.orderBySelectList" name="orderType"></select>
+              <input type="submit" value="Search" class="btn btn-primary" />
+              <input type="hidden" name="ProjectId" value="@Model.Id" />
+         </form>
+    </div>
+
+<ul>
+    @if (Model.ProjectTasks.Any())
+    {
+        @foreach(ProjectTask task in Model.ProjectTasks)
+        {
+                <ul>
+                        @if(ViewBag.currentUser.IsProjectManager == true)
+                        {
+                            @if(task.Developer != null)
+                            {
+                                <a asp-action="ViewTask" asp-route-taskId=@task.Id>@task.Title</a>
+                                <li>Developer: @task.Developer.UserName</li>
+                                <li>Deadline: @task.Deadline</li>
+                                <li>Priority: @task.Priority</li>
+                                <li>Completion: @task.CompletionPercentage / 100</li>
+                            }
+                            else
+                            {
+                                <a asp-action="ViewTask" asp-route-taskId=@task.Id>@task.Title</a>
+                                <li>No Developer assigned <a asp-action="AssignTaskToDeveloper" asp-route-taskId="@task.Id">Assign Developer</a></li>
+                                <li>Deadline: @task.Deadline</li>
+                                <li>Priority: @task.Priority</li>
+                                <li>Completion: @task.CompletionPercentage / 100</li>
+                            }
+                        }
+                        else //they are Developer
+                        {
+                            @if(task.Developer != null)
+                            {
+                                @if(task.DeveloperId == ViewBag.currentUser.Id) 
+                                {
+                                    <a asp-action="ViewTask" asp-route-taskId=@task.Id>@task.Title</a>
+                                    <li>Developer: @task.Developer.UserName</li>
+                                    <li>Deadline: @task.Deadline</li>
+                                    <li>Priority: @task.Priority</li>
+                                    <li>Completion: @task.CompletionPercentage / 100</li>
+                                }
+                                else 
+                                {
+                                    <div>No Tasks for @ViewBag.currentUser.UserName yet!!</div>
+
+                                }
+                            }
+                            else
+                            {
+                            }
+                    }
+                    </ul>
+         }
+     }
+     else 
+     {
+            
+       <div>No Task for this project yet!!</div>
+     }
+
+</ul>
+
+<hr />
+</div>
+<div>
+    <a asp-action="CreateTask" asp-route-ProjectId="@Model.Id">Create A Task</a> |
+    <a asp-action="ViewAllProjects">All Projects</a>
+</div>

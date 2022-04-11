@@ -1,0 +1,95 @@
+﻿@model IEnumerable<AdvancedCSharpFinalProject.Models.Project>
+
+@{
+    ViewData["Title"] = "ProjectsThatExceededTheirBudgets";
+}
+
+<h1>Projects That Exceeded Their Budgets</h1>
+<p>
+    <a asp-action="Index">Back To Index</a>
+</p>
+
+@if(Model.Any())
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCompleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompletionPercentage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Deadline)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AssignedBudget)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActualBudget)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectManager)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @if(item.IsCompleted == true)
+                {
+                    <div style="font-weight: bold;color: lime;">Complete</div>
+                }
+                else
+                {
+                    <div style="font-weight: bold;color: red;">Incomplete</div>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompletionPercentage)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Deadline)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssignedBudget)
+            </td>
+            <td>
+               @{
+                  double decimalValueOfActualBudget = Math.Round(item.ActualBudget, 2);
+                }
+                @Html.DisplayFor(modelItem => decimalValueOfActualBudget)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectManager.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+}else 
+{
+    <div>No Projects found that exceeded their budget</div>
+}
+

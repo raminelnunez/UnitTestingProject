@@ -3,9 +3,10 @@
     "",
     "\\AdvancedCSharpFinalProject",
     "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject",
-    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data",
-    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Models"
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Controllers",
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Views",
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Views\\Main"
   ],
-  "SelectedNode": "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data\\ApplicationDbContext.cs",
+  "SelectedNode": "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Controllers\\MainController.cs",
   "PreviewInSolutionExplorer": false
 }

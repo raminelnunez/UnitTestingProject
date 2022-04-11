@@ -1,0 +1,174 @@
+﻿@model AdvancedCSharpFinalProject.Models.ProjectTask
+
+@{
+    ViewData["Title"] = "ViewTask";
+}
+
+<h1>View Task</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Project)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Project.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Developer)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.Developer == null)
+            {
+               <div style="font-weight: bold;color: grey;">Developer not assigned</div>
+            }
+            else
+            {
+               <div style="font-weight: bold;color: rebeccapurple;">@Model.Developer.UserName</div>
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Priority)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Priority)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsCompleted)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.IsCompleted == true)
+            {
+               <div style="font-weight: bold;color: lime;">Complete</div>
+            }
+            else
+            {
+               <div style="font-weight: bold;color: red;">Incomplete</div>
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CompletionPercentage)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CompletionPercentage)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Deadline)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Deadline)
+        </dd>
+    </dl>
+</div>
+@if(Model.CompletionPercentage == 100 || Model.IsCompleted == true)
+{
+    <h2>Comments</h2>
+    <hr />
+    @if(Model.Comments.Any())
+    {
+        //Show comments
+            @foreach(Comment comment in Model.Comments)
+            {
+                <div style="display: flex;justify-content: space-evenly;border-color: black;border-style: solid;border-radius: 2rem;background-color: aliceblue;padding: 2rem;margin-bottom: 2rem;">
+                   <div>
+                        <div style="color: brown;font-weight: bold;">@comment.Content</div>
+                        <div>Date: @comment.CommentDate.ToShortDateString()</div>
+
+                    </div>
+                        @if(Model.DeveloperId == ViewBag.currentUser.Id) 
+                        {
+                            <a asp-action="DeleteComment" asp-route-commentId=@comment.Id>Delete</a>
+                        }
+                </div>
+            }
+    }
+    else
+    {
+        <div>No Comments for Task yet!!</div>
+    }
+    if(Model.DeveloperId == ViewBag.currentUser.Id && ViewBag.currentUser.IsProjectManager == true)
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+          <a asp-action="AddCommentToTask" asp-route-taskId="@Model.Id" asp-route-developerId="@Model.DeveloperId">Comment</a> |  
+          <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
+         <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+         <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }else if(Model.DeveloperId == ViewBag.currentUser.Id)
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+          <a asp-action="AddCommentToTask" asp-route-taskId="@Model.Id" asp-route-developerId="@Model.DeveloperId">Comment</a> |  
+         <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+         <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+    else
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+            <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+            <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
+            <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+
+}
+else
+{
+    if(Model.DeveloperId == ViewBag.currentUser.Id && ViewBag.currentUser.IsProjectManager == true)
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+         <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+         <a asp-action="AddNoteToTask"  asp-route-taskId="@Model.Id" asp-route-developerId="@Model.DeveloperId">Add Urgent Note</a> |
+         <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
+         <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+    else if(Model.DeveloperId == ViewBag.currentUser.Id)
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+         <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+         <a asp-action="AddNoteToTask"  asp-route-taskId="@Model.Id" asp-route-developerId="@Model.DeveloperId">Add Urgent Note</a> |
+         <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+    else
+    {
+        <div style="margin: 2rem 0 2rem 0;">
+            <a asp-action="UpdateTask" asp-route-taskId="@Model.Id">Update Task</a> |
+            <a asp-action="DeleteWarningForTask" asp-route-taskId="@Model.Id">Delete</a> |
+            <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+        </div>
+    }
+}
+<h3>Urgent Notes</h3>
+@if(Model.Notes.Any())
+    {
+        //Show notes
+            @foreach(Note note in Model.Notes)
+            {
+                <div style="display: flex;justify-content: space-evenly;border-color: black;border-style: solid;border-radius: 2rem;background-color: aliceblue;padding: 2rem;margin-bottom: 2rem;">
+                   <div>
+                        <div style="color: brown;font-weight: bold;">@note.Content</div>
+                        <div>Date: @note.CommentDate.ToShortDateString()</div>
+
+                    </div>
+                        @if(Model.DeveloperId == ViewBag.currentUser.Id) 
+                        {
+                            <a asp-action="DeleteNote" asp-route-noteId=@note.Id>Delete</a>
+                        }
+                </div>
+            }
+    }

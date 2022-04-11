@@ -16,26 +16,30 @@ namespace AdvancedCSharpFinalProject.Models
             List<string> roleNames = _db.Roles.Where(roles => allRoleIdsOfUser.Contains(roles.Id)).Select(roles => roles.Name).ToList();
             return roleNames;
         }
-        public async Task<string> AssignRoleToUser(string userId, string roleForUser) //does not return anything
+        public async Task<string> AssignRoleToUser(string userId, string roleForUser, double dailySalary) //does not return anything
         {
-            string message;
-            ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database to assign the role to it 
-            User = user;
+            string message= "";
+            ApplicationUser user = await _userManager.FindByIdAsync(userId); // pull the user out of the database
 
             if (await _roleManager.RoleExistsAsync(roleForUser)) // check if role is in the database
             {
-                if (!await _userManager.IsInRoleAsync(user, roleForUser)) // check if the user is already in that role
+                if (roleForUser == "Project Manager")
                 {
-                    await _userManager.AddToRoleAsync(user, roleForUser);//if user doesn't have the role add it to the user
-                                                                         //await _userManager.RemoveFromRoleAsync(user, roleForUser);//if I were to remove a role from a user I would use this
-                    message = $"{User.UserName} is added to role {roleForUser}";
+                    user.DailySalary = dailySalary;
+                    user.IsProjectManager = true;
+                    await _userManager.AddToRoleAsync(user, roleForUser);
+                    message = $"{user.UserName} is added to the role {roleForUser}";
                     return message;
                 }
-                else
+                if (roleForUser == "Developer")
                 {
-                    message = $"{User.UserName} is already in role {roleForUser}";
+                    user.DailySalary = dailySalary;
+                    user.IsDeveloper = true;
+                    await _userManager.AddToRoleAsync(user, roleForUser);
+                    message = $"{user.UserName} is added to the role {roleForUser}";
                     return message;
                 }
+                return message;
             }
             else
             {
@@ -79,3 +83,6 @@ namespace AdvancedCSharpFinalProject.Models
         }
     }
 }
+
+//In OOP, you can't cast an instance of a parent class into a child class.
+//You can only cast a child instance into a parent that it inherits from.

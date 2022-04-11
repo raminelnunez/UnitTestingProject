@@ -1,0 +1,70 @@
+﻿@model AdvancedCSharpFinalProject.Models.ProjectTask
+
+@{
+    ViewData["Title"] = "UpdateTask";
+    int year = DateTime.Now.Year;
+    int month = DateTime.Now.Month;
+    int day = DateTime.Now.Day;
+    int hour = DateTime.Now.Hour;
+    int minute = DateTime.Now.Minute;
+    string currentDate = $"{year}-{(month < 10 ? "0"+month.ToString() : month.ToString())}-{(day < 10 ? "0"+day.ToString() : day.ToString())}T{(hour < 10 ? "0"+hour.ToString() : hour.ToString())}:{(minute < 10 ? "0"+minute.ToString() : minute.ToString())}";
+    //"2019-02-18"
+    //"2000-10-06T22:22:55"
+}
+
+<h1>Update Task</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="UpdateTask">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id"  value="@Model.Id"/>
+            <input type="hidden" name="taskId"  value="@Model.Id"/>
+            <input type="hidden" asp-for="ProjectId"  value="@Model.ProjectId"/>
+            <input type="hidden" asp-for="DeveloperId"  value="@Model.DeveloperId"/>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Priority" class="control-label"></label>
+                <select asp-for="Priority" class="form-control" asp-items="@Html.GetEnumSelectList<Priority>()"></select>
+                <span asp-validation-for="Priority" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check" style="margin: 1rem 0 1rem 0;">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsCompleted" /> @Html.DisplayNameFor(model => model.IsCompleted)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompletionPercentage" class="control-label"></label>
+                <input type="range" min="0" max="100" asp-for="CompletionPercentage" oninput="this.nextElementSibling.value = this.value"/>
+                <output>@Model.CompletionPercentage</output>
+                <span asp-validation-for="CompletionPercentage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Deadline" class="control-label"></label>
+                <input asp-for="Deadline" type="datetime-local" min="@currentDate" class="form-control" />
+                <span asp-validation-for="Deadline" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Update" class="btn btn-primary" style="margin: 2rem 0rem 2rem 0rem;"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="ViewProject" asp-route-ProjectId="@Model.ProjectId">Back to Project</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
