@@ -4,6 +4,7 @@ using AdvancedCSharpFinalProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedCSharpFinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220409193618_AddIsNotifiedpropertyToProjectTaskAndProject")]
+    partial class AddIsNotifiedpropertyToProjectTaskAndProject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,38 +130,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Note", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("DeveloperId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ProjectTaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeveloperId");
-
-                    b.HasIndex("ProjectTaskId");
-
-                    b.ToTable("Note");
-                });
-
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Notification", b =>
                 {
                     b.Property<int>("Id")
@@ -202,9 +172,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
 
                     b.Property<float>("CompletionPercentage")
                         .HasColumnType("real");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
@@ -437,25 +404,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.Navigation("ProjectTask");
                 });
 
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Note", b =>
-                {
-                    b.HasOne("AdvancedCSharpFinalProject.Models.ApplicationUser", "Developer")
-                        .WithMany("Notes")
-                        .HasForeignKey("DeveloperId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("AdvancedCSharpFinalProject.Models.ProjectTask", "ProjectTask")
-                        .WithMany("Notes")
-                        .HasForeignKey("ProjectTaskId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Developer");
-
-                    b.Navigation("ProjectTask");
-                });
-
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Notification", b =>
                 {
                     b.HasOne("AdvancedCSharpFinalProject.Models.ApplicationUser", "TargetUser")
@@ -550,8 +498,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("Notes");
-
                     b.Navigation("Notifications");
 
                     b.Navigation("ProjectTasks");
@@ -567,8 +513,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectTask", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }

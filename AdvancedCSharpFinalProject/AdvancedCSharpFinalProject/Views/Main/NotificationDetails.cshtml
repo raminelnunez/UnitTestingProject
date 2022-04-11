@@ -1,0 +1,46 @@
+﻿@model AdvancedCSharpFinalProject.Models.Notification
+
+@{
+    ViewData["Title"] = "NotificationDetails";
+}
+
+<h1>Notification Details</h1>
+<h3>Today's Date: @DateTime.Now.ToShortDateString()</h3>
+
+<div>
+    <h4>Notification</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TargetUser)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TargetUser.UserName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Message)
+        </dt>
+        <dd class = "col-sm-10">
+            <div>@Html.Raw(Model.Message)</div>
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsRead)
+        </dt>
+        <dd class = "col-sm-10">
+              @if(Model.IsRead == true) 
+                {
+                    <div style="font-weight: bold;color: lime;">Read</div>
+                }
+                else 
+                {
+                    <div style="font-weight: bold;color: red;">UnRead</div>
+                }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="ViewNotifications" asp-route-currentUserId="@Model.TargetUserId">All Notifications</a> |
+    <a asp-action="Index">Back to Index</a> |
+    <a asp-action="MarkNotificationAsRead" asp-route-notificationId="@Model.Id">Mark as Read</a>
+
+</div>

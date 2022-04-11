@@ -1,0 +1,56 @@
+﻿@model IEnumerable<AdvancedCSharpFinalProject.Models.Notification>
+
+@{
+    ViewData["Title"] = "ViewNotifications";
+}
+
+<h1>View Notifications</h1>
+<p>
+    <a asp-action="Index">Back to Index</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TargetUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsRead)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+@if(Model.Any()) 
+{
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TargetUser.UserName)
+            </td>
+            <td>
+                @if(item.IsRead == true) 
+                {
+                    <div style="font-weight: bold;color: lime;">Read</div>
+                }
+                else 
+                {
+                    <div style="font-weight: bold;color: red;">UnRead</div>
+                }
+            </td>
+            <td>
+                <a asp-action="NotificationDetails" asp-route-notificationId="@item.Id">Details</a> |
+                <a asp-action="DeleteNotification" asp-route-notificationId="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+
+}
+else 
+{
+    <div>No Notification for you yet!!</div>
+}
+   </tbody>
+</table>

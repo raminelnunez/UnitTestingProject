@@ -25,22 +25,16 @@ namespace AdvancedCSharpFinalProject.Models
             {
                 if (roleForUser == "Project Manager")
                 {
-                    if (user.DailySalary != 0)
-                    {
-                        await _userManager.AddToRoleAsync(user, "Developer");
-                    }
                     user.DailySalary = dailySalary;
+                    user.IsProjectManager = true;
                     await _userManager.AddToRoleAsync(user, roleForUser);
                     message = $"{user.UserName} is added to the role {roleForUser}";
                     return message;
                 }
                 if (roleForUser == "Developer")
                 {
-                    if (user.DailySalary != 0)
-                    {
-                        await _userManager.AddToRoleAsync(user, "Project Manager");
-                    }
                     user.DailySalary = dailySalary;
+                    user.IsDeveloper = true;
                     await _userManager.AddToRoleAsync(user, roleForUser);
                     message = $"{user.UserName} is added to the role {roleForUser}";
                     return message;

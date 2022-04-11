@@ -1,0 +1,36 @@
+﻿@model AdvancedCSharpFinalProject.Models.Comment
+
+@{
+    ViewData["Title"] = "AddCommentToTask";
+}
+
+<h1>AddCommentToTask</h1>
+
+<h4>Comment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method=post asp-action="AddCommentToTask">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="DeveloperId" value="@ViewBag.developerId"/>
+            <input type="hidden" asp-for="ProjectTaskId" value="@ViewBag.taskId"/>
+            <input type="hidden" asp-for="CommentDate" value="@DateTime.Now"/>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <textarea asp-for="Content" class="form-control"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" style="margin: 2rem 0rem 2rem 0rem;"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -19,7 +19,7 @@ namespace AdvancedCSharpFinalProject.Data
             builder.Entity<ProjectTask>().HasKey(projectTask => projectTask.Id);
 
             //ProjectManager to Project (One To Many)
-            builder.Entity<ProjectManager>()
+            builder.Entity<ApplicationUser>()
                 .HasMany(projectManager => projectManager.Projects)
                 .WithOne(project => project.ProjectManager)
                 .HasForeignKey(project => project.ProjectManagerId);
@@ -41,11 +41,52 @@ namespace AdvancedCSharpFinalProject.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             //ProjectTask to Developer (Many to Many)
+            //breakTable: Comment
+
+            //for Developer to Comment
+            builder.Entity<Comment>()
+                .HasOne(comment => comment.Developer)
+                .WithMany(developer => developer.Comments)
+                .HasForeignKey(comment => comment.DeveloperId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            //for ProjectTask to Comment
+            builder.Entity<Comment>()
+                .HasOne(comment => comment.ProjectTask)
+                .WithMany(projectTask => projectTask.Comments)
+                .HasForeignKey(comment => comment.ProjectTaskId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            //Notification to ApplicationUser (One To Many)
+            builder.Entity<ApplicationUser>()
+                .HasMany(user => user.Notifications)
+                .WithOne(notification => notification.TargetUser)
+                .HasForeignKey(notification => notification.TargetUserId);
+
+            //ProjectTask to Developer (Many to Many)
             //breakTable: Note
+
+            //for Developer to Comment
+            builder.Entity<Note>()
+                .HasOne(comment => comment.Developer)
+                .WithMany(developer => developer.Notes)
+                .HasForeignKey(comment => comment.DeveloperId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            //for ProjectTask to Comment
+            builder.Entity<Note>()
+                .HasOne(comment => comment.ProjectTask)
+                .WithMany(projectTask => projectTask.Notes)
+                .HasForeignKey(comment => comment.ProjectTaskId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
         }
 
         public DbSet<Project> Project { get; set; }
         public DbSet<ProjectTask> ProjectTask { get; set; }
+        public DbSet<Comment> Comment { get; set; }
+        public DbSet<Notification> Notification { get; set; }
+        public DbSet<Note> Note { get; set; }
     }
 }

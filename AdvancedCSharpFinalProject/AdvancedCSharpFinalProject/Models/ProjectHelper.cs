@@ -9,10 +9,9 @@ namespace AdvancedCSharpFinalProject.Models
         public ApplicationUser ProjectManager { get; set; }
         public Project AddProject(Project newProject)
         {
-            ProjectManager projectManager = new ProjectManager(ProjectManager);
 
-            newProject.ProjectManager = projectManager; //only accepts ProjectManager object not ApplicationUser
-            newProject.ProjectManagerId = projectManager.Id;
+            newProject.ProjectManager = ProjectManager; //only accepts ProjectManager object not ApplicationUser
+            newProject.ProjectManagerId = ProjectManager.Id;
             ProjectManager.Projects.Add(newProject);
 
             newProject.ProjectTasks = new HashSet<ProjectTask>();
@@ -31,6 +30,7 @@ namespace AdvancedCSharpFinalProject.Models
             project.Deadline = updatedProject.Deadline;
             project.IsCompleted = updatedProject.IsCompleted;
             project.Priority = updatedProject.Priority;
+            project.IsNotified = false;
             if(updatedProject.IsCompleted == true)
             {
                 project.CompletionPercentage = 100;

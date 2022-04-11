@@ -34,14 +34,15 @@ namespace AdvancedCSharpFinalProject.Models
                 var passwordHasher = new PasswordHasher<ApplicationUser>();
 
                 //user1 as a Developer
-                ApplicationUser firstUserDeveloper = new Developer()
+                ApplicationUser firstUserDeveloper = new ApplicationUser()
                 {
                     Email = "musab03@gmail.com",
                     NormalizedEmail = "MUSAB03@GMAIL.COM",
                     UserName = "musab03@gmail.com",
                     NormalizedUserName = "MUSAB03@GMAIL.COM",
                     EmailConfirmed = true,
-                    DailySalary = 100
+                    DailySalary = 100,
+                    IsDeveloper = true,
                 };
                 var firstUserDeveloperHashedPassword = passwordHasher.HashPassword(firstUserDeveloper, "Pass@12");
                 firstUserDeveloper.PasswordHash = firstUserDeveloperHashedPassword;
@@ -50,14 +51,17 @@ namespace AdvancedCSharpFinalProject.Models
 
 
                 //user2 as a ProjectManager and a Developer
-                ApplicationUser secondUserProjectManager = new ProjectManager() //Discriminator will say ProjectManager(because we instantiate it as a ProjectManager)
+                ApplicationUser secondUserProjectManager = new ApplicationUser() //Discriminator will say ProjectManager(because we instantiate it as a ProjectManager)
                 {
                     Email = "raminel03@gmail.com",
                     NormalizedEmail = "RAMINEL03@GMAIL.COM",
                     UserName = "raminel03@gmail.com",
                     NormalizedUserName = "RAMINEL03@GMAIL.COM",
                     EmailConfirmed = true,
-                    DailySalary= 100 //Developer.DailySalary
+                    DailySalary = 100,//Developer.DailySalary
+                    IsProjectManager = true,
+                    IsDeveloper = true,
+
                 };
                 var secondUserProjectManagerHashedPassword = passwordHasher.HashPassword(secondUserProjectManager, "Pass@12");
                 secondUserProjectManager.PasswordHash = secondUserProjectManagerHashedPassword;
@@ -68,7 +72,7 @@ namespace AdvancedCSharpFinalProject.Models
 
                 //A User can be a ProjectManager and a Developer
 
-                //testUser as a just a user(potential to become a Developer and ProjectManager)
+                //testUser is just a user(potential to become a Developer and ProjectManager)
                 ApplicationUser testUserDeveloper = new ApplicationUser()
                 {
                     Email = "testuser03@gmail.com",

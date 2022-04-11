@@ -4,6 +4,7 @@ using AdvancedCSharpFinalProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedCSharpFinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220408043725_ChangeProjectManagerAndDeveloperToApplicationUser")]
+    partial class ChangeProjectManagerAndDeveloperToApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,6 +38,10 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
 
                     b.Property<double>("DailySalary")
                         .HasColumnType("float");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -94,96 +100,8 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
 
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("DeveloperId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ProjectTaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeveloperId");
-
-                    b.HasIndex("ProjectTaskId");
-
-                    b.ToTable("Comment");
-                });
-
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Note", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("DeveloperId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ProjectTaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeveloperId");
-
-                    b.HasIndex("ProjectTaskId");
-
-                    b.ToTable("Note");
-                });
-
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TargetUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TargetUserId");
-
-                    b.ToTable("Notification");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
@@ -203,16 +121,10 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.Property<float>("CompletionPercentage")
                         .HasColumnType("real");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsNotified")
                         .HasColumnType("bit");
 
                     b.Property<int>("Priority")
@@ -256,9 +168,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsNotified")
                         .HasColumnType("bit");
 
                     b.Property<int>("Priority")
@@ -418,53 +327,11 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Comment", b =>
+            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Developer", b =>
                 {
-                    b.HasOne("AdvancedCSharpFinalProject.Models.ApplicationUser", "Developer")
-                        .WithMany("Comments")
-                        .HasForeignKey("DeveloperId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.HasBaseType("AdvancedCSharpFinalProject.Models.ApplicationUser");
 
-                    b.HasOne("AdvancedCSharpFinalProject.Models.ProjectTask", "ProjectTask")
-                        .WithMany("Comments")
-                        .HasForeignKey("ProjectTaskId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Developer");
-
-                    b.Navigation("ProjectTask");
-                });
-
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Note", b =>
-                {
-                    b.HasOne("AdvancedCSharpFinalProject.Models.ApplicationUser", "Developer")
-                        .WithMany("Notes")
-                        .HasForeignKey("DeveloperId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("AdvancedCSharpFinalProject.Models.ProjectTask", "ProjectTask")
-                        .WithMany("Notes")
-                        .HasForeignKey("ProjectTaskId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Developer");
-
-                    b.Navigation("ProjectTask");
-                });
-
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Notification", b =>
-                {
-                    b.HasOne("AdvancedCSharpFinalProject.Models.ApplicationUser", "TargetUser")
-                        .WithMany("Notifications")
-                        .HasForeignKey("TargetUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TargetUser");
+                    b.HasDiscriminator().HasValue("Developer");
                 });
 
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
@@ -548,12 +415,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
 
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Notes");
-
-                    b.Navigation("Notifications");
-
                     b.Navigation("ProjectTasks");
 
                     b.Navigation("Projects");
@@ -562,13 +423,6 @@ namespace AdvancedCSharpFinalProject.Data.Migrations
             modelBuilder.Entity("AdvancedCSharpFinalProject.Models.Project", b =>
                 {
                     b.Navigation("ProjectTasks");
-                });
-
-            modelBuilder.Entity("AdvancedCSharpFinalProject.Models.ProjectTask", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }
