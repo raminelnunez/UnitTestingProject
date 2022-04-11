@@ -21,27 +21,37 @@ namespace AdvancedCSharpFinalProject.Models
         public string ProjectManagerId { get; set; }
         public ICollection<ProjectTask> ProjectTasks { get; set; }
         public bool IsNotified { get; set; }
+        [Display(Name = "Date Created")]
+        public DateTime CreatedDate { get; set; }
         public void CalculateActualBudget()
         {
-            ProjectTasks.ToList().ForEach(projectTask => ActualBudget += projectTask.Developer.DailySalary);
+            double totalDaysWork = (DateTime.Now - CreatedDate).TotalDays;
+            foreach(ProjectTask task in ProjectTasks)
+            {
+                if(task.Developer != null)
+                {
+                    double totalIncomeForDeveloper = task.Developer.DailySalary * totalDaysWork;
+                    ActualBudget += totalIncomeForDeveloper;
+                }
+            }
         }
-        public Project(ApplicationUser projectManager, string title, double assignedBudget, Priority priority, DateTime deadline)
-        {
-            ProjectManager = projectManager;
-            ProjectManagerId = projectManager.Id;
-            Title = title;
-            AssignedBudget = assignedBudget;
-            Priority = priority;
-            Deadline = deadline;
-            ProjectTasks = new HashSet<ProjectTask>();
-            IsCompleted = false;
-            CompletionPercentage = 0;
-            ActualBudget = 0;
-        }
-        public Project()
-        {
+        //public Project(ApplicationUser projectManager, string title, double assignedBudget, Priority priority, DateTime deadline)
+        //{
+        //    ProjectManager = projectManager;
+        //    ProjectManagerId = projectManager.Id;
+        //    Title = title;
+        //    AssignedBudget = assignedBudget;
+        //    Priority = priority;
+        //    Deadline = deadline;
+        //    ProjectTasks = new HashSet<ProjectTask>();
+        //    IsCompleted = false;
+        //    CompletionPercentage = 0;
+        //    ActualBudget = 0;
+        //}
+        //public Project()
+        //{
 
-        }
+        //}
     }
 }
 
