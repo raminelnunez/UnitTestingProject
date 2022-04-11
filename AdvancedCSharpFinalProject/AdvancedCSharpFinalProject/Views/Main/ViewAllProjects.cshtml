@@ -74,16 +74,32 @@
                 @Html.DisplayFor(modelItem => project.AssignedBudget)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => project.ActualBudget)
+                @{
+                    double decimalValueOfActualBudget = Math.Round(project.ActualBudget, 2);
+                }
+                @Html.DisplayFor(modelItem => decimalValueOfActualBudget)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => project.ProjectManager.UserName)
             </td>
-            <td>
+            @if(ViewBag.currentUser.IsProjectManager == true && project.IsCompleted == true) 
+            {
+              <td>
+                <a asp-action="UpdateProject" asp-route-projectId="@project.Id">Update</a> |
+                <a asp-action="SeeActualBudget" asp-route-projectId="@project.Id">See Actual Budget</a> |
+                <a asp-action="ViewProject" asp-route-ProjectId="@project.Id">Details</a> |
+                <a asp-action="DeleteWarning" asp-route-projectId="@project.Id">Delete</a>
+             </td>
+            }
+            else 
+            {
+              <td>
                 <a asp-action="UpdateProject" asp-route-projectId="@project.Id">Update</a> |
                 <a asp-action="ViewProject" asp-route-ProjectId="@project.Id">Details</a> |
                 <a asp-action="DeleteWarning" asp-route-projectId="@project.Id">Delete</a>
-            </td>
+             </td>
+            }
+
         </tr>
 }
     </tbody>
