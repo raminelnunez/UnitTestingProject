@@ -1,1 +1,1 @@
-#Checkea el folder "instrucciones"
+Checkea el folder "instrucciones"
