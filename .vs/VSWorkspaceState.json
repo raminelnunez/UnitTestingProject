@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\AdvancedCSharpFinalProject",
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject",
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Controllers"
   ],
-  "SelectedNode": "\\AdvancedCSharpFinalProject.sln",
+  "SelectedNode": "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Controllers\\MainController.cs",
   "PreviewInSolutionExplorer": false
 }

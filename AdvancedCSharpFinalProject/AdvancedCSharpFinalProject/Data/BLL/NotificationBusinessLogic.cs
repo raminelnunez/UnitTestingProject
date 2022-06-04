@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdvancedCSharpFinalProject.Data.BLL
 {
-	public class TicketBusinessLogic
+	public class NotificationBusinessLogic
 	{
 		public NotificationRepository repo;
 
-        public TicketBusinessLogic(NotificationRepository repository)
+        public NotificationBusinessLogic(NotificationRepository repository)
 			{
 				repo = repository;
 			}
 
-		public TicketBusinessLogic()
+		public NotificationBusinessLogic()
         {
 			
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using AdvancedCSharpFinalProject.Data;
 using AdvancedCSharpFinalProject.Data.DAL;
 using AdvancedCSharpFinalProject.Models;
 using Microsoft.AspNetCore.Identity;
@@ -9,8 +10,8 @@ namespace AdvancedCSharpFinalProject.Data.BLL
     public class ProjectBusinessLogic
     {
         public ProjectRepository ProjectRepo { get; set; }
-        public NotificationRepository TicketRepo { get; set; }
-        public TicketBusinessLogic TicketBLL { get; set; }
+        public NotificationRepository NotificationRepo { get; set; }
+        public NotificationBusinessLogic TicketBLL { get; set; }
         public UserManager<ApplicationUser> _userManager { get; set; }
 
         // CONSTRUCTORS

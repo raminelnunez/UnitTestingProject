@@ -36,10 +36,10 @@ namespace AdvancedCSharpFinalProject.Models
                 //user1 as a Developer
                 ApplicationUser firstUserDeveloper = new ApplicationUser()
                 {
-                    Email = "musab03@gmail.com",
-                    NormalizedEmail = "MUSAB03@GMAIL.COM",
-                    UserName = "musab03@gmail.com",
-                    NormalizedUserName = "MUSAB03@GMAIL.COM",
+                    Email = "musab@gmail.com",
+                    NormalizedEmail = "MUSAB@GMAIL.COM",
+                    UserName = "musab@gmail.com",
+                    NormalizedUserName = "MUSAB@GMAIL.COM",
                     EmailConfirmed = true,
                     DailySalary = 100,
                     IsDeveloper = true,
@@ -53,10 +53,10 @@ namespace AdvancedCSharpFinalProject.Models
                 //user2 as a ProjectManager and a Developer
                 ApplicationUser secondUserProjectManager = new ApplicationUser() //Discriminator will say ProjectManager(because we instantiate it as a ProjectManager)
                 {
-                    Email = "raminel03@gmail.com",
-                    NormalizedEmail = "RAMINEL03@GMAIL.COM",
-                    UserName = "raminel03@gmail.com",
-                    NormalizedUserName = "RAMINEL03@GMAIL.COM",
+                    Email = "raminel@gmail.com",
+                    NormalizedEmail = "RAMINEL@GMAIL.COM",
+                    UserName = "raminel@gmail.com",
+                    NormalizedUserName = "RAMINEL@GMAIL.COM",
                     EmailConfirmed = true,
                     DailySalary = 100,//Developer.DailySalary
                     IsProjectManager = true,
@@ -75,10 +75,10 @@ namespace AdvancedCSharpFinalProject.Models
                 //testUser is just a user(potential to become a Developer and ProjectManager)
                 ApplicationUser testUserDeveloper = new ApplicationUser()
                 {
-                    Email = "testuser03@gmail.com",
-                    NormalizedEmail = "TESTUSER03@GMAIL.COM",
-                    UserName = "testuser03@gmail.com",
-                    NormalizedUserName = "TESTUSER03@GMAIL.COM",
+                    Email = "testuser01@gmail.com",
+                    NormalizedEmail = "TESTUSER01@GMAIL.COM",
+                    UserName = "testuser01@gmail.com",
+                    NormalizedUserName = "TESTUSER01@GMAIL.COM",
                     EmailConfirmed = true,
                 };
                 var testUserDeveloperHashedPassword = passwordHasher.HashPassword(testUserDeveloper, "Pass@12");
