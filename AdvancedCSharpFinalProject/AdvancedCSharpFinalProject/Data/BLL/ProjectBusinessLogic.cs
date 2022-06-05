@@ -11,7 +11,7 @@ namespace AdvancedCSharpFinalProject.Data.BLL
     {
         public ProjectRepository ProjectRepo { get; set; }
         public NotificationRepository NotificationRepo { get; set; }
-        public NotificationBusinessLogic TicketBLL { get; set; }
+        public TicketBusinessLogic TicketBLL { get; set; }
         public UserManager<ApplicationUser> _userManager { get; set; }
 
         // CONSTRUCTORS

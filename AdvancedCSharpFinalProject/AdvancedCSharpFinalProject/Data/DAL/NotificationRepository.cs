@@ -9,7 +9,6 @@ namespace AdvancedCSharpFinalProject.Data
 	{
         private ApplicationDbContext _db { get; set; }
 
-        // Constructors
         public NotificationRepository(ApplicationDbContext db)
         {
             _db = db;
@@ -20,15 +19,12 @@ namespace AdvancedCSharpFinalProject.Data
 
         }
 
-        // CRUD
 
-        // CREATE
-        public virtual void CreateProject(Notification notification)
+        public virtual void Add(Notification notification)
         {
             _db.Notification.Add(notification);
         }
 
-        // READ
         public virtual Notification Get(int id)
         {
             var Notification = _db.Notification.First(n => n.Id == id);
@@ -54,19 +50,15 @@ namespace AdvancedCSharpFinalProject.Data
             return Notifications.Where(whereFunction).ToList();
         }
 
-        // UPDATE
         public virtual void Update(Notification notification)
         {
             _db.Notification.Update(notification);
         }
-
-        // DELETE
         public virtual void Remove(Notification notification)
         {
             _db.Notification.Remove(notification);
         }
 
-        // SAVE
         public virtual void Save()
         {
             _db.SaveChanges();

@@ -21,15 +21,11 @@ namespace AdvancedCSharpFinalProject.Data.DAL
 
         }
 
-        // CRUD
-
-        // CREATE
-        public virtual void CreateProject(Project project)
+        public virtual void Add(Project project)
         {
             _db.Project.Add(project);
         }
 
-        // READ
         public virtual Project Get(int id)
         {
             var Project = _db.Project.First(p => p.Id == id);
@@ -38,6 +34,19 @@ namespace AdvancedCSharpFinalProject.Data.DAL
             return Project;
         }
 
+        public virtual Project GetProjectForCreateTask(int ProjectId)
+        {
+            Project ProjectToReturn =_db.Project
+                    .Include(project => project.ProjectTasks)
+                    .Include(project => project.ProjectManager)
+                    .Include(project => project.ProjectTasks)
+                    .ThenInclude(task => task.Comments)
+                    .Include(project => project.ProjectTasks)
+                    .ThenInclude(task => task.Notes)
+                    .ThenInclude(note => note.Developer)
+                    .First(project => project.Id == ProjectId);
+            return ProjectToReturn;
+        }
         public virtual ICollection<Project> GetAll()
         {
             var Projects = _db.Project.Include(p => p.ProjectManager).Include(p => p.ProjectTasks).ThenInclude(t => t.Developer);
@@ -56,19 +65,16 @@ namespace AdvancedCSharpFinalProject.Data.DAL
             return Projects.Where(whereFunction).ToList();
         }
 
-        // UPDATE
         public virtual void Update(Project project)
         {
             _db.Project.Update(project);
         }
 
-        // DELETE
         public virtual void Remove(Project project)
         {
             _db.Project.Remove(project);
         }
 
-        // SAVE
         public virtual void Save()
         {
             _db.SaveChanges();

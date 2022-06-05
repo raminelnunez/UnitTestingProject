@@ -3,7 +3,10 @@
     "",
     "\\AdvancedCSharpFinalProject",
     "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject",
-    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Controllers"
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Controllers",
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data",
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data\\BLL",
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data\\DAL"
   ],
   "SelectedNode": "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Controllers\\MainController.cs",
   "PreviewInSolutionExplorer": false

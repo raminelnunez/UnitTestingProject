@@ -1,4 +1,5 @@
 ﻿using AdvancedCSharpFinalProject.Data;
+using AdvancedCSharpFinalProject.Data.DAL;
 using AdvancedCSharpFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,11 +16,19 @@ namespace AdvancedCSharpFinalProject.Controllers
         private ApplicationDbContext _db { get; set; }
         private UserManager<ApplicationUser> _userManager { get; set; }
         private RoleManager<IdentityRole> _roleManager { get; set; }
-        public MainController(ApplicationDbContext Db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
-        {
+        private ProjectRepository _projectRepo { get; set; }
+        private NotificationRepository _notificationRepo { get; set; }
+        public MainController(  ApplicationDbContext Db, 
+                                UserManager<ApplicationUser> userManager, 
+                                RoleManager<IdentityRole> roleManager, 
+                                ProjectRepository projectRepo, 
+                                NotificationRepository notificationRepo
+        ){
             _db = Db;
             _userManager = userManager;
             _roleManager = roleManager;
+            _projectRepo = projectRepo;
+            _notificationRepo = notificationRepo;
         }
         public async Task<IActionResult> Index()
         {
@@ -35,9 +44,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                     .First(user => user.UserName == User.Identity.Name);
                 UserManager userManager = new UserManager(_db, _userManager, _roleManager);
                 List<string> roleNamesOfCurrentUser = userManager.GetAllRolesOfUser(currentUser.Id);// GetAllRolesOfUser method on UserManager Class
-                List<Project> allProjects = _db.Project
-                    .Include(project => project.ProjectTasks)
-                    .ToList();
+                List<Project> allProjects = (List<Project>)_projectRepo.GetAll();
                 if (roleNamesOfCurrentUser.Any())
                 {
                     ViewBag.NoRolesForCurrentUser = false;
@@ -62,8 +69,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                                         Notification notification = new Notification(currentUser, $"Project: <b style=\"color:purple\">{project.Title}</b> passed it's deadline with an unfinished Task: <b style=\"color:purple\">{task.Title}</b>");
                                         project.IsNotified = true;
                                         currentUser.Notifications.Add(notification);
-                                        _db.Notification.Add(notification);
-                                        _db.SaveChanges();
+                                        _notificationRepo.Add(notification);
+                                        _notificationRepo.Save();
                                     }
                                 }
 
@@ -90,8 +97,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                                 Notification notification = new Notification(currentUser, $"Task: <b style=\"color:purple\">{task.Title}</b> of Project: <b style=\"color:purple\">{task.Project.Title}</b> deadline is near!! Deadline: <b>{task.Deadline}</b>");
                                 currentUser.Notifications.Add(notification);
                                 task.IsNotified = true;
-                                _db.Notification.Add(notification);
-                                _db.SaveChanges();
+                                _notificationRepo.Add(notification);
+                                _notificationRepo.Save();
                             }
                         }
                     }
@@ -207,8 +214,8 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         public async Task<IActionResult> ViewProject(int ProjectId, string? orderType)
         {
-            Project Project = _db.Project.Include(project => project.ProjectManager).First(p => p.Id == ProjectId);
-            List<ProjectTask>? ProjectTasks = _db.ProjectTask.Include(t => t.Developer).Where(t => t.ProjectId == ProjectId).ToList();
+            Project Project = _projectRepo.Get(ProjectId);
+            List<ProjectTask>? ProjectTasks = (List<ProjectTask>?)Project.ProjectTasks;
             ApplicationUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
             ViewBag.currentUser = currentUser;
             List<SelectListItem> orderBySelectList = new List<SelectListItem>()
@@ -249,7 +256,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult CreateTask(int ProjectId)
         {
-            Project project = _db.Project.First(project => project.Id == ProjectId);
+            Project project = _projectRepo.Get(ProjectId);
             ViewBag.ProjectTitle = project.Title;
             ViewBag.ProjectId = ProjectId;
             return View();
@@ -272,24 +279,15 @@ namespace AdvancedCSharpFinalProject.Controllers
                 newProjectTask.Comments = new HashSet<Comment>();
                 newProjectTask.Notes = new HashSet<Note>();
 
-                Project projectOfTheTask = _db.Project
-                    .Include(project => project.ProjectTasks)
-                    .Include(project => project.ProjectManager)
-                    .Include(project => project.ProjectTasks)
-                    .ThenInclude(task => task.Comments)
-                    .Include(project => project.ProjectTasks)
-                    .ThenInclude(task => task.Notes)
-                    .ThenInclude(note => note.Developer)
-                    .First(project => project.Id == newProjectTask.ProjectId);
+                Project projectOfTheTask = _projectRepo.GetProjectForCreateTask(newProjectTask.ProjectId);
                 projectOfTheTask.ProjectTasks.Add(newProjectTask);
                 newProjectTask.Project = projectOfTheTask;
 
-                TaskHelper taskHelper = new TaskHelper();
-                taskHelper.AddTask(_db, newProjectTask);
+                _projectRepo.Update(projectOfTheTask);
 
                 if (TryValidateModel(newProjectTask))
                 {
-                    _db.SaveChanges();
+                    _projectRepo.Save();
                     return RedirectToAction("ViewProject", new { ProjectId = projectOfTheTask.Id });
                 }
                 return View();
@@ -298,8 +296,6 @@ namespace AdvancedCSharpFinalProject.Controllers
             {
                 return NotFound(ex.Message);
             }
-
-
 
         }
         public async Task<IActionResult> ViewTask(int? taskId)
