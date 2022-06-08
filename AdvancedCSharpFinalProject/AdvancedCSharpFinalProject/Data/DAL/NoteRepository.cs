@@ -26,7 +26,6 @@ namespace AdvancedCSharpFinalProject.Data.DAL
         {
             _db.Note.Add(note);
         }
-
         public virtual Note Get(int id)
         {
             var Note = _db.Note.Include(n => n.ProjectTask).Include(n => n.Developer).First(x => x.Id == id);

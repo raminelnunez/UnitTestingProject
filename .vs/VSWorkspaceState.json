@@ -6,7 +6,8 @@
     "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Controllers",
     "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data",
     "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data\\BLL",
-    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data\\DAL"
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Data\\DAL",
+    "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Models"
   ],
   "SelectedNode": "\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\Controllers\\MainController.cs",
   "PreviewInSolutionExplorer": false

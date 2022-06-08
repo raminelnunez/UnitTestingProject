@@ -7,11 +7,11 @@ namespace AdvancedCSharpFinalProject.Data.BLL
 {
 	public class NotificationBusinessLogic
 	{
-		public NotificationRepository repo;
+		public NotificationRepository NotificationRepo;
 
         public NotificationBusinessLogic(NotificationRepository repository)
 			{
-				repo = repository;
+				NotificationRepo = repository;
 			}
 
 		public NotificationBusinessLogic()
@@ -19,110 +19,176 @@ namespace AdvancedCSharpFinalProject.Data.BLL
 			
         }
 
-		public List<Ticket> GetAll()
-			{
-				return repo.GetAll().ToList();
-			}
-		public void AddTicket(Ticket ticket)
+		public void LoadNotifications(Project project, ApplicationUser currentUser, ProjectTask task)
         {
-			repo.Add(ticket);
-			repo.Save();
-        }
-
-		public TicketComment AddComment(int id, string comment, DateTime createdDate, AppUser user)
-        {
-			Ticket ticket = repo.Get(id);
-			if(ticket == null || id == null || comment == null || comment == string.Empty)
+            if (task.IsCompleted == false && project.IsNotified == false)
             {
-				throw new Exception("Please input correct values");
-			}
-			TicketComment NewComment = new TicketComment
-			{
-				Body = comment,
-				CreatedDate = createdDate,
-				Ticket = ticket,
-				TicketId = ticket.Id,
-				User = user,
-				UserId = user.Id
-			};
-			ticket.TicketComments.Add(NewComment);
-			repo.Save();
-			return NewComment;
-		}
-
-		public List<TicketComment> ViewComments(Ticket ticket)
-        {
-			return ticket.TicketComments.ToList();
+                Notification notification = new Notification(currentUser, $"Project: <b style=\"color:purple\">{project.Title}</b> passed it's deadline with an unfinished Task: <b style=\"color:purple\">{task.Title}</b>");
+                project.IsNotified = true;
+                currentUser.Notifications.Add(notification);
+                NotificationRepo.Add(notification);
+                NotificationRepo.Save();
+            }
         }
 
-		public Ticket Get(int id)
+        public Notification GetNotificationById(int? notificationId)
         {
-			if (id == null)
-			{
-				throw new Exception("Ticket Id does not exist");
-			}
-			Ticket ticket = repo.Get(id); 
-			if(ticket == null)
+            if (notificationId != null)
             {
-				throw new Exception("Ticket not found");
-			}
-			return repo.Get(id);
+                try
+                {
+                    Notification? notification = NotificationRepo.Get((int)notificationId);
+                    if (notification != null)
+                        return NotificationRepo.Get((int)notificationId);
+                    else
+                        throw new Exception("Notification was not found.");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Notification was not found.");
+                }
+            }
+            else
+            {
+                throw new Exception("notification id is null");
+            }
+            
         }
 
-		public void Edit(Ticket ticket, string Title, string Description, DateTime CreatedDate, DateTime UpdatedDate, TicketStatus ticketStatus, TicketType ticketType, TicketPriority ticketPriority)
-		{
-			if (ticket == null)
-			{
-				throw new Exception("Ticket not found");
-			}
-			try
-			{
-				ticket.Title = Title;
-				ticket.Description = Description;
-				ticket.CreatedDate = CreatedDate;
-				ticket.UpdatedDate = UpdatedDate;
-				ticket.ticketStatus = ticketStatus;
-				ticket.ticketType = ticketType;
-				ticket.ticketPriority = ticketPriority;
-
-				repo.Update(ticket);
-				repo.Save();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-					throw;
-			}
-
-		}
-
-		public ICollection<Ticket> SubmitterTickets(string submitterId)
-		{
-			List<Ticket> Tickets = (List<Ticket>)repo.GetAll().Where(t => t.SubmitterId == submitterId).ToList();
-			return Tickets;
-		}
-
-		public ICollection<Ticket> DeveloperAssignedTickets(string devID)
-		{
-			List<Ticket> Tickets = (List<Ticket>)repo.GetAll().Where(t => t.UserId == devID).ToList();
-			return Tickets;
-		}
-
-		public void MarkTicketAsResolved(int id)
+        public ICollection<Notification> GetAllNotifications()
         {
-			Ticket ticketToResolve = repo.Get(id);
-			ticketToResolve.ticketStatus = TicketStatus.Resolved;
-			repo.Save();
+            var AllNotifications = new List<Notification>();
+            try
+            {
+                AllNotifications = (List<Notification>)NotificationRepo.GetAll();
+            }
+            catch
+            {
+                throw new Exception("No notifications found");
+            }
+
+            return (ICollection<Notification>)AllNotifications;
         }
 
-		public void DeleteTicket(int id)
+        public ICollection<Notification> GetUserNotifications(ApplicationUser user)
         {
-			if (id == null)
-			{
-				throw new ArgumentException("Ticket Id does not exist");
-			}
-			repo.Remove(repo.Get(id));
-			repo.Save();
+            if (user.Id != null)
+            {
+                try
+                {
+                    var AllNotifications = NotificationRepo.GetList(n => n.TargetUserId == user.Id);
+                    return AllNotifications;
+                }
+                catch
+                {
+                    throw new Exception("No user was found.");
+                }
+            }
+            else
+            {
+                throw new Exception("userId input is null");
+            }
         }
+
+        public ICollection<Notification> GetUserNotificationsById(string? userId)
+        {
+            if (userId != null)
+            {
+                try
+                {
+                    var AllNotifications = NotificationRepo.GetList(n => n.TargetUserId == userId);
+                    return AllNotifications;
+                }
+                catch
+                {
+                    throw new Exception("No user was found.");
+                }
+            }
+            else
+            {
+                throw new Exception("userId input is null");
+            }
+        }
+
+        public void CreateNotification(ApplicationUser targetUser, string message)
+        {
+            Notification notification = new Notification();
+            if (targetUser != null && message != null)
+            {
+                try
+                {
+                    notification = new Notification(targetUser, message);
+                    NotificationRepo.Add(notification);
+                    NotificationRepo.Save();
+                }
+                catch
+                {
+                    throw new Exception("The notification could not be created");
+                }
+            }
+            else
+            {
+                throw new Exception("One of your parameters is null");
+            }
+
+        }
+
+        public Notification CreateAndReturnNotification(ApplicationUser targetUser, string message)
+        {
+            Notification notification = new Notification();
+            if (targetUser != null && message != null)
+            {
+                try
+                {
+                    notification = new Notification(targetUser, message);
+                    NotificationRepo.Add(notification);
+                    NotificationRepo.Save();
+                    return notification;
+                }
+                catch
+                {
+                    throw new Exception("The notification could not be created");
+                }
+            }
+            else
+            {
+                throw new Exception("One of your parameters is null");
+            }
+        }
+
+        public void DeleteNotificationById(int? notificationId)
+        {
+            if (notificationId == null)
+            {
+                try
+                {
+                    Notification notificationToDelete = GetNotificationById((int)notificationId);
+                    NotificationRepo.Remove(notificationToDelete);
+                    NotificationRepo.Save();
+                }
+                catch
+                {
+                    throw new Exception("The notification could not be deleted or does not exist");
+                }
+            } else
+            {
+                throw new Exception("notification id is null");
+            }
+            
+        }
+
+        public void DeleteNotification(Notification notificationToDelete)
+        {
+            NotificationRepo.Remove(notificationToDelete);
+            NotificationRepo.Save();
+        }
+
+        public void UpdateNotification(Notification notificationToUpdate)
+        {
+            NotificationRepo.Update(notificationToUpdate);
+            NotificationRepo.Save();
+        }
+
     }
 }
 

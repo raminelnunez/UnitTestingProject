@@ -409,3 +409,15 @@ C:\Users\Muhammad Musab\Desktop\FinalProjectSD340\AdvancedCSharpFinalProject\Adv
 C:\Users\Muhammad Musab\Desktop\FinalProjectSD340\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\Users\Muhammad Musab\Desktop\FinalProjectSD340\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\bin\Debug\net6.0\runtimes\win-arm\lib\net6.0\dotnet-aspnet-codegenerator-design.exe
 C:\Users\Muhammad Musab\Desktop\FinalProjectSD340\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\bin\Debug\net6.0\runtimes\win-arm64\lib\net6.0\dotnet-aspnet-codegenerator-design.exe
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.csproj.AssemblyReference.cache
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.AssemblyInfoInputs.cache
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.AssemblyInfo.cs
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.csproj.CoreCompileInputs.cache
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.RazorAssemblyInfo.cache
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.RazorAssemblyInfo.cs
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.dll
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\ref\AdvancedCSharpFinalProject.dll
+C:\Users\Raminel\Source\Repos\UnitTestingProject\AdvancedCSharpFinalProject\AdvancedCSharpFinalProject\obj\Debug\net6.0\AdvancedCSharpFinalProject.pdb

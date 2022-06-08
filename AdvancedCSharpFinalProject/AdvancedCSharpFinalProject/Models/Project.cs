@@ -35,23 +35,23 @@ namespace AdvancedCSharpFinalProject.Models
                 }
             }
         }
-        //public Project(ApplicationUser projectManager, string title, double assignedBudget, Priority priority, DateTime deadline)
-        //{
-        //    ProjectManager = projectManager;
-        //    ProjectManagerId = projectManager.Id;
-        //    Title = title;
-        //    AssignedBudget = assignedBudget;
-        //    Priority = priority;
-        //    Deadline = deadline;
-        //    ProjectTasks = new HashSet<ProjectTask>();
-        //    IsCompleted = false;
-        //    CompletionPercentage = 0;
-        //    ActualBudget = 0;
-        //}
-        //public Project()
-        //{
+        public Project(ApplicationUser projectManager, string title, double assignedBudget, Priority priority, DateTime deadline)
+        {
+            ProjectManager = projectManager;
+            ProjectManagerId = projectManager.Id;
+            Title = title;
+            AssignedBudget = assignedBudget;
+            Priority = priority;
+            Deadline = deadline;
+            ProjectTasks = new HashSet<ProjectTask>();
+            IsCompleted = false;
+            CompletionPercentage = 0;
+            ActualBudget = 0;
+        }
+        public Project()
+        {
 
-        //}
+        }
     }
 }
 

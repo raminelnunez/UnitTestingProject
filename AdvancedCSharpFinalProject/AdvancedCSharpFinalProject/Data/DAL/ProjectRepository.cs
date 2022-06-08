@@ -36,7 +36,7 @@ namespace AdvancedCSharpFinalProject.Data.DAL
 
         public virtual Project GetProjectForCreateTask(int ProjectId)
         {
-            Project ProjectToReturn =_db.Project
+            Project ProjectToReturn = _db.Project
                     .Include(project => project.ProjectTasks)
                     .Include(project => project.ProjectManager)
                     .Include(project => project.ProjectTasks)
@@ -47,6 +47,18 @@ namespace AdvancedCSharpFinalProject.Data.DAL
                     .First(project => project.Id == ProjectId);
             return ProjectToReturn;
         }
+
+        public virtual Project GetProjectForUpdateProject(int ProjectId)
+        {
+            Project project = _db.Project
+                        .Include(project => project.ProjectTasks)
+                        .Include(project => project.ProjectManager)
+                        .ThenInclude(projectManager => projectManager.Notifications)
+                        .First(project => project.Id == ProjectId);
+
+            return project;
+        }
+
         public virtual ICollection<Project> GetAll()
         {
             var Projects = _db.Project.Include(p => p.ProjectManager).Include(p => p.ProjectTasks).ThenInclude(t => t.Developer);
@@ -69,7 +81,6 @@ namespace AdvancedCSharpFinalProject.Data.DAL
         {
             _db.Project.Update(project);
         }
-
         public virtual void Remove(Project project)
         {
             _db.Project.Remove(project);

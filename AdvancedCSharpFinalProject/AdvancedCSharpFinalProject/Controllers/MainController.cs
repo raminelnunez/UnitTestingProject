@@ -1,4 +1,5 @@
 ﻿using AdvancedCSharpFinalProject.Data;
+using AdvancedCSharpFinalProject.Data.BLL;
 using AdvancedCSharpFinalProject.Data.DAL;
 using AdvancedCSharpFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,22 +14,25 @@ namespace AdvancedCSharpFinalProject.Controllers
     [Authorize]
     public class MainController : Controller
     {
+        
         private ApplicationDbContext _db { get; set; }
         private UserManager<ApplicationUser> _userManager { get; set; }
         private RoleManager<IdentityRole> _roleManager { get; set; }
-        private ProjectRepository _projectRepo { get; set; }
-        private NotificationRepository _notificationRepo { get; set; }
+
+        private ProjectBusinessLogic _projectBLL { get; set; }
+        private NotificationBusinessLogic _notificationBLL { get; set; }
         public MainController(  ApplicationDbContext Db, 
                                 UserManager<ApplicationUser> userManager, 
-                                RoleManager<IdentityRole> roleManager, 
-                                ProjectRepository projectRepo, 
-                                NotificationRepository notificationRepo
-        ){
+                                RoleManager<IdentityRole> roleManager,
+                                ProjectBusinessLogic projectBLL,
+                                NotificationBusinessLogic notificationBLL
+        )
+        {
             _db = Db;
             _userManager = userManager;
             _roleManager = roleManager;
-            _projectRepo = projectRepo;
-            _notificationRepo = notificationRepo;
+            _projectBLL = projectBLL;
+            _notificationBLL = notificationBLL;
         }
         public async Task<IActionResult> Index()
         {
@@ -44,7 +48,7 @@ namespace AdvancedCSharpFinalProject.Controllers
                     .First(user => user.UserName == User.Identity.Name);
                 UserManager userManager = new UserManager(_db, _userManager, _roleManager);
                 List<string> roleNamesOfCurrentUser = userManager.GetAllRolesOfUser(currentUser.Id);// GetAllRolesOfUser method on UserManager Class
-                List<Project> allProjects = (List<Project>)_projectRepo.GetAll();
+                List<Project> allProjects = (List<Project>)_projectBLL.GetAllProjects();
                 if (roleNamesOfCurrentUser.Any())
                 {
                     ViewBag.NoRolesForCurrentUser = false;
@@ -64,14 +68,8 @@ namespace AdvancedCSharpFinalProject.Controllers
                             {
                                 foreach(ProjectTask task in project.ProjectTasks)
                                 {
-                                    if (task.IsCompleted == false && project.IsNotified == false)
-                                    {
-                                        Notification notification = new Notification(currentUser, $"Project: <b style=\"color:purple\">{project.Title}</b> passed it's deadline with an unfinished Task: <b style=\"color:purple\">{task.Title}</b>");
-                                        project.IsNotified = true;
-                                        currentUser.Notifications.Add(notification);
-                                        _notificationRepo.Add(notification);
-                                        _notificationRepo.Save();
-                                    }
+
+                                    _notificationBLL.LoadNotifications(project, currentUser, task);
                                 }
 
                                 //deadline is earlier than the currentDate (deadline= april 3, currentDate= april 4)
@@ -94,11 +92,9 @@ namespace AdvancedCSharpFinalProject.Controllers
                             double daysLeft = (task.Deadline.Date - currentDate).TotalDays;
                             if (daysLeft <= 1 && task.IsNotified == false)
                             {
-                                Notification notification = new Notification(currentUser, $"Task: <b style=\"color:purple\">{task.Title}</b> of Project: <b style=\"color:purple\">{task.Project.Title}</b> deadline is near!! Deadline: <b>{task.Deadline}</b>");
-                                currentUser.Notifications.Add(notification);
                                 task.IsNotified = true;
-                                _notificationRepo.Add(notification);
-                                _notificationRepo.Save();
+                                _notificationBLL.CreateNotification(currentUser, $"Task: <b style=\"color:purple\">{task.Title}</b> of Project: <b style=\"color:purple\">{task.Project.Title}</b> deadline is near!! Deadline: <b>{task.Deadline}</b>");
+                                currentUser.Notifications = _notificationBLL.GetUserNotifications(currentUser);
                             }
                         }
                     }
@@ -214,7 +210,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         public async Task<IActionResult> ViewProject(int ProjectId, string? orderType)
         {
-            Project Project = _projectRepo.Get(ProjectId);
+            Project Project = _projectBLL.GetProjectById(ProjectId);
             List<ProjectTask>? ProjectTasks = (List<ProjectTask>?)Project.ProjectTasks;
             ApplicationUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
             ViewBag.currentUser = currentUser;
@@ -256,7 +252,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult CreateTask(int ProjectId)
         {
-            Project project = _projectRepo.Get(ProjectId);
+            Project project = _projectBLL.GetProjectById(ProjectId);
             ViewBag.ProjectTitle = project.Title;
             ViewBag.ProjectId = ProjectId;
             return View();
@@ -279,15 +275,14 @@ namespace AdvancedCSharpFinalProject.Controllers
                 newProjectTask.Comments = new HashSet<Comment>();
                 newProjectTask.Notes = new HashSet<Note>();
 
-                Project projectOfTheTask = _projectRepo.GetProjectForCreateTask(newProjectTask.ProjectId);
+                Project projectOfTheTask = _projectBLL.GetProjectForCreateTask(newProjectTask.ProjectId);
                 projectOfTheTask.ProjectTasks.Add(newProjectTask);
                 newProjectTask.Project = projectOfTheTask;
 
-                _projectRepo.Update(projectOfTheTask);
+                _projectBLL.Update(projectOfTheTask);
 
                 if (TryValidateModel(newProjectTask))
                 {
-                    _projectRepo.Save();
                     return RedirectToAction("ViewProject", new { ProjectId = projectOfTheTask.Id });
                 }
                 return View();
@@ -503,10 +498,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         public async Task<IActionResult> ViewAllProjects()
         {
-            List<Project> Projects = _db.Project
-                .Include(project => project.ProjectManager)
-                .OrderByDescending(project => project.Priority)
-                .ToList();
+            List<Project> Projects = _projectBLL.GetAllProjects().ToList();
             ApplicationUser currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
             ViewBag.currentUser = currentUser;
             return View(Projects);
@@ -549,22 +541,8 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult UpdateProject(int? projectId)
         {
-            if (projectId != null)
-            {
-                try
-                {
-                    Project projectToUpdate = _db.Project.First(project => project.Id == projectId);
-                    return View(projectToUpdate);
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(ex.Message);
-                }
-            }
-            else
-            {
-                return BadRequest("projectId is null");
-            }
+            Project projectToUpdate = _projectBLL.GetProjectById(projectId);
+            return View(projectToUpdate);
         }
         [Authorize(Roles = "Project Manager")]
         [HttpPost]
@@ -575,18 +553,13 @@ namespace AdvancedCSharpFinalProject.Controllers
             {
                 try
                 {
-                    Project project = _db.Project
-                        .Include(project => project.ProjectTasks)
-                        .Include(project => project.ProjectManager)
-                        .ThenInclude(projectManager => projectManager.Notifications)
-                        .First(project => project.Id == projectId);
+                    Project project = _projectBLL.GetProjectForUpdateProject((int)projectId);
                     ProjectHelper projectHelper = new ProjectHelper();
                     projectHelper.UpdateProject(project, updatedProject);
                     if (project.IsCompleted == true)
                     {
-                        Notification notificationProject = new Notification(project.ProjectManager, $"Project: <b style=\"color:purple\">{project.Title}</b> has been completed ");
+                         _notificationBLL.CreateNotification(project.ProjectManager, $"Project: <b style=\"color:purple\">{project.Title}</b> has been completed ");
                         project.IsNotified = true;
-                        _db.Notification.Add(notificationProject);
                         foreach (ProjectTask task in project.ProjectTasks)
                         {
                             if(task.IsCompleted == false)
@@ -594,13 +567,12 @@ namespace AdvancedCSharpFinalProject.Controllers
                                 task.IsCompleted = true;
                                 task.CompletionPercentage = 100;
                                 task.IsNotified = false;
-                                Notification notification = new Notification(task.Project.ProjectManager, $"Task: <b style=\"color:purple\">{task.Title}</b> of Project: <b style=\"color:purple\">{project.Title}</b> has been completed ");
+                                Notification notification = _notificationBLL.CreateAndReturnNotification(task.Project.ProjectManager, $"Task: <b style=\"color:purple\">{task.Title}</b> of Project: <b style=\"color:purple\">{project.Title}</b> has been completed ");
                                 task.Project.ProjectManager.Notifications.Add(notification);
-                                _db.Notification.Add(notification);
                             }
                         }
                     }
-                    _db.SaveChanges();
+                    _projectBLL.Update(project);
                     ViewBag.message = $"Project: <b style=\"color:purple\">{project.Title}</b> has been updated";
                     ViewBag.action = "ViewAllProjects";
                     ViewBag.actionMessage = "Back to Projects";
@@ -619,7 +591,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult DeleteWarning(int? projectId)
         {
-            Project project = _db.Project.First(project => project.Id == projectId);
+            Project project = _projectBLL.GetProjectById(projectId);
             ViewBag.message = $"Project: <b style=\"color:purple\">{project.Title}</b> will be deleted permanently";
             ViewBag.abortAction = "ViewAllProjects";
             ViewBag.ProjectId = projectId;
@@ -628,42 +600,8 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult DeleteProject(int? projectId)
         {
-            if (projectId != null)
-            {
-                try
-                {
-                    Project projectToDelete = _db.Project
-                        .Include(project => project.ProjectTasks)
-                        .First(project => project.Id == projectId);
-
-                    List<Comment> commentsToDelete = _db.Comment
-                        .Include(comment => comment.ProjectTask)
-                        .Where(comment => comment.ProjectTask.ProjectId == projectId).ToList();
-                    List<Note> notesToDelete = _db.Note
-                        .Include(comment => comment.ProjectTask)
-                        .Where(comment => comment.ProjectTask.ProjectId == projectId).ToList();
-
-                    _db.Comment.RemoveRange(commentsToDelete);
-                    _db.Note.RemoveRange(notesToDelete); 
-                    _db.ProjectTask.RemoveRange(projectToDelete.ProjectTasks.ToList());
-
-                    ProjectHelper projectHelper = new ProjectHelper(_db);
-                    projectHelper.DeleteProject(projectToDelete);
-                    _db.SaveChanges();
-                    ViewBag.message = $"Project: <b style=\"color:purple\">{projectToDelete.Title}</b> has been deleted";
-                    ViewBag.action = "ViewAllProjects";
-                    ViewBag.actionMessage = "Back to Projects";
-                    return View("MessageView");
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(ex.Message);
-                }
-            }
-            else
-            {
-                return BadRequest("projectId is null");
-            }
+            _projectBLL.RemoveProjectById((int)projectId);
+            return View();
         }
         [Authorize(Roles = "Developer")]
         public IActionResult AddCommentToTask(int? taskId, string? developerId)
@@ -729,89 +667,28 @@ namespace AdvancedCSharpFinalProject.Controllers
         }
         public IActionResult ViewNotifications(string? currentUserId)
         {
-            if (currentUserId != null)
-            {
-                try
-                {
-                    List<Notification> notificationOfUser = _db.Notification
-                        .Include(notification => notification.TargetUser)
-                        .Where(notification => notification.TargetUserId == currentUserId).ToList();
-                    return View(notificationOfUser);
-                }
-                catch(Exception ex)
-                {
-                    return NotFound(ex.Message + " At ViewNotifications");
-                }
-            }
-            else
-            {
-                return BadRequest("currentUserId is null at ViewNotifications");
-            }
+            List<Notification> notificationOfUser = _notificationBLL.GetUserNotificationsById(currentUserId).ToList();
+            return View(notificationOfUser);
+
         }
         public IActionResult DeleteNotification(int? notificationId)
         {
-            if(notificationId != null)
-            {
-                try
-                {
-                    Notification notificationToDelete = _db.Notification.First(notification => notification.Id == notificationId);
-                    _db.Remove(notificationToDelete);
-                    _db.SaveChanges();
-                    return RedirectToAction("ViewNotifications", new {currentUserId = notificationToDelete.TargetUserId});
-                }
-                catch(Exception ex)
-                {
-                    return NotFound(ex.Message + " At DeleteNotification");
-                }
-            }
-            else
-            {
-                return BadRequest("notificationId is null at DeleteNotification");
-            }
+            Notification notificationToDelete = _notificationBLL.GetNotificationById((int)notificationId);
+            _notificationBLL.DeleteNotification(notificationToDelete);
+            return RedirectToAction("ViewNotifications", new { currentUserId = notificationToDelete.TargetUserId });
         }
         public IActionResult NotificationDetails(int? notificationId)
         {
-            if (notificationId != null)
-            {
-                try
-                {
-                    Notification notification = _db.Notification
-                        .Include(notification => notification.TargetUser)
-                        .First(notification => notification.Id == notificationId);
-
-                    return View(notification);
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(ex.Message + " At NotificationDetails");
-                }
-            }
-            else
-            {
-                return BadRequest("notificationId is null at NotificationDetails");
-            }
+            Notification notification = _notificationBLL.GetNotificationById((int)notificationId);
+            return View(notification);
         }
         public IActionResult MarkNotificationAsRead(int? notificationId)
         {
-            if (notificationId != null)
-            {
-                try
-                {
-                    Notification notification = _db.Notification.First(notification => notification.Id == notificationId);
-                    notification.IsRead = true;
-                    _db.SaveChanges();
+            Notification notification = _notificationBLL.GetNotificationById(notificationId);
+            notification.IsRead = true;
+            _notificationBLL.UpdateNotification(notification);
 
-                    return RedirectToAction("NotificationDetails", new {notificationId = notificationId});
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(ex.Message + " At MarkNotificationAsRead");
-                }
-            }
-            else
-            {
-                return BadRequest("notificationId is null at MarkNotificationAsRead");
-            }
+            return RedirectToAction("NotificationDetails", new { notificationId = notificationId });
         }
         [Authorize(Roles = "Project Manager")]
         public IActionResult ViewUnfinishedTaskThatPassedDeadline()
@@ -889,10 +766,8 @@ namespace AdvancedCSharpFinalProject.Controllers
 
             if (TryValidateModel(newNote))
             {
-                Notification notification = new Notification(projectTask.Project.ProjectManager, $"Urgent note by <b style=\"color:purple\">{developer.UserName}</b> for task: <b style=\"color:purple\">{projectTask.Title}</b>");
+                Notification notification = _notificationBLL.CreateAndReturnNotification(projectTask.Project.ProjectManager, $"Urgent note by <b style=\"color:purple\">{developer.UserName}</b> for task: <b style=\"color:purple\">{projectTask.Title}</b>");
                 projectTask.Project.ProjectManager.Notifications.Add(notification);
-                _db.Notification.Add(notification);
-                _db.SaveChanges();
                 return RedirectToAction("ViewTask", new { taskId = projectTask.Id });
             }
             return View();
@@ -922,9 +797,7 @@ namespace AdvancedCSharpFinalProject.Controllers
         [Authorize(Roles = "Project Manager")]
         public IActionResult ProjectsThatExceededTheirBudgets()
         {
-            List<Project> projectsThatExceededTheirBudget = _db.Project
-                .Include(project => project.ProjectManager)
-                .Where(project => project.ActualBudget > project.AssignedBudget).ToList();
+            List<Project> projectsThatExceededTheirBudget = _projectBLL.GetProjectsWhere(project => project.ActualBudget > project.AssignedBudget);
             return View(projectsThatExceededTheirBudget);
         }
         [Authorize(Roles = "Project Manager")]
@@ -934,13 +807,10 @@ namespace AdvancedCSharpFinalProject.Controllers
             {
                 try
                 {
-                    Project project = _db.Project
-                        .Include(project => project.ProjectTasks)
-                        .ThenInclude(task => task.Developer)
-                        .First(project => project.Id == projectId);
+                    Project project = _projectBLL.GetProjectById(projectId);
                     project.ActualBudget = 0;//make it zero if it already had a value
                     project.CalculateActualBudget();
-                    _db.SaveChanges();
+                    _projectBLL.Update(project);
                     return RedirectToAction("ViewAllProjects");
 
                 }

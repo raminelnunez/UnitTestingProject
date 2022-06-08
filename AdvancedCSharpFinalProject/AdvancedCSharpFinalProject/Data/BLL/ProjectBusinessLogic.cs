@@ -11,10 +11,8 @@ namespace AdvancedCSharpFinalProject.Data.BLL
     {
         public ProjectRepository ProjectRepo { get; set; }
         public NotificationRepository NotificationRepo { get; set; }
-        public TicketBusinessLogic TicketBLL { get; set; }
         public UserManager<ApplicationUser> _userManager { get; set; }
 
-        // CONSTRUCTORS
         public ProjectBusinessLogic(ProjectRepository repo)
         {
             ProjectRepo = repo;
@@ -33,28 +31,63 @@ namespace AdvancedCSharpFinalProject.Data.BLL
         }
 
 
-        // GET LOGIC
-        public Project GetProjectById(int id)
+        public Project GetProjectById(int? projectId)
         {
-            try
+            if (projectId != null)
             {
-                Project project = ProjectRepo.Get(id);
-                if(project != null)
-                    return ProjectRepo.Get(id);
-                else
+                try
+                {
+                    Project? project = ProjectRepo.Get((int)projectId);
+                    if (project != null)
+                        return ProjectRepo.Get((int)projectId);
+                    else
+                        throw new Exception("Project was not found.");
+                }
+                catch (Exception ex)
+                {
                     throw new Exception("Project was not found.");
+                }
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception("Project was not found.");
+                throw new Exception("project id is null");
             }
+            
         }
 
+        public virtual Project GetProjectForUpdateProject(int? ProjectId)
+        {
+            if (ProjectId != null)
+            {
+                try
+                {
+                    return ProjectRepo.GetProjectForUpdateProject((int)ProjectId);
+                }
+                catch
+                {
+                    throw new Exception("project not found");
+                }
+            }
+            else
+            {
+                throw new Exception("project id is null");
+            }
+            
+        }
         public ICollection<Project> GetAllProjects()
         {
-            var AllProjects = ProjectRepo.GetAll();
+            var AllProjects = new List<Project>();
+            try
+            {
+                AllProjects = (List<Project>)ProjectRepo.GetAll();
+                return (ICollection<Project>)AllProjects;
+            }
+            catch
+            {
+                throw new Exception("No projects found");
+            }
 
-            return AllProjects;
+            
         }
 
         public ICollection<Project> GetCurrentProjects(ApplicationUser user)
@@ -63,7 +96,7 @@ namespace AdvancedCSharpFinalProject.Data.BLL
             {
                 try
                 {
-                    var AllProjects = ProjectRepo.GetList(p => p.Users.Contains(user));
+                    var AllProjects = ProjectRepo.GetList(p => p.ProjectManager == user);
                     return AllProjects;
                 }
                 catch
@@ -78,21 +111,17 @@ namespace AdvancedCSharpFinalProject.Data.BLL
         }
 
 
-        // POST LOGIC
-        public void CreateProject(string title, string description)
+        
+        public void CreateProject(ApplicationUser projectManager, string title, double assignedBudget, Priority priority, DateTime deadline)
         {
-            if (title != null && description != null)
+            Project newProject = new Project();
+            if (projectManager != null && assignedBudget != null && title != null && priority != null && deadline != null)
             {
                 try
                 {
-                    Project newProject = new Project()
-                    {
-                        Title = title,
-                        Description = description,
-                        Users = new List<ApplicationUser>()
-                    };
+                    newProject = new Project(projectManager, title, assignedBudget, priority, deadline);
 
-                    ProjectRepo.CreateProject(newProject);
+                    ProjectRepo.Add(newProject);
                     ProjectRepo.Save();
                 }
                 catch
@@ -100,94 +129,102 @@ namespace AdvancedCSharpFinalProject.Data.BLL
                     throw new Exception("The project could not be created");
                 }
             }
-            else if (title == null || description == null)
+            else
             {
-                throw new Exception("Title and Description must be filled out.");
+                throw new Exception("One of your parameters is null");
             }
    
         }
 
-        public void EditProject(int id, string? title, string? description)
+        public Project GetProjectForCreateTask(int? ProjectId)
         {
-            if (id != null)
-
+            if (ProjectId != null)
             {
+                Project project = new Project();
                 try
                 {
-                    var ProjectToEdit = ProjectRepo.Get(id);
-                    ProjectToEdit.Title = title;
-                    ProjectToEdit.Description = description;
-
-                    ProjectRepo.Update(ProjectToEdit);
-                    ProjectRepo.Save();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("The project could not be updated.");
-                }
-            } 
-            else if (id == null)
-            {
-                throw new Exception("Project was not found.");
-            }
-            else if (title == null && description == null)
-            {
-                throw new Exception("Title or Description must be filled out.");
-            }
-
-        }
-
-        public void AssignTicket(string devId, Ticket Ticket)
-        {
-            if (Ticket != null && devId != null)
-            {
-                try
-                {
-                    Ticket.UserId = devId;
-                    Ticket.ticketStatus = TicketStatus.Assigned;
-
-                    ProjectRepo.Save();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("The Developer could not be assigned.");
-                }
-            }
-            else if(Ticket == null)
-            {
-                throw new Exception("The Ticket could not be found.");
-            }
-            else if(devId == null)
-            {
-                throw new Exception("The Developer you chose could not be found.");
-            }
-        }
-
-        public void AssignProject(AppUser pm, int projectId)
-        {
-            if (projectId != null && pm != null)
-            {
-                try
-                {
-                    Project project = GetProjectById(projectId);
-
-                    project.Users.Add(pm);
-                    ProjectRepo.Save();
+                    project = ProjectRepo.GetProjectForCreateTask((int)ProjectId);
                 }
                 catch
                 {
-                    throw new Exception("The Manager could not be assgined.");
+                    throw new Exception("Could not get project");
+                }
+                return project;
+            }
+            else
+            {
+                throw new Exception("project id is null");
+            }
+        }
+
+        public void Update(Project project)
+        {
+            try
+            {
+                ProjectRepo.Update(project);
+                ProjectRepo.Save();
+            } catch
+            {
+                throw new Exception("Project wasn't updated");
+            }
+        }
+
+        public void RemoveProject(Project project)
+        {
+            if (project != null)
+            {
+                try
+                {
+                    ProjectRepo.Remove(project);
+
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Project not deleted");
                 }
             }
-            else if (pm == null)
+            else
             {
-                throw new Exception("The user was not found.");
+                throw new Exception("project input is null");
             }
-            else if (projectId == null)
+        }
+        public void RemoveProjectById(int? projectId)
+        {
+            if (projectId != null)
             {
-                throw new Exception("The project was not found.");
+                try
+                {
+                    Project projectToDelete = GetProjectById(projectId);
+                    ProjectRepo.Remove(projectToDelete);
+                    
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Project not deleted");
+                }
             }
-   
+            else
+            {
+                throw new Exception("project Id is null");
+            }
+        }
+
+        public List<Project> GetProjectsWhere(Func<Project, bool> whereFunction)
+        {
+            List<Project> projectsToReturn = new List<Project>();
+            try
+            {
+                projectsToReturn = (List<Project>)ProjectRepo.GetList(whereFunction);
+            }
+            catch
+            {
+
+            }
+            if (projectsToReturn.Count < 1)
+            {
+                throw new Exception("no projects found");
+            }
+            return projectsToReturn;
         }
 
     }
