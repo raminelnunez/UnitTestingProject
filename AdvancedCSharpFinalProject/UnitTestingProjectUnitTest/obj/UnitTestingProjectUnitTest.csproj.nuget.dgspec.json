@@ -75,6 +75,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[6.0.2, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.18.1, )"
             }
           },
           "imports": [

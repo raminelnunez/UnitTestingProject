@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "y+phel31jmYbQ3W+//U6oDU7mo7CO6f+ODQw5R1G2wfJNZmVVUwh0Ox4TRJ92VGPx9z1mYOpUk1jEROsPusVuw==",
+  "dgSpecHash": "brn3PYbWETQ9B38ZtNrQ0U7QqJ6KvKv3Y+4vDKtpT4Aa0YsJ7TwF+pGjzNqgb2nYOvRLpyIV976TLfGHa72z/Q==",
   "success": true,
   "projectFilePath": "C:\\Users\\Raminel\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Raminel\\.nuget\\packages\\castle.core\\5.0.0\\castle.core.5.0.0.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\messagepack.annotations\\2.1.152\\messagepack.annotations.2.1.152.nupkg.sha512",
@@ -78,6 +79,7 @@
     "C:\\Users\\Raminel\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\Raminel\\.nuget\\packages\\moq\\4.18.1\\moq.4.18.1.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\nuget.common\\5.11.0\\nuget.common.5.11.0.nupkg.sha512",
@@ -120,6 +122,7 @@
     "C:\\Users\\Raminel\\.nuget\\packages\\system.console\\4.3.0\\system.console.4.3.0.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\system.diagnostics.debug\\4.3.0\\system.diagnostics.debug.4.3.0.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.0\\system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
+    "C:\\Users\\Raminel\\.nuget\\packages\\system.diagnostics.eventlog\\6.0.0\\system.diagnostics.eventlog.6.0.0.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\system.diagnostics.tools\\4.3.0\\system.diagnostics.tools.4.3.0.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\system.diagnostics.tracing\\4.3.0\\system.diagnostics.tracing.4.3.0.nupkg.sha512",
     "C:\\Users\\Raminel\\.nuget\\packages\\system.drawing.common\\4.7.0\\system.drawing.common.4.7.0.nupkg.sha512",
