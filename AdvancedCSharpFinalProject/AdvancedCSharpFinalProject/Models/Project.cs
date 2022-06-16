@@ -1,6 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace AdvancedCSharpFinalProject.Models
 {
+
+    public enum Priority
+    {
+        Low,
+        Medium,
+        High
+    }
     public class Project
     {
         public int Id { get; set; }
@@ -53,11 +60,4 @@ namespace AdvancedCSharpFinalProject.Models
 
         }
     }
-}
-
-public enum Priority
-{
-    Low = 0,
-    Medium = 1,
-    High = 2,
 }
