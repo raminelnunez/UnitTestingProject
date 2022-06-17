@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ramin\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {}
+    "C:\\Users\\Raminel\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ramin\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {
+    "C:\\Users\\Raminel\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ramin\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
+        "projectUniqueName": "C:\\Users\\Raminel\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
         "projectName": "AdvancedCSharpFinalProject",
-        "projectPath": "C:\\Users\\Ramin\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
-        "packagesPath": "C:\\Users\\Ramin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ramin\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\obj\\",
+        "projectPath": "C:\\Users\\Raminel\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject.csproj",
+        "packagesPath": "C:\\Users\\Raminel\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Raminel\\Source\\Repos\\UnitTestingProject\\AdvancedCSharpFinalProject\\AdvancedCSharpFinalProject\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Ramin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Raminel\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -99,7 +99,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.106\\RuntimeIdentifierGraph.json"
         }
       }
     }

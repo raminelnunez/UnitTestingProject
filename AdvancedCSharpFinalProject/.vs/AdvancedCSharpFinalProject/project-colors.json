@@ -10,7 +10,12 @@
       "ProjectGuid": "aa24b339-568c-4e41-9c6d-c3d4a264656f",
       "DisplayName": "AdvancedCSharpFinalProject",
       "ColorIndex": 0
+    },
+    "1d5ce78f-4103-433c-ad19-024fb68aad19": {
+      "ProjectGuid": "1d5ce78f-4103-433c-ad19-024fb68aad19",
+      "DisplayName": "UnitTestingProjectUnitTest",
+      "ColorIndex": 1
     }
   },
-  "NextColorIndex": 1
+  "NextColorIndex": 2
 }

@@ -141,21 +141,12 @@ namespace UnitTestingProjectUnitTest
             allProjects = new List<Project> { mockProject1, mockProject2, mockProject3 };
             allUsers = new List<ApplicationUser> { mockUser, mockUser2, mockUser3, mockProjectManager, mockProjectManager2};
 
-
-            //R- Create ProjectTasks
-
-            //R- need to figure out this stuff below:
-
-            // Calling "Get" method from DAL
-            // We are creating fake responses for our fake DB
-            // We are telling the DAL how to behave when the BLL accesses it
-            // Called a testing double
             mockRepo.Setup(repo => repo.Get(It.Is<int>(i => i == 1))).Returns(mockProject1);
             mockRepo.Setup(repo => repo.Get(It.Is<int>(i => i == 2))).Returns(mockProject2);
             mockRepo.Setup(repo => repo.Get(It.Is<int>(i => i == 3))).Returns(mockProject3);
             mockRepo.Setup(repo => repo.GetAll()).Returns(allProjects);
             mockRepo.Setup(repo => repo.GetList(It.IsAny<Func<Project, bool>>())).Returns(pmProjects);
-            mockRepo.Setup(repo => repo.Create(It.IsAny<Project>())).Callback<Project>((project) => allProjects.Add(project));
+            mockRepo.Setup(repo => repo.Add(It.IsAny<Project>())).Callback<Project>((project) => allProjects.Add(project));
             mockRepo.Setup(repo => repo.Remove(It.IsAny<Project>())).Callback<Project>((project) => allProjects.Remove(project));
 
         }
@@ -206,21 +197,21 @@ namespace UnitTestingProjectUnitTest
         [TestMethod]
         public void GetCurrentProjects_Passes_WithCorrectParametersPassed()
         {
-            //var pm = allUsers[1];
+            var pm = allUsers[1];
 
-            //var ProjectList = _projectBLL.GetCurrentProjects(pm);
+            var ProjectList = _projectBLL.GetCurrentProjects(pm);
 
-            //List<Project> expectedAssignedProjects = new List<Project> { allProjects[0], allProjects[1] };
+            List<Project> expectedAssignedProjects = new List<Project> { allProjects[0], allProjects[1] };
 
-            //Assert.AreEqual(expectedAssignedProjects, ProjectList);
+            Assert.AreEqual(expectedAssignedProjects, ProjectList);
         }
 
 
         [TestMethod]
         public void CreateProject_Passes_WithCorrectParametersPassed()
         {
-            _projectBLL.CreateProject("test Project", "testing new project creation");
-            _projectBLL.CreateProject("Another Test", "testing new project creation");
+            _projectBLL.CreateProject(allUsers[3], "testing new project creation", 1000, Priority.Medium, new DateTime(2022, 08, 05));
+            _projectBLL.CreateProject(allUsers[4], "another project creation", 2000, Priority.High, new DateTime(2022, 09, 25));
 
             var result = allProjects[3];
             var result2 = allProjects[4];
@@ -233,10 +224,10 @@ namespace UnitTestingProjectUnitTest
         [TestMethod]
         public void EditProject_Passes_WithCorrectParametersPassed()
         {
-            Project mockProject1 = new Project { Id = 1, Title = "The First Project", Description = "Description One", Users = new List<AppUser>() };
+            Project mockProject1 = allProjects[0];
 
-            _projectBLL.EditProject(1, "Changed Title", "Changed Description");
-            var editedProject = allProjects[1];
+            _projectBLL.EditProject(mockProject1.Id, "Changed Title", 777, Priority.High, new DateTime(2032, 08, 21));
+            var editedProject = allProjects[0];
 
             Assert.AreNotEqual(mockProject1, editedProject);
         }
@@ -244,47 +235,9 @@ namespace UnitTestingProjectUnitTest
         [TestMethod]
         public void EditProject_ThrowsErrorOn_WithNonExistingProjectId()
         {
-            Assert.ThrowsException<Exception>(() => _projectBLL.EditProject(100, "Changed Title", "Changed Description"));
+            Assert.ThrowsException<Exception>(() => _projectBLL.EditProject(2355, "Changed Title", 777, Priority.High, new DateTime(2032, 08, 21)));
         }
 
 
-        [TestMethod]
-        public void AssignTicket_Passes_WithCorrectParameters()
-        {
-            AppUser mockUser = allUsers[0];
-
-            _projectBLL.AssignTicket(mockUser.Id, allTickets[2]);
-
-            var assignedTicket = allTickets[2];
-
-            Assert.AreEqual(assignedTicket.UserId, "mockGUID");
-        }
-
-        [TestMethod]
-        public void AssignTicket_ThrowsErrorOn_NullUserId()
-        {
-            AppUser mockUser = new AppUser
-            {
-                Id = null,
-                Email = "mockAdmin@mitt.ca",
-                NormalizedEmail = "MOCKADMIN@MITT.CA",
-                UserName = "mockAdmin@mitt.ca",
-                NormalizedUserName = "MOCKADMIN@MITT.CA",
-                EmailConfirmed = true
-            };
-
-            Assert.ThrowsException<Exception>(() => _projectBLL.AssignTicket(mockUser.Id, allTickets[2]));
-        }
-
-        [TestMethod]
-        public void AssignProject_Passes_WithCorrectParameters()
-        {
-            AppUser mockUser = allUsers[0];
-
-            _projectBLL.AssignProject(mockUser, allProjects[2].Id);
-            var assignedProject = allProjects[2];
-
-            CollectionAssert.Contains(assignedProject.Users.ToList(), mockUser);
-        }
     }
 }

@@ -136,6 +136,34 @@ namespace AdvancedCSharpFinalProject.Data.BLL
    
         }
 
+        public void EditProject(int projectId, string? title, double? assignedBudget, Priority? priority, DateTime? deadline)
+        {
+            Project project = GetProjectForUpdateProject(projectId);
+            try
+            {
+                if (title != null)
+                {
+                    project.Title = title;
+                }
+                if (assignedBudget != null)
+                {
+                    project.AssignedBudget = (double)assignedBudget;
+                }
+                if (priority != null)
+                {
+                    project.Priority = (Priority)priority;
+                }
+                if (deadline != null)
+                {
+                    project.Deadline = (DateTime)deadline;
+                }
+                Update(project);
+            } catch
+            {
+
+            }
+        }
+
         public Project GetProjectForCreateTask(int? ProjectId)
         {
             if (ProjectId != null)
